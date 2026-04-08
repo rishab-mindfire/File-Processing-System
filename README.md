@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # React + TypeScript + Vite
 
 This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
@@ -71,3 +72,7 @@ export default defineConfig([
   },
 ])
 ```
+=======
+# File-Processing-System
+A frontend project created using react+ts. where authentication process, project management, file upload and background job tracking will be there.
+>>>>>>> 0d66857a29b43df0964ae3bae28b7169de462abe
