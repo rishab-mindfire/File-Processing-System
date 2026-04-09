@@ -1,7 +1,7 @@
 import { useReducer } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useAuth } from '../hooks/useAuth';
-import styles from '../styles/Login.module.css';
+import { useAuth } from '../../hooks/useAuth';
+import styles from './Login.module.css';
 
 type State = {
   email: string;
@@ -70,7 +70,7 @@ export default function Login() {
       }
 
       dispatch({ type: 'SET_LOADING', payload: false });
-    }, 3000);
+    }, 1000);
   };
 
   return (
