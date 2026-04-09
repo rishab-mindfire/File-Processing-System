@@ -21,6 +21,7 @@ export default function ProjectDetails() {
 
   // FILE UPLOAD ---
   const handleFileUpload = (uploadedFiles: FileList | null) => {
+    console.log(uploadedFiles);
     if (!uploadedFiles) return;
 
     // Manual FormData usage

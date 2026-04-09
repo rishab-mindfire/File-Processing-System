@@ -3,18 +3,21 @@
   max-width: 1200px;
   margin: 0 auto;
 }
+
 .header {
   display: flex;
   align-items: center;
   gap: 1rem;
   margin-bottom: 2rem;
 }
+
 .backBtn {
   background: #eee;
   border: none;
   padding: 8px 15px;
   border-radius: 4px;
   cursor: pointer;
+  white-space: nowrap;
 }
 
 .dropZone {
@@ -25,6 +28,11 @@
   border-radius: 12px;
   cursor: pointer;
   margin-bottom: 2rem;
+  transition: background 0.2s;
+}
+
+.dropZone:hover {
+  background: #e6f2ff;
 }
 
 .hiddenInput {
@@ -36,17 +44,29 @@
   grid-template-columns: 1fr 1fr;
   gap: 2rem;
 }
+
 .card {
   background: white;
   padding: 1.5rem;
   border-radius: 8px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+}
+
+.sectionHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+  flex-wrap: wrap;
+  gap: 10px;
 }
 
 .table {
   width: 100%;
   border-collapse: collapse;
 }
+
 .table td,
 .table th {
   padding: 12px;
@@ -54,35 +74,68 @@
   border-bottom: 1px solid #eee;
 }
 
-.processBtn {
-  background: #00b894;
-  color: white;
-  border: none;
-  padding: 5px 10px;
-  border-radius: 4px;
-  cursor: pointer;
-}
-
+/* Progress bar styles */
 .jobItem {
   margin-bottom: 1.5rem;
+  padding: 10px;
+  border: 1px solid #f0f0f0;
+  border-radius: 6px;
 }
+
 .jobInfo {
   display: flex;
   justify-content: space-between;
-  margin-bottom: 5px;
+  margin-bottom: 8px;
   font-size: 0.9rem;
+  font-weight: 500;
 }
 
-/* Custom Progress Bar Styling */
 .progressTrack {
   background: #dfe6e9;
   height: 10px;
   border-radius: 5px;
   overflow: hidden;
+  margin-bottom: 10px;
 }
 
 .progressBar {
   background: #0984e3;
   height: 100%;
   transition: width 0.3s ease;
+}
+
+/* --- media QUERIES --- */
+
+@media (max-width: 992px) {
+  .grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 600px) {
+  .container {
+    padding: 1rem;
+  }
+
+  .header h1 {
+    font-size: 1.2rem;
+  }
+
+  .dropZone {
+    padding: 1.5rem;
+  }
+
+  .card {
+    overflow-x: auto;
+    padding: 1rem;
+  }
+
+  .jobInfo {
+    flex-direction: column;
+    gap: 4px;
+  }
+
+  .statusLabel {
+    align-self: flex-start;
+  }
 }
