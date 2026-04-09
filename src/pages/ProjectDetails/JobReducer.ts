@@ -9,19 +9,23 @@ export function jobReducer(state: JobState, action: JobAction): JobState {
     case 'UPDATE_PROGRESS':
       return {
         ...state,
-        jobs: state.jobs.map((j) =>
-          j.id === action.payload.id
-            ? { ...j, progress: action.payload.progress, status: 'PROCESSING' }
-            : j,
+        jobs: state.jobs.map((job) =>
+          job.id === action.payload.id
+            ? {
+                ...job,
+                progress: action.payload.progress,
+                status: 'PROCESSING',
+              }
+            : job,
         ),
       };
     case 'COMPLETE_JOB':
       return {
         ...state,
-        jobs: state.jobs.map((j) =>
-          j.id === action.payload
-            ? { ...j, status: 'COMPLETED', progress: 100 }
-            : j,
+        jobs: state.jobs.map((job) =>
+          job.id === action.payload
+            ? { ...job, status: 'COMPLETED', progress: 100 }
+            : job,
         ),
       };
     default:

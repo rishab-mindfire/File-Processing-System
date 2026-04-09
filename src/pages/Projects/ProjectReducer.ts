@@ -4,15 +4,15 @@ import type { Project, ProjectState } from '../../models/Types';
 export const MOCK_PROJECTS: Project[] = [
   {
     id: '1',
-    name: 'E-commerce Platform',
-    description: 'Main production website assets.',
+    name: 'Project 1',
+    description: 'Main production website assets files.',
     filesCount: 5,
     jobsCount: 1,
     createdAt: new Date().toISOString(),
   },
   {
     id: '2',
-    name: 'Mobile App API',
+    name: 'Project 2',
     description: 'Backend documentation and files.',
     filesCount: 2,
     jobsCount: 0,

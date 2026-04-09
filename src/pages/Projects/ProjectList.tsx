@@ -5,6 +5,7 @@ import { projectService } from '../../services/projectService';
 import Modal from '../../components/modal/Modal';
 import styles from './ProjectList.module.css';
 import type { Project } from '../../models/Types';
+import Loader from '../../components/common/Loader';
 
 export default function ProjectList() {
   const [state, dispatch] = useReducer(projectReducer, initialState);
@@ -36,7 +37,7 @@ export default function ProjectList() {
   const handleCreate = (e: React.FormEvent) => {
     e.preventDefault();
 
-    //Turn simple form strings into a full Project interface object
+    // Turn simple form strings into a full Project interface object
     const newProject: Project = {
       id: crypto.randomUUID(),
       name: formData.name,
@@ -50,7 +51,7 @@ export default function ProjectList() {
 
     // Reset UI
     setIsCreateOpen(false);
-    setFormData({ name: '', description: '' }); // Clear form
+    setFormData({ name: '', description: '' });
   };
 
   const confirmDelete = () => {
@@ -60,7 +61,12 @@ export default function ProjectList() {
     }
   };
 
-  if (state.loading) return <div className={styles.spinner}>Loading...</div>;
+  if (state.loading)
+    return (
+      <div className={styles.spinner}>
+        <Loader />
+      </div>
+    );
 
   return (
     <div className={styles.container}>
@@ -107,7 +113,7 @@ export default function ProjectList() {
         </table>
       )}
 
-      {/* Creating project Modal */}
+      {/* Creating new project Modal */}
       <Modal
         isOpen={isCreateOpen}
         onClose={() => setIsCreateOpen(false)}
@@ -116,6 +122,7 @@ export default function ProjectList() {
           <div className={styles.formGroup}>
             <label>Project Name</label>
             <input
+              className={styles.modelInputField}
               type="text"
               value={formData.name}
               onChange={(e) =>
@@ -128,6 +135,7 @@ export default function ProjectList() {
           <div className={styles.formGroup}>
             <label>Description</label>
             <textarea
+              className={styles.modelAeraField}
               value={formData.description}
               onChange={(e) =>
                 setFormData({ ...formData, description: e.target.value })
@@ -142,7 +150,7 @@ export default function ProjectList() {
         </form>
       </Modal>
 
-      {/* Manual Modal for Deletion */}
+      {/* Deletion of project based on id */}
       <Modal
         isOpen={!!projectToDelete}
         onClose={() => setProjectToDelete(null)}

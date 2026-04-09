@@ -1,8 +1,6 @@
+import { delay } from '../hooks/customeHooks';
 import type { Project } from '../models/Types';
 import { MOCK_PROJECTS } from '../pages/Projects/ProjectReducer';
-
-// delay function :
-const delay = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
 
 export const projectService = {
   // Project list :
