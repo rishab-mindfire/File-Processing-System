@@ -1,11 +1,11 @@
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
-import Login from './pages/LoginPage';
+import Login from './pages/login/LoginPage';
 import PageNotFound from './pages/errorPage/PageNotFound';
 import ProtectedRoute from './components/common/ProtectedRoute';
 import { useAuth } from './hooks/useAuth';
-import ProjectList from './pages/ProjectList';
-import ProjectDetailsPage from './pages/ProjectDetailsPage';
+import ProjectList from './pages/Projects/ProjectList';
 import Layout from './components/layout/Layout';
+import ProjectDetails from './pages/ProjectDetails/ProjectDetails';
 
 const RootRedirect = () => {
   const { state } = useAuth();
@@ -38,11 +38,12 @@ function App() {
           element={
             <ProtectedRoute>
               <Layout>
-                <ProjectDetailsPage />
+                <ProjectDetails />
               </Layout>
             </ProtectedRoute>
           }
         />
+
         <Route path="*" element={<PageNotFound />} />
       </Routes>
     </BrowserRouter>
