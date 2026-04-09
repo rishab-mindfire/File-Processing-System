@@ -51,7 +51,7 @@ export default function ProjectList() {
 
     // Reset UI
     setIsCreateOpen(false);
-    setFormData({ name: '', description: '' }); // Clear form
+    setFormData({ name: '', description: '' });
   };
 
   const confirmDelete = () => {
@@ -150,7 +150,7 @@ export default function ProjectList() {
         </form>
       </Modal>
 
-      {/* Manual Modal for Deletion */}
+      {/* Deletion of project based on id */}
       <Modal
         isOpen={!!projectToDelete}
         onClose={() => setProjectToDelete(null)}
