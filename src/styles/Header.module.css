@@ -1,0 +1,120 @@
+/* --- Desktop & Container --- */
+.navbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 2rem;
+  height: 70px;
+  background-color: #ffffff;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+}
+
+.logo {
+  font-size: 1.4rem;
+  font-weight: 800;
+  color: #2d3436;
+}
+
+/* --- Navigation & Sidebar --- */
+.navContainer {
+  position: fixed;
+  top: 70px;
+  left: -100%; /* Hidden off-side */
+  width: 260px;
+  height: calc(100vh - 70px);
+  background-color: #fcfcfc;
+  transition: 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  border-right: 1px solid #eee;
+}
+
+.navActive {
+  left: 0; /* Slide in */
+}
+
+.navLinks {
+  list-style: none;
+  padding: 2rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.navLinks a {
+  text-decoration: none;
+  color: #636e72;
+  font-weight: 500;
+  transition: color 0.2s;
+}
+
+.navLinks a:hover {
+  color: #0984e3;
+}
+
+/* --- Logout Buttons --- */
+.btnLogout {
+  background-color: #d63031;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 600;
+}
+
+.mobileLogout {
+  margin-top: 1rem;
+  display: block;
+}
+
+.desktopActions {
+  display: none; /* Hidden on mobile */
+}
+
+/* --- Hamburger Icon --- */
+.menuBtn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.line {
+  width: 25px;
+  height: 3px;
+  background-color: #333;
+  transition: 0.3s;
+}
+
+/* --- Desktop Styles (Media Query) --- */
+@media (min-width: 768px) {
+  .menuBtn {
+    display: none;
+  }
+
+  .navContainer {
+    position: static;
+    height: auto;
+    width: auto;
+    background: none;
+    border: none;
+  }
+
+  .navLinks {
+    flex-direction: row;
+    padding: 0;
+    gap: 2rem;
+  }
+
+  .mobileLogout {
+    display: none;
+  }
+
+  .desktopActions {
+    display: block;
+  }
+}
