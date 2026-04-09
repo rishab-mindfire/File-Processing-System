@@ -2,13 +2,7 @@ import { useReducer } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../hooks/useAuth';
 import styles from './Login.module.css';
-
-type State = {
-  email: string;
-  password: string;
-  loading: boolean;
-  error: string;
-};
+import type { State } from '../../models/Types';
 
 // Actions for login
 type Action =

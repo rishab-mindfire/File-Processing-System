@@ -1,17 +1,16 @@
-import { MOCK_PROJECTS, type Project } from '../pages/Projects/ProjectReducer';
+import type { Project } from '../models/Types';
+import { MOCK_PROJECTS } from '../pages/Projects/ProjectReducer';
 
-// Helper to simulate network latency
+// delay function :
 const delay = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
 
 export const projectService = {
-  /**
-   * TASK 2: Project CRUD
-   */
+  // Project list :
   async getAllProjects(): Promise<Project[]> {
-    await delay(800); // Simulate API call
+    await delay(800);
     return [...MOCK_PROJECTS];
   },
-
+  // create project :
   async createProject(name: string, description: string): Promise<Project> {
     await delay(1000);
     return {
@@ -24,23 +23,21 @@ export const projectService = {
     };
   },
 
-  /**
-   * TASK 3: File Management (Requirement: Manual FormData usage)
-   */
+  // File Management (upload)
   async uploadFiles(
     projectId: string,
     files: File[],
     onProgress: (percent: number) => void,
   ): Promise<unknown> {
     return new Promise((resolve, reject) => {
-      // Requirement 3: Manual FormData usage
+      // Manual FormData usage
       const formData = new FormData();
       files.forEach((file) => formData.append('files', file));
 
-      // Requirement 5: Manual progress tracking via XMLHttpRequest
+      // Manual progress tracking via XMLHttpRequest
       const xhr = new XMLHttpRequest();
 
-      // Target URL (Hardcoded for now)
+      // Target URL
       xhr.open('POST', `/api/projects/${projectId}/files`);
 
       // Track upload progress
@@ -63,10 +60,7 @@ export const projectService = {
 
       xhr.onerror = () => reject(new Error('Network failure'));
 
-      // Simulate sending for static testing
-      // In a real scenario, you'd call: xhr.send(formData);
-
-      // FOR STATIC TEST: We simulate the completion since there's no real backend
+      // Sending data for static testing
       let fakeProgress = 0;
       const interval = setInterval(() => {
         fakeProgress += 10;

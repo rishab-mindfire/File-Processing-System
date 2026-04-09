@@ -1,16 +1,4 @@
-export interface Job {
-  id: string;
-  status: 'PENDING' | 'PROCESSING' | 'COMPLETED';
-  progress: number;
-  fileName: string;
-}
-
-export type JobState = { jobs: Job[] };
-
-export type JobAction =
-  | { type: 'ADD_JOB'; payload: Job }
-  | { type: 'UPDATE_PROGRESS'; payload: { id: string; progress: number } }
-  | { type: 'COMPLETE_JOB'; payload: string };
+import type { JobAction, JobState } from '../../models/Types';
 
 export const initialJobState: JobState = { jobs: [] };
 

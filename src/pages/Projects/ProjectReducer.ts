@@ -1,11 +1,4 @@
-export interface Project {
-  id: string;
-  name: string;
-  description: string;
-  filesCount: number;
-  jobsCount: number;
-  createdAt: string;
-}
+import type { Project, ProjectState } from '../../models/Types';
 
 // ProjectList dummy list
 export const MOCK_PROJECTS: Project[] = [
@@ -27,11 +20,6 @@ export const MOCK_PROJECTS: Project[] = [
   },
 ];
 
-export type ProjectState = {
-  projects: Project[];
-  loading: boolean;
-  error: string | null;
-};
 // Project Actions
 export type ProjectAction =
   | { type: 'FETCH_START' }
