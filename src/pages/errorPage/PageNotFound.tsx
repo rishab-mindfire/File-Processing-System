@@ -1,7 +1,16 @@
+import { Link } from 'react-router-dom';
+import styles from '../../styles/PageNotFound.module.css';
+
 const PageNotFound = () => {
   return (
-    <div>
-      <h2>404 - Page Not Found</h2>
+    <div className={styles.container}>
+      <h1 className={styles.errorCode}>404</h1>
+      <h2 className={styles.message}>Oops! Page Not Found</h2>
+      <p>The page you are looking for doesn't exist or has been moved.</p>
+
+      <Link to="/projects" className={styles.backLink}>
+        Back to projects
+      </Link>
     </div>
   );
 };
