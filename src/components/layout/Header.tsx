@@ -1,11 +1,21 @@
 import React, { useState } from 'react';
 import styles from '../../styles/Header.module.css';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
+import { useAuth } from '../../hooks/useAuth';
 
 const Header: React.FC = () => {
   const [isOpen, setIsOpen] = useState(false);
 
   const toggleMenu = () => setIsOpen(!isOpen);
+  const navigate = useNavigate();
+  const { logout } = useAuth();
+
+  // log-out
+  const handleLogout = () => {
+    localStorage.removeItem('file-processing-system');
+    logout();
+    navigate('/login');
+  };
 
   return (
     <header className={styles.navbar}>
@@ -26,14 +36,18 @@ const Header: React.FC = () => {
             <Link to="/projects">Projects</Link>
           </li>
           <li className={styles.mobileLogout}>
-            <button className={styles.btnLogout}>Logout</button>
+            <button className={styles.btnLogout} onClick={handleLogout}>
+              Logout
+            </button>
           </li>
         </ul>
       </nav>
 
       {/* Logout button for smalll screen */}
       <div className={styles.desktopActions}>
-        <button className={styles.btnLogout}>Logout</button>
+        <button className={styles.btnLogout} onClick={handleLogout}>
+          Logout
+        </button>
       </div>
     </header>
   );
