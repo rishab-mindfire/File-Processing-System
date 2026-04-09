@@ -4,14 +4,7 @@ import { MOCK_PROJECTS } from '../Projects/ProjectReducer';
 import { jobReducer, initialJobState } from './JobReducer';
 import styles from './ProjectDetails.module.css';
 import type { FileItem, Project } from '../../models/Types';
-
-const formatBytes = (bytes: number): string => {
-  if (bytes === 0) return '0 Bytes';
-  const k = 1024;
-  const sizes = ['Bytes', 'KB', 'MB', 'GB'];
-  const i = Math.floor(Math.log(bytes) / Math.log(k));
-  return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
-};
+import { formatBytes } from '../../hooks/customeHooks';
 
 export default function ProjectDetails() {
   const { projectId } = useParams<{ projectId: string }>();
@@ -44,7 +37,7 @@ export default function ProjectDetails() {
     setFiles((prev) => [...newFiles, ...prev]);
   };
 
-  // --- JOB POLLING letter integrate with APII ---
+  // --- JOB POLLING later integrate with APII ---
   const startZipJob = () => {
     if (selectedFileIds.length === 0) return;
 
@@ -63,7 +56,8 @@ export default function ProjectDetails() {
 
     // setInterval uii pause
     const interval = window.setInterval(() => {
-      currentProgress += Math.floor(Math.random() * 15) + 5;
+      // 5% each second progress
+      currentProgress += 5;
 
       if (currentProgress >= 100) {
         window.clearInterval(interval);
@@ -74,7 +68,7 @@ export default function ProjectDetails() {
           payload: { id: jobId, progress: currentProgress },
         });
       }
-    }, 800);
+    }, 1000);
 
     setSelectedFileIds([]);
   };

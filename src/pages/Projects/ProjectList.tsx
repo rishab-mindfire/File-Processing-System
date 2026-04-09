@@ -5,6 +5,7 @@ import { projectService } from '../../services/projectService';
 import Modal from '../../components/modal/Modal';
 import styles from './ProjectList.module.css';
 import type { Project } from '../../models/Types';
+import Loader from '../../components/common/Loader';
 
 export default function ProjectList() {
   const [state, dispatch] = useReducer(projectReducer, initialState);
@@ -36,7 +37,7 @@ export default function ProjectList() {
   const handleCreate = (e: React.FormEvent) => {
     e.preventDefault();
 
-    //Turn simple form strings into a full Project interface object
+    // Turn simple form strings into a full Project interface object
     const newProject: Project = {
       id: crypto.randomUUID(),
       name: formData.name,
@@ -60,7 +61,12 @@ export default function ProjectList() {
     }
   };
 
-  if (state.loading) return <div className={styles.spinner}>Loading...</div>;
+  if (state.loading)
+    return (
+      <div className={styles.spinner}>
+        <Loader />
+      </div>
+    );
 
   return (
     <div className={styles.container}>
@@ -107,7 +113,7 @@ export default function ProjectList() {
         </table>
       )}
 
-      {/* Creating project Modal */}
+      {/* Creating new project Modal */}
       <Modal
         isOpen={isCreateOpen}
         onClose={() => setIsCreateOpen(false)}
