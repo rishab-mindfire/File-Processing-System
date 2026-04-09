@@ -34,7 +34,7 @@ export default function ProjectList() {
     // 1. Create the dummy project object
     const newProject: Project = {
       id: Math.random().toString(36).substr(2, 9), // Random ID
-      name: newProjectName, // This is a STRING (Safe to render)
+      name: newProjectName,
       description: 'New project description',
       filesCount: 0,
       jobsCount: 0,
