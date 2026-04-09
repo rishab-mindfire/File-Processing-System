@@ -82,35 +82,41 @@ export default function ProjectList() {
       {state.projects.length === 0 ? (
         <div className={styles.empty}>No projects found.</div>
       ) : (
-        <table className={styles.table}>
-          <thead>
-            <tr>
-              <th>Name</th>
-              <th>Files</th>
-              <th>Jobs</th>
-              <th>Actions</th>
-            </tr>
-          </thead>
-          <tbody>
-            {state.projects.map((project) => (
-              <tr key={project.id}>
-                <td className={styles.bold}>{project.name}</td>
-                <td>{project.filesCount}</td>
-                <td>{project.jobsCount}</td>
-                <td>
-                  <button onClick={() => navigate(`/projects/${project.id}`)}>
-                    Open
-                  </button>
-                  <button
-                    className={styles.btnDanger}
-                    onClick={() => setProjectToDelete(project.id)}>
-                    Delete
-                  </button>
-                </td>
+        <div className={styles.tableContainer}>
+          <table className={styles.table}>
+            <thead>
+              <tr>
+                <th>Name</th>
+                <th>Files</th>
+                <th>Jobs</th>
+                <th className={styles.action}>Actions</th>
               </tr>
-            ))}
-          </tbody>
-        </table>
+            </thead>
+            <tbody>
+              {state.projects.map((project) => (
+                <tr key={project.id}>
+                  <td data-label="Name" className={styles.bold}>
+                    {project.name}
+                  </td>
+                  <td data-label="Files">{project.filesCount}</td>
+                  <td data-label="Jobs">{project.jobsCount}</td>
+                  <td data-label="Actions" className={styles.actionsCell}>
+                    <button
+                      className={styles.open}
+                      onClick={() => navigate(`/projects/${project.id}`)}>
+                      Open
+                    </button>
+                    <button
+                      className={styles.btnDanger}
+                      onClick={() => setProjectToDelete(project.id)}>
+                      Delete
+                    </button>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
       )}
 
       {/* Creating new project Modal */}
