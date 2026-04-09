@@ -1,9 +1,10 @@
 import React, { useReducer, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { projectReducer, initialState, type Project } from './ProjectReducer';
+import { projectReducer, initialState } from './ProjectReducer';
 import { projectService } from '../../services/projectService';
 import Modal from '../../components/modal/Modal';
 import styles from './ProjectList.module.css';
+import type { Project } from '../../models/Types';
 
 export default function ProjectList() {
   const [state, dispatch] = useReducer(projectReducer, initialState);

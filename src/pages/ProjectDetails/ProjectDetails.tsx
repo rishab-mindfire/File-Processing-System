@@ -1,8 +1,9 @@
 import { useState, useReducer, useRef } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { MOCK_PROJECTS, type Project } from '../Projects/ProjectReducer';
+import { MOCK_PROJECTS } from '../Projects/ProjectReducer';
 import { jobReducer, initialJobState } from './JobReducer';
 import styles from './ProjectDetails.module.css';
+import type { Project } from '../../models/Types';
 
 // Requirement 3: Manual Type Definitions
 interface FileItem {

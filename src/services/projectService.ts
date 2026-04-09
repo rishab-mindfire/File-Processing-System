@@ -1,4 +1,5 @@
-import { MOCK_PROJECTS, type Project } from '../pages/Projects/ProjectReducer';
+import type { Project } from '../models/Types';
+import { MOCK_PROJECTS } from '../pages/Projects/ProjectReducer';
 
 // Helper to simulate network latency
 const delay = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));

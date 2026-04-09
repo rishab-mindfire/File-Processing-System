@@ -1,15 +1,10 @@
-export interface FileItem {
-  id: string;
-  name: string;
-  size: number;
-  uploadedAt: string;
-}
+import type { FileItem } from '../models/Types';
 
 export const fileService = {
   async uploadFiles(files: File[]): Promise<FileItem[]> {
     await setTimeout(() => {}, 1500); // Simulate upload time
 
-    // Transform browser File objects into our UI FileItem format
+    //create file and return
     return files.map((file) => ({
       id: Math.random().toString(36).substr(2, 9),
       name: file.name,
