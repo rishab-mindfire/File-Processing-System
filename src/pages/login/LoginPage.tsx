@@ -85,15 +85,23 @@ export default function Login() {
 
   return (
     <div className={styles.loginContainer}>
-      <form onSubmit={handleSubmit} className={styles.loginForm}>
-        <h2 className={styles.title}>Login</h2>
+      <form
+        onSubmit={handleSubmit}
+        className={styles.loginForm}
+        aria-labelledby="login-title">
+        <h2 id="login-title" className={styles.title}>
+          Login
+        </h2>
 
         <div className={styles.inputGroup}>
+          <label htmlFor="email">Email Address</label>
           <input
             type="email"
             placeholder="Email"
             value={state.email}
             className={`${styles.input} ${state.errors.email ? styles.inputError : ''}`}
+            aria-invalid={!!state.errors.email}
+            aria-describedby={state.errors.email ? 'email-error' : undefined}
             onChange={(e) =>
               dispatch({
                 type: 'SET_FIELD',
@@ -108,11 +116,16 @@ export default function Login() {
         </div>
 
         <div className={styles.inputGroup}>
+          <label htmlFor="password">Password</label>
           <input
             type="password"
             placeholder="Password"
             value={state.password}
             className={`${styles.input} ${state.errors.password ? styles.inputError : ''}`}
+            aria-invalid={!!state.errors.password}
+            aria-describedby={
+              state.errors.password ? 'password-error' : undefined
+            }
             onChange={(e) =>
               dispatch({
                 type: 'SET_FIELD',
@@ -127,7 +140,9 @@ export default function Login() {
         </div>
 
         {state.errors.general && (
-          <p className={styles.error}>{state.errors.general}</p>
+          <p className={styles.error} role="alert">
+            {state.errors.general}
+          </p>
         )}
 
         <button disabled={state.loading} className={styles.button}>

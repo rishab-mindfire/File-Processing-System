@@ -1,14 +1,26 @@
-import React, { useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import styles from '../../styles/Header.module.css';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../hooks/useAuth';
 
 const Header: React.FC = () => {
-  const [isOpen, setIsOpen] = useState(false);
+  const [isOpen, setIsOpen] = useState<boolean>(false);
 
-  const toggleMenu = () => setIsOpen(!isOpen);
+  const toggleMenu = useCallback(() => {
+    setIsOpen((prev) => !prev);
+  }, []);
   const navigate = useNavigate();
   const { logout } = useAuth();
+
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape' && isOpen) {
+        toggleMenu();
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [isOpen, toggleMenu]);
 
   // log-out
   const handleLogout = () => {
@@ -19,18 +31,27 @@ const Header: React.FC = () => {
 
   return (
     <header className={styles.navbar}>
-      <div className={styles.logo}>File Processing System</div>
+      <div className={styles.logo} role="heading">
+        File Processing System
+      </div>
 
       {/* Hamburger Toggle */}
-      <button className={styles.menuBtn} onClick={toggleMenu}>
-        <div className={styles.line}></div>
-        <div className={styles.line}></div>
-        <div className={styles.line}></div>
+      <button
+        className={styles.menuBtn}
+        onClick={toggleMenu}
+        aria-label="Toggle navigation menu"
+        aria-expanded={isOpen}
+        aria-controls="main-navigation">
+        <div className={styles.line} aria-hidden="true"></div>
+        <div className={styles.line} aria-hidden="true"></div>
+        <div className={styles.line} aria-hidden="true"></div>
       </button>
 
       {/* sidebar=navigations */}
       <nav
-        className={`${styles.navContainer} ${isOpen ? styles.navActive : ''}`}>
+        id="main-navigation"
+        className={`${styles.navContainer} ${isOpen ? styles.navActive : ''}`}
+        aria-label="Primary Navigation">
         <ul className={styles.navLinks}>
           <li>
             <Link to="/projects">Projects</Link>
