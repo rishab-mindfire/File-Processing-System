@@ -5,6 +5,7 @@ import ProtectedRoute from './components/common/ProtectedRoute';
 import { useAuth } from './hooks/useAuth';
 import ProjectList from './pages/ProjectList';
 import ProjectDetailsPage from './pages/ProjectDetailsPage';
+import Layout from './components/layout/Layout';
 
 const RootRedirect = () => {
   const { state } = useAuth();
@@ -25,7 +26,9 @@ function App() {
           path="/projects"
           element={
             <ProtectedRoute>
-              <ProjectList />
+              <Layout>
+                <ProjectList />
+              </Layout>
             </ProtectedRoute>
           }
         />
@@ -34,7 +37,9 @@ function App() {
           path="/projects/:projectId"
           element={
             <ProtectedRoute>
-              <ProjectDetailsPage />
+              <Layout>
+                <ProjectDetailsPage />
+              </Layout>
             </ProtectedRoute>
           }
         />
