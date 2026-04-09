@@ -9,6 +9,7 @@ const initialState: AuthState = {
   isAuthenticated: !!localStorage.getItem('token'),
 };
 
+//reducer for authentication
 function authReducer(state: AuthState, action: Action): AuthState {
   switch (action.type) {
     case 'LOGIN':
@@ -26,6 +27,7 @@ function authReducer(state: AuthState, action: Action): AuthState {
   }
 }
 
+// context provider wrapper of reducer state
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [state, dispatch] = useReducer(authReducer, initialState);
 
