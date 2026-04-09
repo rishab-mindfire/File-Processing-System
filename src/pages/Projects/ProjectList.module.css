@@ -68,3 +68,58 @@
   gap: 10px;
   margin-top: 1rem;
 }
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  padding: 1rem;
+}
+
+.formGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+/* Label styling */
+.formGroup label {
+  font-weight: 600;
+  font-size: 0.9rem;
+  color: #333;
+}
+
+/* Input & Textarea Styling */
+.modelInputField,
+.modelAeraField {
+  padding: 12px;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  font-size: 1rem;
+  font-family: inherit;
+  outline: none;
+  transition: all 0.2s ease-in-out;
+  width: 100%;
+}
+
+.modelInputField:focus,
+.modelAeraField:focus {
+  border-color: #4a90e2;
+  box-shadow: 0 0 0 3px rgba(74, 144, 226, 0.1);
+}
+
+/* Textarea  */
+.modelAeraField {
+  resize: vertical;
+  min-height: 80px;
+}
+
+.btnPrimary {
+  margin-top: 1rem;
+  padding: 12px;
+  cursor: pointer;
+  background-color: #4a90e2;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  font-weight: bold;
+}

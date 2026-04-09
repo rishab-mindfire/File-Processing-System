@@ -116,6 +116,7 @@ export default function ProjectList() {
           <div className={styles.formGroup}>
             <label>Project Name</label>
             <input
+              className={styles.modelInputField}
               type="text"
               value={formData.name}
               onChange={(e) =>
@@ -128,6 +129,7 @@ export default function ProjectList() {
           <div className={styles.formGroup}>
             <label>Description</label>
             <textarea
+              className={styles.modelAeraField}
               value={formData.description}
               onChange={(e) =>
                 setFormData({ ...formData, description: e.target.value })

@@ -1,3 +1,4 @@
+/* globle css */
 * {
   box-sizing: border-box;
   margin: 0;
@@ -27,3 +28,5 @@
     transform: rotate(360deg);
   }
 }
+
+/* input filed */

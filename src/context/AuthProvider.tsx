@@ -1,16 +1,17 @@
-import { useReducer } from 'react';
 import type { ReactNode } from 'react';
+import { useReducer } from 'react';
 import { AuthContext, type AuthState } from './AuthContext';
 
 type Action = { type: 'LOGIN'; payload: string } | { type: 'LOGOUT' };
 
+const token = localStorage.getItem('token');
+
 const initialState: AuthState = {
-  token: localStorage.getItem('file-processing-system'),
-  isAuthenticated: !!localStorage.getItem('file-processing-system'),
+  token,
+  isAuthenticated: !!token,
 };
 
-//reducer for authentication
-function authReducer(state: AuthState, action: Action): AuthState {
+function reducer(state: AuthState, action: Action): AuthState {
   switch (action.type) {
     case 'LOGIN':
       return {
@@ -27,9 +28,8 @@ function authReducer(state: AuthState, action: Action): AuthState {
   }
 }
 
-// context provider wrapper of reducer state
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
-  const [state, dispatch] = useReducer(authReducer, initialState);
+  const [state, dispatch] = useReducer(reducer, initialState);
 
   const login = (token: string) => {
     localStorage.setItem('token', token);
