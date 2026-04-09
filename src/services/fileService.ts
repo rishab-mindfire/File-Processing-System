@@ -6,7 +6,7 @@ export interface FileItem {
 }
 
 export const fileService = {
-  async uploadFiles(projectId: string, files: File[]): Promise<FileItem[]> {
+  async uploadFiles(files: File[]): Promise<FileItem[]> {
     await setTimeout(() => {}, 1500); // Simulate upload time
 
     // Transform browser File objects into our UI FileItem format
