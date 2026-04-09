@@ -1,7 +1,7 @@
-// pages/Login.tsx
 import { useReducer } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../hooks/useAuth';
+import styles from '../styles/Login.module.css';
 
 type State = {
   email: string;
@@ -10,6 +10,7 @@ type State = {
   error: string;
 };
 
+// Actions for login
 type Action =
   | { type: 'SET_FIELD'; field: string; value: string }
   | { type: 'SET_LOADING'; payload: boolean }
@@ -23,6 +24,7 @@ const initialState: State = {
   error: '',
 };
 
+// reducer function for login state control
 function reducer(state: State, action: Action): State {
   switch (action.type) {
     case 'SET_FIELD':
@@ -43,6 +45,7 @@ export default function Login() {
   const { login } = useAuth();
   const navigate = useNavigate();
 
+  // handle submit form
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
 
@@ -54,6 +57,7 @@ export default function Login() {
     dispatch({ type: 'SET_LOADING', payload: true });
     dispatch({ type: 'SET_ERROR', payload: '' });
 
+    // API call will be here
     setTimeout(() => {
       if (state.email === 'rishab@gmail.com' && state.password === '1234') {
         login('rishab@token');
@@ -70,14 +74,15 @@ export default function Login() {
   };
 
   return (
-    <div className="login-container">
-      <form onSubmit={handleSubmit} className="login-form">
-        <h2>Login</h2>
+    <div className={styles.loginContainer}>
+      <form onSubmit={handleSubmit} className={styles.loginForm}>
+        <h2 className={styles.title}>Login</h2>
 
         <input
           type="email"
           placeholder="Email"
           value={state.email}
+          className={styles.input}
           onChange={(e) =>
             dispatch({
               type: 'SET_FIELD',
@@ -91,6 +96,7 @@ export default function Login() {
           type="password"
           placeholder="Password"
           value={state.password}
+          className={styles.input}
           onChange={(e) =>
             dispatch({
               type: 'SET_FIELD',
@@ -100,10 +106,17 @@ export default function Login() {
           }
         />
 
-        {state.error && <p className="error">{state.error}</p>}
+        {state.error && <p className={styles.error}>{state.error}</p>}
 
-        <button disabled={state.loading}>
-          {state.loading ? 'Logging in...' : 'Login'}
+        <button disabled={state.loading} className={styles.button}>
+          {state.loading ? (
+            <span className={styles.buttonContent}>
+              <span className={styles.btnLoader}></span>
+              Logging in...
+            </span>
+          ) : (
+            'Login'
+          )}
         </button>
       </form>
     </div>
