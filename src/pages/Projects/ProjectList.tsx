@@ -10,7 +10,12 @@ export default function ProjectList() {
   const [state, dispatch] = useReducer(projectReducer, initialState);
   const [isCreateOpen, setIsCreateOpen] = useState(false);
   const [projectToDelete, setProjectToDelete] = useState<string | null>(null);
-  const [newProjectName, setNewProjectName] = useState('');
+
+  // Track form inputs as strings
+  const [formData, setFormData] = useState({
+    name: '',
+    description: '',
+  });
 
   const navigate = useNavigate();
 
@@ -22,7 +27,7 @@ export default function ProjectList() {
         dispatch({ type: 'FETCH_SUCCESS', payload: data });
       } catch (err) {
         dispatch({ type: 'FETCH_ERROR', payload: 'Failed to load projects' });
-        console.log(err);
+        console.error(err);
       }
     };
     loadData();
@@ -31,22 +36,21 @@ export default function ProjectList() {
   const handleCreate = (e: React.FormEvent) => {
     e.preventDefault();
 
-    // 1. Create the dummy project object
+    //Turn simple form strings into a full Project interface object
     const newProject: Project = {
-      id: Math.random().toString(36).substr(2, 9), // Random ID
-      name: newProjectName,
-      description: 'New project description',
+      id: crypto.randomUUID(),
+      name: formData.name,
+      description: formData.description || 'No description provided',
       filesCount: 0,
       jobsCount: 0,
       createdAt: new Date().toISOString(),
     };
 
-    // 2. Update the local state
     dispatch({ type: 'ADD_PROJECT', payload: newProject });
 
-    // 3. Reset UI
+    // Reset UI
     setIsCreateOpen(false);
-    setNewProjectName('');
+    setFormData({ name: '', description: '' }); // Clear form
   };
 
   const confirmDelete = () => {
@@ -103,20 +107,37 @@ export default function ProjectList() {
         </table>
       )}
 
-      {/* Manual Modal for Creating */}
+      {/* Creating project Modal */}
       <Modal
         isOpen={isCreateOpen}
         onClose={() => setIsCreateOpen(false)}
-        title="Create Project">
+        title="Create New Project">
         <form onSubmit={handleCreate} className={styles.form}>
-          <input
-            value={newProjectName}
-            onChange={(e) => setNewProjectName(e.target.value)}
-            placeholder="Enter Project Name"
-            required
-          />
+          <div className={styles.formGroup}>
+            <label>Project Name</label>
+            <input
+              type="text"
+              value={formData.name}
+              onChange={(e) =>
+                setFormData({ ...formData, name: e.target.value })
+              }
+              placeholder="Enter Project Name"
+              required
+            />
+          </div>
+          <div className={styles.formGroup}>
+            <label>Description</label>
+            <textarea
+              value={formData.description}
+              onChange={(e) =>
+                setFormData({ ...formData, description: e.target.value })
+              }
+              placeholder="What is this project about?"
+              rows={3}
+            />
+          </div>
           <button type="submit" className={styles.btnPrimary}>
-            Create
+            Create Project
           </button>
         </form>
       </Modal>
@@ -126,11 +147,18 @@ export default function ProjectList() {
         isOpen={!!projectToDelete}
         onClose={() => setProjectToDelete(null)}
         title="Confirm Delete">
-        <p>Are you sure you want to delete this project?</p>
+        <p>
+          Are you sure you want to delete this project? This action cannot be
+          undone.
+        </p>
         <div className={styles.modalActions}>
-          <button onClick={() => setProjectToDelete(null)}>Cancel</button>
+          <button
+            onClick={() => setProjectToDelete(null)}
+            className={styles.btnSecondary}>
+            Cancel
+          </button>
           <button onClick={confirmDelete} className={styles.btnDanger}>
-            Delete
+            Confirm Delete
           </button>
         </div>
       </Modal>

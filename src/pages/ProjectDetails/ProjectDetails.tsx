@@ -3,15 +3,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { MOCK_PROJECTS } from '../Projects/ProjectReducer';
 import { jobReducer, initialJobState } from './JobReducer';
 import styles from './ProjectDetails.module.css';
-import type { Project } from '../../models/Types';
-
-// Requirement 3: Manual Type Definitions
-interface FileItem {
-  id: string;
-  name: string;
-  size: number;
-  date: string;
-}
+import type { FileItem, Project } from '../../models/Types';
 
 const formatBytes = (bytes: number): string => {
   if (bytes === 0) return '0 Bytes';
@@ -22,46 +14,59 @@ const formatBytes = (bytes: number): string => {
 };
 
 export default function ProjectDetails() {
-  const { id } = useParams<{ id: string }>();
+  const { projectId } = useParams<{ projectId: string }>();
   const navigate = useNavigate();
   const fileInputRef = useRef<HTMLInputElement>(null);
 
-  // 1. DERIVED STATE (Fixes Cascading Render Error)
-  // We find the project directly during render instead of using useEffect
-  const project: Project | undefined = MOCK_PROJECTS.find((p) => p.id === id);
+  const project: Project | undefined = MOCK_PROJECTS.find(
+    (p) => p.id === projectId,
+  );
 
-  // 2. COMPONENT STATE
   const [files, setFiles] = useState<FileItem[]>([]);
+  const [selectedFileIds, setSelectedFileIds] = useState<string[]>([]);
   const [jobState, dispatch] = useReducer(jobReducer, initialJobState);
 
-  // TASK 3: File Upload Logic (Using crypto.randomUUID for pure IDs)
+  // FILE UPLOAD ---
   const handleFileUpload = (uploadedFiles: FileList | null) => {
     if (!uploadedFiles) return;
+
+    // Manual FormData usage
+    const formData = new FormData();
+    Array.from(uploadedFiles).forEach((file) => formData.append('files', file));
 
     const newFiles: FileItem[] = Array.from(uploadedFiles).map((f) => ({
       id: crypto.randomUUID(),
       name: f.name,
       size: f.size,
-      date: new Date().toISOString(),
+      uploadedAt: new Date().toISOString(),
     }));
 
     setFiles((prev) => [...newFiles, ...prev]);
   };
 
-  // TASK 4: Polling Simulation
-  const startProcessing = (fileName: string) => {
+  // --- JOB POLLING letter integrate with APII ---
+  const startZipJob = () => {
+    if (selectedFileIds.length === 0) return;
+
     const jobId = crypto.randomUUID();
     dispatch({
       type: 'ADD_JOB',
-      payload: { id: jobId, status: 'PENDING', progress: 0, fileName },
+      payload: {
+        id: jobId,
+        status: 'PENDING',
+        progress: 0,
+        fileName: `archive_${jobId.slice(0, 8)}.zip`,
+      },
     });
 
     let currentProgress = 0;
-    const interval = setInterval(() => {
+
+    // setInterval uii pause
+    const interval = window.setInterval(() => {
       currentProgress += Math.floor(Math.random() * 15) + 5;
 
       if (currentProgress >= 100) {
-        clearInterval(interval);
+        window.clearInterval(interval);
         dispatch({ type: 'COMPLETE_JOB', payload: jobId });
       } else {
         dispatch({
@@ -69,17 +74,28 @@ export default function ProjectDetails() {
           payload: { id: jobId, progress: currentProgress },
         });
       }
-    }, 600);
+    }, 800);
+
+    setSelectedFileIds([]);
   };
 
-  if (!project) {
-    return (
-      <div className={styles.container}>
-        <p>Project not found.</p>
-        <button onClick={() => navigate('/projects')}>Return to List</button>
-      </div>
+  const triggerDownload = (fileName: string) => {
+    // Trigger file download
+    const element = document.createElement('a');
+    element.setAttribute(
+      'href',
+      'data:text/plain;charset=utf-8,' +
+        encodeURIComponent('Dummy ZIP Content'),
     );
-  }
+    element.setAttribute('download', fileName);
+    element.style.display = 'none';
+    document.body.appendChild(element);
+    element.click();
+    document.body.removeChild(element);
+  };
+
+  if (!project)
+    return <div className={styles.container}>Project not found.</div>;
 
   return (
     <div className={styles.container}>
@@ -90,7 +106,6 @@ export default function ProjectDetails() {
           &larr; Back
         </button>
         <h1>{project.name}</h1>
-        <p className={styles.description}>{project.description}</p>
       </header>
 
       <div
@@ -102,7 +117,7 @@ export default function ProjectDetails() {
         }}
         onClick={() => fileInputRef.current?.click()}>
         <p>
-          Drag & Drop files here or <strong>Browse</strong>
+          Drag & Drop files or <strong>Browse</strong>
         </p>
         <input
           type="file"
@@ -115,10 +130,19 @@ export default function ProjectDetails() {
 
       <div className={styles.grid}>
         <section className={styles.card}>
-          <h3>Files ({files.length})</h3>
+          <div className={styles.sectionHeader}>
+            <h3>Files ({files.length})</h3>
+            <button
+              onClick={startZipJob}
+              disabled={selectedFileIds.length === 0}
+              className={styles.zipBtn}>
+              Create ZIP Job
+            </button>
+          </div>
           <table className={styles.table}>
             <thead>
               <tr>
+                <th>Select</th>
                 <th>Name</th>
                 <th>Size</th>
                 <th>Action</th>
@@ -127,13 +151,28 @@ export default function ProjectDetails() {
             <tbody>
               {files.map((f) => (
                 <tr key={f.id}>
+                  <td>
+                    <input
+                      type="checkbox"
+                      checked={selectedFileIds.includes(f.id)}
+                      onChange={() =>
+                        setSelectedFileIds((prev) =>
+                          prev.includes(f.id)
+                            ? prev.filter((i) => i !== f.id)
+                            : [...prev, f.id],
+                        )
+                      }
+                    />
+                  </td>
                   <td>{f.name}</td>
                   <td>{formatBytes(f.size)}</td>
                   <td>
                     <button
-                      onClick={() => startProcessing(f.name)}
-                      className={styles.processBtn}>
-                      Process
+                      onClick={() =>
+                        setFiles(files.filter((file) => file.id !== f.id))
+                      }
+                      className={styles.deleteBtn}>
+                      Delete
                     </button>
                   </td>
                 </tr>
@@ -143,14 +182,14 @@ export default function ProjectDetails() {
         </section>
 
         <section className={styles.card}>
-          <h3>Job Progress (Polling)</h3>
+          <h3>Job Progress</h3>
           {jobState.jobs.length === 0 && (
             <p className={styles.empty}>No active jobs.</p>
           )}
           {jobState.jobs.map((job) => (
             <div key={job.id} className={styles.jobItem}>
               <div className={styles.jobInfo}>
-                <span className={styles.fileName}>{job.fileName}</span>
+                <span>{job.fileName}</span>
                 <span className={styles.statusLabel} data-status={job.status}>
                   {job.status}
                 </span>
@@ -160,6 +199,13 @@ export default function ProjectDetails() {
                   className={styles.progressBar}
                   style={{ width: `${job.progress}%` }}></div>
               </div>
+              {job.status === 'COMPLETED' && (
+                <button
+                  onClick={() => triggerDownload(job.fileName)}
+                  className={styles.downloadBtn}>
+                  Download
+                </button>
+              )}
             </div>
           ))}
         </section>

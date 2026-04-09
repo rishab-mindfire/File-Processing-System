@@ -1,12 +1,11 @@
-//login
+// login
 export interface State {
   email: string;
   password: string;
   loading: boolean;
   error: string;
 }
-
-// project types
+// project
 export interface Project {
   id: string;
   name: string;
@@ -21,14 +20,13 @@ export type ProjectState = {
   error: string | null;
 };
 
-//file types
+// file
 export interface FileItem {
   id: string;
   name: string;
   size: number;
   uploadedAt: string;
 }
-
 // job
 export interface Job {
   id: string;
