@@ -18,8 +18,8 @@ type Action =
   | { type: 'RESET' };
 
 const initialState: State = {
-  email: '',
-  password: '',
+  email: 'rishab@gmail.com',
+  password: '1234',
   loading: false,
   error: '',
 };
@@ -60,7 +60,7 @@ export default function Login() {
     // API call will be here
     setTimeout(() => {
       if (state.email === 'rishab@gmail.com' && state.password === '1234') {
-        login('rishab@token');
+        login('file-processing-system@jwttoken');
         navigate('/projects');
       } else {
         dispatch({

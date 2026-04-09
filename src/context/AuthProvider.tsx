@@ -5,8 +5,8 @@ import { AuthContext, type AuthState } from './AuthContext';
 type Action = { type: 'LOGIN'; payload: string } | { type: 'LOGOUT' };
 
 const initialState: AuthState = {
-  token: localStorage.getItem('token'),
-  isAuthenticated: !!localStorage.getItem('token'),
+  token: localStorage.getItem('file-processing-system'),
+  isAuthenticated: !!localStorage.getItem('file-processing-system'),
 };
 
 //reducer for authentication
