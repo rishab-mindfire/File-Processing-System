@@ -12,7 +12,7 @@ type Action =
   | { type: 'RESET' };
 
 const initialState: State = {
-  email: 'rishab@gmail.com',
+  email: 'user@gmail.com',
   password: '12345',
   loading: false,
   errors: {},
@@ -70,7 +70,7 @@ export default function Login() {
     // Mock API Call
     setTimeout(() => {
       //fack login
-      if (state.email === 'rishab@gmail.com' && state.password === '12345') {
+      if (state.email === 'user@gmail.com' && state.password === '12345') {
         login('file-processing-system@jwttoken');
         navigate('/projects');
       } else {
