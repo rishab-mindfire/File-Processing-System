@@ -161,10 +161,7 @@ export default function ProjectList() {
         isOpen={!!projectToDelete}
         onClose={() => setProjectToDelete(null)}
         title="Confirm Delete">
-        <p>
-          Are you sure you want to delete this project? This action cannot be
-          undone.
-        </p>
+        <p>Are you sure you want to delete this project ?</p>
         <div className={styles.modalActions}>
           <button
             onClick={() => setProjectToDelete(null)}

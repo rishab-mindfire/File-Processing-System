@@ -21,8 +21,9 @@
 }
 
 .dropZone {
-  border: 2px dashed #0984e3;
-  background: #f1f8ff;
+  border: 2px dashed #436b62;
+  background: #74afa270;
+  color: #436b62;
   padding: 3rem;
   text-align: center;
   border-radius: 12px;
@@ -32,7 +33,7 @@
 }
 
 .dropZone:hover {
-  background: #e6f2ff;
+  background: #74afa23d;
 }
 
 .hiddenInput {
@@ -73,7 +74,51 @@
   text-align: left;
   border-bottom: 1px solid #eee;
 }
-
+.table thead tr {
+  color: #436b62;
+}
+.files {
+  margin-inline: 2px;
+  color: #436b62;
+  font-weight: bold;
+}
+/* files  lists*/
+.deleteBtn {
+  color: #d63031;
+  background: none;
+  cursor: pointer;
+  border: 1px solid;
+  padding: 3px;
+  padding-inline: 13px;
+  border-radius: 4px;
+}
+.deleteBtn,
+.zipBtn:hover {
+  cursor: pointer;
+}
+.zipBtn {
+  padding: 3px;
+  padding-inline: 13px;
+  background-color: #0984e3;
+  border: none;
+  border-radius: 4px;
+  color: #ffffff;
+}
+.empty {
+  margin-top: 55px;
+  border-top: 1px solid #eee;
+  border-bottom: 1px solid #eee;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 140px;
+}
+.noFiles {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100px;
+}
 /* Progress bar styles */
 .jobItem {
   margin-bottom: 1.5rem;
