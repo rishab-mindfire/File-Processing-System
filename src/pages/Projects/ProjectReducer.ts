@@ -8,7 +8,7 @@ export const MOCK_PROJECTS: Project[] = [
     description: 'Main production website assets files.',
     filesCount: 5,
     jobsCount: 1,
-    createdAt: new Date().toISOString(),
+    createdAt: new Date().toISOString().split('T')[0],
   },
   {
     id: '2',
@@ -16,7 +16,7 @@ export const MOCK_PROJECTS: Project[] = [
     description: 'Backend documentation and files.',
     filesCount: 2,
     jobsCount: 0,
-    createdAt: new Date().toISOString(),
+    createdAt: new Date().toISOString().split('T')[0],
   },
 ];
 
