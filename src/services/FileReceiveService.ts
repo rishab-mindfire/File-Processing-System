@@ -8,7 +8,7 @@ export const FileReceiveService = {
     return response.json();
   },
 
-  // delete
+  // delete file
   delete: async (projectId: string, fileId: string): Promise<void> => {
     const response = await fetch(`/api/projects/${projectId}/files/${fileId}`, {
       method: 'DELETE',

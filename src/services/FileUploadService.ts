@@ -1,5 +1,3 @@
-// services/FileServices.ts
-
 import type { FileItem } from '../models/Types';
 
 export const FileUploadService = {
@@ -19,6 +17,7 @@ export const FileUploadService = {
       if (progress >= 100) clearInterval(progressInterval);
     }, 500);
 
+    //API call can be here or processs mock as of now
     // Simulate Network Request
     setTimeout(() => {
       // MOCK test
@@ -44,6 +43,7 @@ export const FileUploadService = {
           name: f.name,
           size: f.size,
           uploadedAt: new Date().toISOString(),
+          projectId: projectId,
         }));
         onSuccess(successFiles);
       }

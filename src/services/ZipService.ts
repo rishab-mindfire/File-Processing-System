@@ -1,5 +1,4 @@
 export const ZipService = {
-  // ZIP generation process
   async createZip(
     fileIds: string[],
     onProgress: (percent: number) => void,
@@ -9,6 +8,7 @@ export const ZipService = {
     size: number;
   }> {
     return new Promise((resolve) => {
+      //api call can be here as of now use mock progress and data
       let progress = 0;
 
       const interval = setInterval(() => {

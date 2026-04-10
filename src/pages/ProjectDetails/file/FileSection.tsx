@@ -59,7 +59,7 @@ export const FileSection: React.FC<FileSectionProps> = ({
     <section className={styles.fileSection}>
       {uploadError && (
         <div className={styles.errorBanner}>
-          <p>⚠️ {uploadError}</p>
+          <p>{uploadError}</p>
           <button onClick={() => setUploadError(null)}>Dismiss</button>
         </div>
       )}
@@ -120,32 +120,40 @@ export const FileSection: React.FC<FileSectionProps> = ({
             </tr>
           </thead>
           <tbody>
-            {files.map((f) => (
-              <tr key={f.id}>
-                <td>
-                  <input
-                    type="checkbox"
-                    checked={selectedFileIds.includes(f.id)}
-                    onChange={() =>
-                      setSelectedFileIds((prev) =>
-                        prev.includes(f.id)
-                          ? prev.filter((i) => i !== f.id)
-                          : [...prev, f.id],
-                      )
-                    }
-                  />
-                </td>
-                <td>{f.name}</td>
-                <td>{formatBytes(f.size)}</td>
-                <td>
-                  <button
-                    onClick={() => handleDeleteFile(f.id)}
-                    className={styles.deleteBtn}>
-                    Delete
-                  </button>
+            {files.length > 0 ? (
+              files.map((f) => (
+                <tr key={f.id}>
+                  <td>
+                    <input
+                      type="checkbox"
+                      checked={selectedFileIds.includes(f.id)}
+                      onChange={() =>
+                        setSelectedFileIds((prev) =>
+                          prev.includes(f.id)
+                            ? prev.filter((i) => i !== f.id)
+                            : [...prev, f.id],
+                        )
+                      }
+                    />
+                  </td>
+                  <td>{f.name}</td>
+                  <td>{formatBytes(f.size)}</td>
+                  <td>
+                    <button
+                      onClick={() => handleDeleteFile(f.id)}
+                      className={styles.deleteBtn}>
+                      Delete
+                    </button>
+                  </td>
+                </tr>
+              ))
+            ) : (
+              <tr>
+                <td colSpan={4}>
+                  <div className={styles.noFiles}> No Files !</div>
                 </td>
               </tr>
-            ))}
+            )}
           </tbody>
         </table>
       </div>
