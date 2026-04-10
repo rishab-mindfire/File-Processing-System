@@ -12,7 +12,7 @@ export const FileUploadService = {
   ) => {
     let progress = 0;
 
-    // Simulate Progress updates
+    // Progress updates
     const progressInterval = setInterval(() => {
       progress += 20;
       onProgress(progress);
@@ -21,11 +21,11 @@ export const FileUploadService = {
 
     // Simulate Network Request
     setTimeout(() => {
-      // MOCK LOGIC: 50% chance to fail
+      // MOCK test
       const isNetworkFailure = Math.random() > 0.5;
 
       if (isNetworkFailure) {
-        // Create the "Recovered" files (files that actually made it to the server)
+        // Create files to server
         const recoveredFiles: FileItem[] = files.map((f) => ({
           id: crypto.randomUUID(),
           name: f.name,
@@ -47,6 +47,6 @@ export const FileUploadService = {
         }));
         onSuccess(successFiles);
       }
-    }, 5000); // 5-second delay as requested
+    }, 5000);
   },
 };
