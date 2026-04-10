@@ -17,8 +17,8 @@ export const FileSection: React.FC<FileSectionProps> = ({
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
+    //Api can be integrated for getting all lists of file that user have uploaded based on project id
     FileReceiveService.list(projectId).then(setFiles).catch(console.error);
-    console.log(FileReceiveService);
   }, [projectId]);
 
   const handleFileUpload = (uploadedFiles: FileList | null) => {
@@ -45,6 +45,7 @@ export const FileSection: React.FC<FileSectionProps> = ({
     );
   };
 
+  //deleting file
   const handleDeleteFile = async (fileId: string) => {
     try {
       await FileReceiveService.delete(projectId, fileId);
@@ -57,12 +58,7 @@ export const FileSection: React.FC<FileSectionProps> = ({
 
   return (
     <section className={styles.fileSection}>
-      {uploadError && (
-        <div className={styles.errorBanner}>
-          <p>{uploadError}</p>
-          <button onClick={() => setUploadError(null)}>Dismiss</button>
-        </div>
-      )}
+      {uploadError}
 
       <div
         className={styles.dropZone}
