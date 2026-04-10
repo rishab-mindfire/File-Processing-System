@@ -80,12 +80,12 @@ export default function ProjectList() {
       </header>
 
       {state.projects.length === 0 ? (
-        <div className={styles.empty}>No projects found.</div>
+        <div className={styles.noProjectFound}>No projects found.</div>
       ) : (
         <div className={styles.tableContainer}>
           <table className={styles.table}>
             <thead>
-              <tr>
+              <tr className={styles.tableHeader}>
                 <th>Name</th>
                 <th>Files</th>
                 <th>Jobs</th>
@@ -95,7 +95,7 @@ export default function ProjectList() {
             <tbody>
               {state.projects.map((project) => (
                 <tr key={project.id}>
-                  <td data-label="Name" className={styles.bold}>
+                  <td data-label="Name" className={styles.projectName}>
                     {project.name}
                   </td>
                   <td data-label="Files">{project.filesCount}</td>
@@ -161,10 +161,7 @@ export default function ProjectList() {
         isOpen={!!projectToDelete}
         onClose={() => setProjectToDelete(null)}
         title="Confirm Delete">
-        <p>
-          Are you sure you want to delete this project? This action cannot be
-          undone.
-        </p>
+        <p>Are you sure you want to delete this project ?</p>
         <div className={styles.modalActions}>
           <button
             onClick={() => setProjectToDelete(null)}

@@ -126,7 +126,9 @@ export default function ProjectDetails() {
       <div className={styles.grid}>
         <section className={styles.card}>
           <div className={styles.sectionHeader}>
-            <h3>Files ({files.length})</h3>
+            <h3>
+              Files (<span className={styles.files}>{files.length}</span>)
+            </h3>
             <button
               onClick={startZipJob}
               disabled={selectedFileIds.length === 0}
@@ -144,34 +146,44 @@ export default function ProjectDetails() {
               </tr>
             </thead>
             <tbody>
-              {files.map((f) => (
-                <tr key={f.id}>
-                  <td>
-                    <input
-                      type="checkbox"
-                      checked={selectedFileIds.includes(f.id)}
-                      onChange={() =>
-                        setSelectedFileIds((prev) =>
-                          prev.includes(f.id)
-                            ? prev.filter((i) => i !== f.id)
-                            : [...prev, f.id],
-                        )
-                      }
-                    />
-                  </td>
-                  <td>{f.name}</td>
-                  <td>{formatBytes(f.size)}</td>
-                  <td>
-                    <button
-                      onClick={() =>
-                        setFiles(files.filter((file) => file.id !== f.id))
-                      }
-                      className={styles.deleteBtn}>
-                      Delete
-                    </button>
+              {files.length > 0 ? (
+                files.map((f) => (
+                  <tr key={f.id}>
+                    <td>
+                      <input
+                        type="checkbox"
+                        checked={selectedFileIds.includes(f.id)}
+                        onChange={() =>
+                          setSelectedFileIds((prev) =>
+                            prev.includes(f.id)
+                              ? prev.filter((i) => i !== f.id)
+                              : [...prev, f.id],
+                          )
+                        }
+                      />
+                    </td>
+                    <td>{f.name}</td>
+                    <td>{formatBytes(f.size)}</td>
+                    <td>
+                      <button
+                        onClick={() =>
+                          setFiles(files.filter((file) => file.id !== f.id))
+                        }
+                        className={styles.deleteBtn}>
+                        Delete
+                      </button>
+                    </td>
+                  </tr>
+                ))
+              ) : (
+                <tr>
+                  <td colSpan={4}>
+                    <div className={styles.noFiles}>
+                      please drag and drop file
+                    </div>
                   </td>
                 </tr>
-              ))}
+              )}
             </tbody>
           </table>
         </section>

@@ -13,9 +13,9 @@
 }
 
 .logo {
-  font-size: 1.4rem;
+  font-size: 1.1rem;
   font-weight: 800;
-  color: #2d3436;
+  color: #436b62;
 }
 
 /* --- Navigation & Sidebar --- */
@@ -47,6 +47,8 @@
   color: #636e72;
   font-weight: 500;
   transition: color 0.2s;
+  padding-bottom: 3px;
+  border-bottom: 1px solid;
 }
 
 .navLinks a:hover {
@@ -55,13 +57,26 @@
 
 /* --- Logout Buttons --- */
 .btnLogout {
-  background-color: #d63031;
-  color: white;
-  border: none;
-  padding: 10px 20px;
-  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  background: none;
   cursor: pointer;
-  font-weight: 600;
+  border: 1px solid #436b62;
+  border-radius: 4px;
+  color: #636e72;
+  font-size: 16px;
+  padding-inline: 14px;
+}
+.btnLogout:hover {
+  border: 2px;
+  box-shadow: 0.4px -0.3px 5px red;
+}
+.btnLogout img {
+  margin-top: 5px;
+  height: 30px;
+  width: 30px;
 }
 
 .mobileLogout {
@@ -92,6 +107,9 @@
 
 /* --- Desktop Styles (Media Query) --- */
 @media (min-width: 768px) {
+  .logo {
+    font-size: 1.4rem;
+  }
   .menuBtn {
     display: none;
   }
