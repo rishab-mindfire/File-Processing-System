@@ -3,7 +3,8 @@ import styles from '../ProjectDetails.module.css';
 import type { FileItem, FileSectionProps } from '../../../models/Types';
 import { FileReceiveService } from '../../../services/FileReceiveService';
 import { FileUploadService } from '../../../services/FileUploadService';
-import { formatBytes } from '../../../hooks/customeHooks';
+import { formatBytes, validateFiles } from '../../../hooks/customeHooks';
+import Modal from '../../../components/modal/Modal';
 
 export const FileSection: React.FC<FileSectionProps> = ({
   projectId,
@@ -16,28 +17,56 @@ export const FileSection: React.FC<FileSectionProps> = ({
   const [uploadError, setUploadError] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
+  // Preview States
+  const [pendingFiles, setPendingFiles] = useState<File[]>([]);
+  const [previewUrls, setPreviewUrls] = useState<string[]>([]);
+  const [isPreviewOpen, setIsPreviewOpen] = useState(false);
+
   useEffect(() => {
-    //Api can be integrated for getting all lists of file that user have uploaded based on project id
     FileReceiveService.list(projectId).then(setFiles).catch(console.error);
   }, [projectId]);
 
-  const handleFileUpload = (uploadedFiles: FileList | null) => {
-    if (!uploadedFiles || !projectId) return;
+  // Clean up blob URLs to prevent memory leaks
+  useEffect(() => {
+    return () => previewUrls.forEach((url) => URL.revokeObjectURL(url));
+  }, [previewUrls]);
+
+  const handleFileSelection = (selectedFiles: FileList | null) => {
+    if (!selectedFiles || !projectId) return;
+
+    const fileArray = Array.from(selectedFiles);
+    const urls = fileArray.map((file) => URL.createObjectURL(file));
+
+    setPendingFiles(fileArray);
+    setPreviewUrls(urls);
+    setIsPreviewOpen(true);
+  };
+
+  const uploadOnServer = () => {
+    const error = validateFiles(pendingFiles);
+    if (error?.errors.length > 0) {
+      setUploadError(error.errors[0]);
+      setIsPreviewOpen(false);
+      return;
+    }
+
+    setIsPreviewOpen(false);
     setIsUploading(true);
     setUploadError(null);
 
     FileUploadService.upload(
       projectId,
-      Array.from(uploadedFiles),
+      pendingFiles,
       (percent) => setUploadProgress(percent),
       (newFiles) => {
         setFiles((prev) => [...newFiles, ...prev]);
         setIsUploading(false);
+        setPendingFiles([]);
+        setPreviewUrls([]);
       },
       async (err, mockRecoveredFiles) => {
         setUploadError(err);
         setIsUploading(false);
-        await new Promise((resolve) => setTimeout(resolve, 2000));
         if (mockRecoveredFiles) {
           setFiles((prev) => [...mockRecoveredFiles, ...prev]);
         }
@@ -45,7 +74,6 @@ export const FileSection: React.FC<FileSectionProps> = ({
     );
   };
 
-  //deleting file
   const handleDeleteFile = async (fileId: string) => {
     try {
       await FileReceiveService.delete(projectId, fileId);
@@ -58,14 +86,16 @@ export const FileSection: React.FC<FileSectionProps> = ({
 
   return (
     <section className={styles.fileSection}>
-      {uploadError}
+      {uploadError && (
+        <div className={styles.validationErrro}>{uploadError}</div>
+      )}
 
       <div
         className={styles.dropZone}
         onDragOver={(e) => e.preventDefault()}
         onDrop={(e) => {
           e.preventDefault();
-          handleFileUpload(e.dataTransfer.files);
+          handleFileSelection(e.dataTransfer.files);
         }}
         onClick={() => !isUploading && fileInputRef.current?.click()}>
         {isUploading ? (
@@ -88,7 +118,7 @@ export const FileSection: React.FC<FileSectionProps> = ({
           multiple
           ref={fileInputRef}
           className={styles.hiddenInput}
-          onChange={(e) => handleFileUpload(e.target.files)}
+          onChange={(e) => handleFileSelection(e.target.files)}
           disabled={isUploading}
         />
       </div>
@@ -153,6 +183,42 @@ export const FileSection: React.FC<FileSectionProps> = ({
           </tbody>
         </table>
       </div>
+
+      {/* Instant Preview Modal */}
+      <Modal
+        isOpen={isPreviewOpen}
+        onClose={() => setIsPreviewOpen(false)}
+        title="Preview Selected Files">
+        <div className={styles.previewGrid}>
+          {previewUrls.map((url, idx) => (
+            <div key={idx} className={styles.previewItem}>
+              {pendingFiles[idx]?.type.startsWith('image/') ? (
+                <img
+                  src={url}
+                  alt="preview thumb"
+                  className={styles.previewImage}
+                />
+              ) : (
+                <div className={styles.filePlaceholder}>
+                  {pendingFiles[idx]?.name.split('.').pop()?.toUpperCase()}
+                </div>
+              )}
+              <span className={styles.fileName}>{pendingFiles[idx]?.name}</span>
+            </div>
+          ))}
+        </div>
+
+        <div className={styles.modalActions}>
+          <button
+            onClick={() => setIsPreviewOpen(false)}
+            className={styles.cancelBtn}>
+            Cancel
+          </button>
+          <button onClick={uploadOnServer} className={styles.saveBtn}>
+            Save & Upload
+          </button>
+        </div>
+      </Modal>
     </section>
   );
 };

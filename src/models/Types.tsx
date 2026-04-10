@@ -1,4 +1,10 @@
 // login
+export type Action =
+  | { type: 'SET_FIELD'; field: string; value: string }
+  | { type: 'SET_LOADING'; payload: boolean }
+  | { type: 'SET_ERRORS'; payload: Errors }
+  | { type: 'RESET' };
+
 export interface Errors {
   email?: string;
   password?: string;
@@ -32,6 +38,7 @@ export interface FileItem {
   name: string;
   size: number;
   uploadedAt: string;
+  url: string;
 }
 // job
 export interface Job {
