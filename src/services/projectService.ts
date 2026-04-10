@@ -65,6 +65,7 @@ export const fileUploadService = {
           name: file.name,
           size: file.size,
           uploadedAt: new Date().toISOString(),
+          url: '',
         });
       });
 
