@@ -1,10 +1,10 @@
 export const ZipService = {
-  // Simulates a backend ZIP generation process
+  // ZIP generation process
   async createZip(
     fileIds: string[],
     onProgress: (percent: number) => void,
   ): Promise<{
-    base64: any | string | undefined;
+    base64: string | undefined;
     fileName: string;
     size: number;
   }> {
@@ -18,11 +18,12 @@ export const ZipService = {
         if (progress >= 100) {
           clearInterval(interval);
           resolve({
-            fileName: `archive_${Math.floor(Math.random() * 1000)}.zip`,
-            size: fileIds.length * 1024 * 50, // Mock size calculation
+            fileName: `filename.zip`,
+            size: fileIds.length * 1024 * 50,
+            base64: 'base 64 fack',
           });
         }
-      }, 300); // Fast mock updates every 300ms
+      }, 300);
     });
   },
 };
