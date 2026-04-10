@@ -27,3 +27,4 @@ export const validateFiles = (files: File[], maxSizeMB: number = 5) => {
 
   return { validFiles, errors };
 };
+//

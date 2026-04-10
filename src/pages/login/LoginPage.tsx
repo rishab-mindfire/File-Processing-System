@@ -2,14 +2,7 @@ import { useReducer } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../hooks/useAuth';
 import styles from './Login.module.css';
-import type { Errors, State } from '../../models/Types';
-
-// Actions for login
-type Action =
-  | { type: 'SET_FIELD'; field: string; value: string }
-  | { type: 'SET_LOADING'; payload: boolean }
-  | { type: 'SET_ERRORS'; payload: Errors }
-  | { type: 'RESET' };
+import type { Action, Errors, State } from '../../models/Types';
 
 const initialState: State = {
   email: 'user@gmail.com',

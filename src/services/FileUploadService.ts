@@ -25,6 +25,7 @@ export const FileUploadService = {
         size: f.size,
         uploadedAt: new Date().toISOString(),
         projectId: projectId,
+        url: '',
       }));
       onSuccess(successFiles);
       const recoveredFiles: FileItem[] = files.map((f) => ({
@@ -32,6 +33,7 @@ export const FileUploadService = {
         name: f.name,
         size: f.size,
         uploadedAt: new Date().toISOString(),
+        url: '',
       }));
 
       onError('Network Error :', recoveredFiles);

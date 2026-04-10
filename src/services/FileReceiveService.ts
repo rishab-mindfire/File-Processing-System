@@ -12,6 +12,7 @@ export const FileReceiveService = {
         name: 'fack file',
         size: 3434,
         uploadedAt: '3032',
+        url: 'www.google.com',
       },
     ];
   },
