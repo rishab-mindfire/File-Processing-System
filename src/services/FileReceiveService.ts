@@ -1,11 +1,19 @@
 import type { FileItem } from '../models/Types';
 
 export const FileReceiveService = {
-  // List Files
   list: async (projectId: string): Promise<FileItem[]> => {
+    //API can be called here for list all files
     const response = await fetch(`/api/projects/${projectId}/files`);
+
     if (!response.ok) throw new Error('Failed to fetch file list.');
-    return response.json();
+    return [
+      {
+        id: '13232',
+        name: 'fack file',
+        size: 3434,
+        uploadedAt: '3032',
+      },
+    ];
   },
 
   // delete file
