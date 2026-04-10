@@ -1,7 +1,8 @@
 import React, { useCallback, useEffect, useState } from 'react';
-import styles from '../../styles/Header.module.css';
+import styles from './Header.module.css';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../hooks/useAuth';
+import logoutImage from '../../assets/logout.png';
 
 const Header: React.FC = () => {
   const [isOpen, setIsOpen] = useState<boolean>(false);
@@ -58,7 +59,7 @@ const Header: React.FC = () => {
           </li>
           <li className={styles.mobileLogout}>
             <button className={styles.btnLogout} onClick={handleLogout}>
-              Logout
+              <span>Logout</span> <img src={logoutImage} alt="logout" />
             </button>
           </li>
         </ul>
@@ -67,7 +68,8 @@ const Header: React.FC = () => {
       {/* Logout button for smalll screen */}
       <div className={styles.desktopActions}>
         <button className={styles.btnLogout} onClick={handleLogout}>
-          Logout
+          <span>Logout</span>
+          <img src={logoutImage} alt="logout" />
         </button>
       </div>
     </header>

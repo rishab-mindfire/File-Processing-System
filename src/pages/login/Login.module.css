@@ -3,114 +3,174 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  background: #f5f7fa;
+  background: #436b62;
 }
 
+/* Form card hover lift */
 .loginForm {
-  width: 320px;
-  padding: 32px; /* Increased padding for better breathing room */
-  border-radius: 8px;
-  background: #ffffff;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  border: 2px solid #29443e;
+  border-color: #29443e;
+  width: 340px;
+  padding: 40px;
+  border-radius: 16px;
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(10px);
+  box-shadow: 2px -2px 30px #054234;
   display: flex;
   flex-direction: column;
+  transition:
+    transform 0.3s ease,
+    box-shadow 0.3s ease;
+  animation: slideUp 0.6s ease-out;
 }
-label {
-  font-size: 14px;
-  color: #333;
-  margin-bottom: 5px;
+
+.loginForm:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.15);
 }
+
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
 .title {
   text-align: center;
-  margin-bottom: 24px;
-  font-size: 24px;
-  font-weight: 600;
-  color: #333;
+  margin-bottom: 28px;
+  font-size: 28px;
+  font-weight: 700;
+  color: #2d3436;
+  letter-spacing: -0.5px;
 }
 
 .inputGroup {
   display: flex;
   flex-direction: column;
-  margin-bottom: 16px;
+  margin-bottom: 20px;
   width: 100%;
 }
 
+label {
+  font-size: 13px;
+  font-weight: 600;
+  color: #636e72;
+  margin-bottom: 6px;
+  margin-left: 2px;
+  transition: color 0.2s;
+}
+
+/* Animated Input Borders */
 .input {
-  padding: 10px;
-  border: 1px solid #ccc;
-  border-radius: 4px;
+  padding: 12px 16px;
+  border: 1px solid #c6ccd1;
+  border-radius: 10px;
   font-size: 14px;
   outline: none;
-  transition: all 0.2s ease;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  background: #f8fafc;
 }
 
 .input:focus {
   border-color: #4a90e2;
+  background: #fff;
+  box-shadow: 0 0 0 4px rgba(74, 144, 226, 0.1);
 }
 
-/* Specific error border */
+.input:hover:not(:focus) {
+  border-color: #a1aab4;
+}
+
 .inputError {
-  border-color: #d32f2f;
-}
-
-.inputError:focus {
-  border-color: #d32f2f;
-  box-shadow: 0 0 0 1px #d32f2f;
-}
-
-.fieldError {
-  color: #d32f2f;
-  font-size: 0.75rem;
-  margin-top: 4px;
-  text-align: left;
-}
-.error {
-  color: #d32f2f;
-  text-align: center;
+  border-color: #ff7675;
+  background: #fff5f5;
 }
 
 .button {
-  padding: 12px;
+  padding: 14px;
   background: #4a90e2;
   color: #fff;
   border: none;
-  border-radius: 4px;
-  font-size: 14px;
+  border-radius: 10px;
+  font-size: 15px;
   font-weight: 600;
   cursor: pointer;
-  margin-top: 8px;
-  transition: background 0.2s ease;
+  margin-top: 10px;
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
 }
 
 .button:hover:not(:disabled) {
   background: #357abd;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(74, 144, 226, 0.3);
+}
+.button:active:not(:disabled) {
+  transform: translateY(0);
 }
 
 .button:disabled {
-  background: #9bbce3;
+  background: #a29bfe;
+  opacity: 0.7;
   cursor: not-allowed;
 }
 
-/* Loader inside button */
-.btnLoader {
-  width: 14px;
-  height: 14px;
-  border: 2px solid #fff;
-  border-top: 2px solid transparent;
-  border-radius: 50%;
-  display: inline-block;
-  animation: spin 0.8s linear infinite;
+/* error */
+.fieldError {
+  color: #d63031;
+  font-size: 0.75rem;
+  font-weight: 500;
+  margin-top: 4px;
+  text-align: left;
+  display: block;
+  animation: fadeInShake 0.4s cubic-bezier(0.36, 0.07, 0.19, 0.97) both;
 }
-
-.buttonContent {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 6px;
+.error {
+  background-color: #fff5f5;
+  color: #d63031;
+  padding: 10px;
+  border-radius: 6px;
+  border: 1px solid #fab1a0;
+  font-size: 0.85rem;
+  text-align: center;
+  margin-bottom: 16px;
+  animation: fadeIn 0.3s ease-in;
 }
-
-@keyframes spin {
-  to {
-    transform: rotate(360deg);
+@keyframes fadeInShake {
+  0% {
+    opacity: 0;
+    transform: translateX(0);
   }
+  25% {
+    transform: translateX(4px);
+  }
+  50% {
+    transform: translateX(-4px);
+  }
+  75% {
+    transform: translateX(2px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+.inputError {
+  border-color: #d63031 !important;
+  background-color: #fffafa;
+  box-shadow: 0 0 0 3px rgba(214, 48, 49, 0.1);
 }

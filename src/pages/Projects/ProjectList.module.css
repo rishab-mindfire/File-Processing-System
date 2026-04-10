@@ -2,6 +2,11 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
+  border-bottom: 2px solid #436b62;
+  font-size: 0.7rem;
+}
+.btnPrimary {
+  margin-bottom: 15px;
 }
 
 /* table */
@@ -9,7 +14,6 @@
   width: 100%;
   overflow-x: auto;
 }
-
 .table {
   width: 100%;
   border-collapse: collapse;
@@ -20,27 +24,31 @@
 
 .table th,
 .table td {
-  padding: 1rem;
+  padding: 0.4rem;
   text-align: left;
   border-bottom: 1px solid #eee;
 }
-
-.bold {
+.tableHeader {
   font-weight: 600;
-  color: #333;
+  color: #436b62;
+}
+.noProjectFound {
+  min-height: 50vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-weight: 600;
+  color: #436b62;
 }
 .action {
-  width: 100px;
+  width: 250px;
 }
 .actionsCell {
   display: flex;
   gap: 0.5rem;
   justify-content: flex-start;
 }
-.bold {
-  font-weight: 600;
-  color: #2d3436;
-}
+
 /* delete btn */
 .btnDanger {
   color: #d63031;
@@ -85,7 +93,6 @@
   gap: 1.5rem;
   padding: 1rem;
 }
-
 .formGroup {
   display: flex;
   flex-direction: column;
@@ -172,10 +179,6 @@
     color: #888;
     float: left;
   }
-  .btnPrimary {
-    margin-bottom: 15px;
-  }
-
   .table td:last-child::before {
     content: none;
   }
