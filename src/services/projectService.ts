@@ -1,5 +1,5 @@
 import { delay } from '../hooks/customeHooks';
-import type { Project } from '../models/Types';
+import type { FileItem, Project } from '../models/Types';
 import { MOCK_PROJECTS } from '../pages/Projects/ProjectReducer';
 
 export const projectService = {
@@ -68,6 +68,31 @@ export const projectService = {
           resolve({ success: true });
         }
       }, 100);
+    });
+  },
+};
+
+//API call for file uplaod to server
+export const fileUploadService = {
+  // Simulates sending FormData to a server
+  uploadFiles: async (
+    projectId: string,
+    formData: FormData,
+  ): Promise<FileItem[]> => {
+    return new Promise((resolve) => {
+      const uploadedFiles: FileItem[] = [];
+
+      formData.forEach((value) => {
+        const file = value as File;
+        uploadedFiles.push({
+          id: crypto.randomUUID(),
+          name: file.name,
+          size: file.size,
+          uploadedAt: new Date().toISOString(),
+        });
+      });
+
+      resolve(uploadedFiles);
     });
   },
 };

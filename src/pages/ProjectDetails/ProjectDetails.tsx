@@ -1,10 +1,12 @@
-import { useState, useReducer, useRef } from 'react';
+import { useState, useReducer, useRef, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { MOCK_PROJECTS } from '../Projects/ProjectReducer';
 import { jobReducer, initialJobState } from './JobReducer';
 import styles from './ProjectDetails.module.css';
 import type { FileItem, Project } from '../../models/Types';
 import { formatBytes } from '../../hooks/customeHooks';
+import { FileReceiveService } from '../../services/FileReceiveService';
+import { FileUploadService } from '../../services/FileUploadService';
 
 export default function ProjectDetails() {
   const { projectId } = useParams<{ projectId: string }>();
@@ -19,26 +21,91 @@ export default function ProjectDetails() {
   const [selectedFileIds, setSelectedFileIds] = useState<string[]>([]);
   const [jobState, dispatch] = useReducer(jobReducer, initialJobState);
 
-  // FILE UPLOAD ---
+  // Upload States
+  const [isUploading, setIsUploading] = useState(false);
+  const [uploadProgress, setUploadProgress] = useState(0);
+  const [uploadError, setUploadError] = useState<string | null>(null);
+
+  // 1. Fetch initial files on mount
+  useEffect(() => {
+    if (projectId) {
+      FileReceiveService.list(projectId).then(setFiles).catch(console.error);
+    }
+  }, [projectId]);
+
+  // 2. Centralized Polling Logic (Prevents Memory Leaks)
+  useEffect(() => {
+    const pendingJobs = jobState.jobs.filter(
+      (j) => j.status === 'PENDING' || j.status === 'PROCESSING',
+    );
+
+    if (pendingJobs.length === 0) return;
+
+    const pollInterval = setInterval(() => {
+      pendingJobs.forEach((job) => {
+        const nextProgress = job.progress + 20; // Simulated polling increments
+        if (nextProgress >= 100) {
+          dispatch({ type: 'COMPLETE_JOB', payload: job.id });
+        } else {
+          dispatch({
+            type: 'UPDATE_PROGRESS',
+            payload: { id: job.id, progress: nextProgress },
+          });
+        }
+      });
+    }, 2000);
+
+    return () => clearInterval(pollInterval); // Cleanup on unmount/job finish
+  }, [jobState.jobs]);
+
+  // 3. File Upload Handler
+
   const handleFileUpload = (uploadedFiles: FileList | null) => {
-    console.log(uploadedFiles);
-    if (!uploadedFiles) return;
+    if (!uploadedFiles || !projectId) return;
 
-    // Manual FormData usage
-    const formData = new FormData();
-    Array.from(uploadedFiles).forEach((file) => formData.append('files', file));
+    setIsUploading(true);
+    setUploadError(null);
 
-    const newFiles: FileItem[] = Array.from(uploadedFiles).map((f) => ({
-      id: crypto.randomUUID(),
-      name: f.name,
-      size: f.size,
-      uploadedAt: new Date().toISOString(),
-    }));
+    FileUploadService.upload(
+      projectId,
+      Array.from(uploadedFiles),
+      (percent) => setUploadProgress(percent),
+      (newFiles) => {
+        // Path A: Smooth Success
+        setFiles((prev) => [...newFiles, ...prev]);
+        setIsUploading(false);
+      },
+      async (err, mockRecoveredFiles) => {
+        // Path B: Network Failure (Wait 5 seconds reached)
+        setUploadError(err);
+        setIsUploading(false);
 
-    setFiles((prev) => [...newFiles, ...prev]);
+        // FAKE RECOVERY LOGIC:
+        // Even though the API "failed" in the frontend,
+        // we check the server list after a short pause.
+        await new Promise((resolve) => setTimeout(resolve, 2000));
+
+        if (mockRecoveredFiles) {
+          console.log('Files actually reached the server despite UI error.');
+          // This simulates the "FileReceiveService.list()" call picking up the new files
+          setFiles((prev) => [...mockRecoveredFiles, ...prev]);
+        }
+      },
+    );
   };
 
-  // --- JOB POLLING later integrate with APII ---
+  // 4. Delete Handler
+  const handleDeleteFile = async (fileId: string) => {
+    if (!projectId) return;
+    try {
+      await FileReceiveService.delete(projectId, fileId);
+      setFiles((prev) => prev.filter((f) => f.id !== fileId));
+    } catch (err) {
+      console.log(err);
+      alert('Delete failed');
+    }
+  };
+
   const startZipJob = () => {
     if (selectedFileIds.length === 0) return;
 
@@ -53,35 +120,12 @@ export default function ProjectDetails() {
       },
     });
 
-    let currentProgress = 0;
-
-    // setInterval uii pause
-    const interval = window.setInterval(() => {
-      // 5% each second progress
-      currentProgress += 5;
-
-      if (currentProgress >= 100) {
-        window.clearInterval(interval);
-        dispatch({ type: 'COMPLETE_JOB', payload: jobId });
-      } else {
-        dispatch({
-          type: 'UPDATE_PROGRESS',
-          payload: { id: jobId, progress: currentProgress },
-        });
-      }
-    }, 1000);
-
     setSelectedFileIds([]);
   };
 
   const triggerDownload = (fileName: string) => {
-    // Trigger file download
     const element = document.createElement('a');
-    element.setAttribute(
-      'href',
-      'data:text/plain;charset=utf-8,' +
-        encodeURIComponent('Dummy ZIP Content'),
-    );
+    element.setAttribute('href', 'data:application/zip;base64,AAA=');
     element.setAttribute('download', fileName);
     element.style.display = 'none';
     document.body.appendChild(element);
@@ -90,7 +134,11 @@ export default function ProjectDetails() {
   };
 
   if (!project)
-    return <div className={styles.container}>Project not found.</div>;
+    return (
+      <div className={styles.container}>
+        <div className={styles.noProjects}>Project not found.</div>
+      </div>
+    );
 
   return (
     <div className={styles.container}>
@@ -102,6 +150,17 @@ export default function ProjectDetails() {
         </button>
         <h1>{project.name}</h1>
       </header>
+      {uploadError && (
+        <div className={styles.errorBanner}>
+          <p>⚠️ {uploadError}</p>
+          <button onClick={() => setUploadError(null)}>Dismiss</button>
+        </div>
+      )}
+      <section className={styles.projectInfo}>
+        <div>
+          <span>{project.description}</span>
+        </div>
+      </section>
 
       <div
         className={styles.dropZone}
@@ -110,16 +169,29 @@ export default function ProjectDetails() {
           e.preventDefault();
           handleFileUpload(e.dataTransfer.files);
         }}
-        onClick={() => fileInputRef.current?.click()}>
-        <p>
-          Drag & Drop files or <strong>Browse</strong>
-        </p>
+        onClick={() => !isUploading && fileInputRef.current?.click()}>
+        {isUploading ? (
+          <div className={styles.uploadingState}>
+            <p> Uploading... {uploadProgress}%</p>
+            <div className={styles.progressTrack}>
+              <div
+                className={styles.progressBar}
+                style={{ width: `${uploadProgress}%` }}
+              />
+            </div>
+          </div>
+        ) : (
+          <p>
+            Drag & Drop files or <strong>Browse</strong>
+          </p>
+        )}
         <input
           type="file"
           multiple
           ref={fileInputRef}
-          onChange={(e) => handleFileUpload(e.target.files)}
           className={styles.hiddenInput}
+          onChange={(e) => handleFileUpload(e.target.files)}
+          disabled={isUploading}
         />
       </div>
 
@@ -141,7 +213,7 @@ export default function ProjectDetails() {
               <tr>
                 <th>Select</th>
                 <th>Name</th>
-                <th>Size</th>
+                <th className={styles.sizeTd}>Size</th>
                 <th>Action</th>
               </tr>
             </thead>
@@ -166,9 +238,7 @@ export default function ProjectDetails() {
                     <td>{formatBytes(f.size)}</td>
                     <td>
                       <button
-                        onClick={() =>
-                          setFiles(files.filter((file) => file.id !== f.id))
-                        }
+                        onClick={() => handleDeleteFile(f.id)}
                         className={styles.deleteBtn}>
                         Delete
                       </button>
@@ -179,7 +249,7 @@ export default function ProjectDetails() {
                 <tr>
                   <td colSpan={4}>
                     <div className={styles.noFiles}>
-                      please drag and drop file
+                      Please drag and drop files
                     </div>
                   </td>
                 </tr>
@@ -204,12 +274,13 @@ export default function ProjectDetails() {
               <div className={styles.progressTrack}>
                 <div
                   className={styles.progressBar}
-                  style={{ width: `${job.progress}%` }}></div>
+                  style={{ width: `${job.progress}%` }}
+                />
               </div>
               {job.status === 'COMPLETED' && (
                 <button
                   onClick={() => triggerDownload(job.fileName)}
-                  className={styles.downloadBtn}>
+                  className={styles.download}>
                   Download
                 </button>
               )}

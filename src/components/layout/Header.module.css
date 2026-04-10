@@ -70,7 +70,6 @@
   padding-inline: 14px;
 }
 .btnLogout:hover {
-  border: 2px;
   box-shadow: 0.4px -0.3px 5px red;
 }
 .btnLogout img {

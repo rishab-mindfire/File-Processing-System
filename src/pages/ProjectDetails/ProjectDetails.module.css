@@ -3,12 +3,24 @@
   max-width: 1200px;
   margin: 0 auto;
 }
-
+.noProjects {
+  display: flex;
+  justify-content: center;
+  font-size: larger;
+  color: #323f3c;
+}
 .header {
   display: flex;
   align-items: center;
   gap: 1rem;
-  margin-bottom: 2rem;
+}
+
+/* ptoject detailss */
+.projectInfo {
+  border-radius: 8px;
+  padding: 20px;
+  margin-left: 4rem;
+  color: #323f3c;
 }
 
 .backBtn {
@@ -19,7 +31,10 @@
   cursor: pointer;
   white-space: nowrap;
 }
-
+.backBtn:hover {
+  transform: scale(1.1);
+  background-color: #cfcfcf;
+}
 .dropZone {
   border: 2px dashed #436b62;
   background: #74afa270;
@@ -67,12 +82,13 @@
   width: 100%;
   border-collapse: collapse;
 }
-
+.table thead {
+  border-bottom: 1px solid #eee;
+}
 .table td,
 .table th {
   padding: 12px;
   text-align: left;
-  border-bottom: 1px solid #eee;
 }
 .table thead tr {
   color: #436b62;
@@ -107,17 +123,19 @@
 .empty {
   margin-top: 55px;
   border-top: 1px solid #eee;
-  border-bottom: 1px solid #eee;
   display: flex;
   justify-content: center;
   align-items: center;
-  min-height: 140px;
+  min-height: 110px;
 }
 .noFiles {
   display: flex;
   justify-content: center;
   align-items: center;
   min-height: 100px;
+}
+.sizeTd {
+  min-width: 100px;
 }
 /* Progress bar styles */
 .jobItem {
@@ -126,7 +144,6 @@
   border: 1px solid #f0f0f0;
   border-radius: 6px;
 }
-
 .jobInfo {
   display: flex;
   justify-content: space-between;
@@ -142,11 +159,18 @@
   overflow: hidden;
   margin-bottom: 10px;
 }
-
 .progressBar {
   background: #0984e3;
   height: 100%;
   transition: width 0.3s ease;
+}
+.download {
+  padding: 3px;
+  padding-inline: 13px;
+  background-color: #436b62;
+  border: none;
+  border-radius: 4px;
+  color: #ffffff;
 }
 
 /* --- media QUERIES --- */
@@ -161,7 +185,9 @@
   .container {
     padding: 1rem;
   }
-
+  .projectInfo {
+    margin-left: 0rem;
+  }
   .header h1 {
     font-size: 1.2rem;
   }
