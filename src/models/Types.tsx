@@ -36,9 +36,14 @@ export interface FileItem {
 // job
 export interface Job {
   id: string;
-  status: 'PENDING' | 'PROCESSING' | 'COMPLETED';
+  status: 'PENDING' | 'PROCESSING' | 'COMPLETED' | 'FAILED';
   progress: number;
   fileName: string;
+}
+
+export interface FileSectionProps {
+  projectId: string;
+  onStartZip: (selectedIds: string[]) => void;
 }
 
 export type JobState = { jobs: Job[] };
@@ -46,4 +51,5 @@ export type JobState = { jobs: Job[] };
 export type JobAction =
   | { type: 'ADD_JOB'; payload: Job }
   | { type: 'UPDATE_PROGRESS'; payload: { id: string; progress: number } }
-  | { type: 'COMPLETE_JOB'; payload: string };
+  | { type: 'COMPLETE_JOB'; payload: string }
+  | { type: 'FAIL_JOB'; payload: string };

@@ -1,16 +1,18 @@
 import { delay } from '../hooks/customeHooks';
-import type { Project } from '../models/Types';
+import type { FileItem, Project } from '../models/Types';
 import { MOCK_PROJECTS } from '../pages/Projects/ProjectReducer';
 
 export const projectService = {
   // Project list :
   async getAllProjects(): Promise<Project[]> {
+    // API can Be called here
     await delay(800);
     return [...MOCK_PROJECTS];
   },
   // create project :
   async createProject(name: string, description: string): Promise<Project> {
     await delay(1000);
+    // API will be called here
     return {
       id: Math.random().toString(36).substr(2, 9),
       name,
@@ -23,42 +25,16 @@ export const projectService = {
 
   // File Management (upload)
   async uploadFiles(
-    projectId: string,
     files: File[],
     onProgress: (percent: number) => void,
   ): Promise<unknown> {
-    return new Promise((resolve, reject) => {
+    return new Promise((resolve) => {
       // Manual FormData usage
       const formData = new FormData();
       files.forEach((file) => formData.append('files', file));
+      //API
 
-      // Manual progress tracking via XMLHttpRequest
-      const xhr = new XMLHttpRequest();
-
-      // Target URL
-      xhr.open('POST', `/api/projects/${projectId}/files`);
-
-      // Track upload progress
-      xhr.upload.onprogress = (event) => {
-        if (event.lengthComputable) {
-          const percentComplete = Math.round(
-            (event.loaded / event.total) * 100,
-          );
-          onProgress(percentComplete);
-        }
-      };
-
-      xhr.onload = () => {
-        if (xhr.status >= 200 && xhr.status < 300) {
-          resolve(JSON.parse(xhr.response || '{}'));
-        } else {
-          reject(new Error('Upload failed'));
-        }
-      };
-
-      xhr.onerror = () => reject(new Error('Network failure'));
-
-      // Sending data for static testing
+      // Sending data for static testing mock data
       let fakeProgress = 0;
       const interval = setInterval(() => {
         fakeProgress += 10;
@@ -68,6 +44,31 @@ export const projectService = {
           resolve({ success: true });
         }
       }, 100);
+    });
+  },
+};
+
+export const fileUploadService = {
+  uploadFiles: async (
+    projectId: string,
+    formData: FormData,
+  ): Promise<FileItem[]> => {
+    console.log(projectId);
+    return new Promise((resolve) => {
+      const uploadedFiles: FileItem[] = [];
+      //API call will be here for file uplaod to server
+
+      formData.forEach((value) => {
+        const file = value as File;
+        uploadedFiles.push({
+          id: crypto.randomUUID(),
+          name: file.name,
+          size: file.size,
+          uploadedAt: new Date().toISOString(),
+        });
+      });
+
+      resolve(uploadedFiles);
     });
   },
 };

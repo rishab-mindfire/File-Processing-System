@@ -6,9 +6,19 @@ import Modal from '../../components/modal/Modal';
 import styles from './ProjectList.module.css';
 import type { Project } from '../../models/Types';
 import Loader from '../../components/common/Loader';
+import { usePagination } from '../../hooks/usePagination';
 
 export default function ProjectList() {
   const [state, dispatch] = useReducer(projectReducer, initialState);
+  const {
+    currentData,
+    currentPage,
+    totalPages,
+    nextPage,
+    prevPage,
+    hasPrevPage,
+    hasNextPage,
+  } = usePagination(state.projects, 10);
   const [isCreateOpen, setIsCreateOpen] = useState(false);
   const [projectToDelete, setProjectToDelete] = useState<string | null>(null);
 
@@ -44,7 +54,7 @@ export default function ProjectList() {
       description: formData.description || 'No description provided',
       filesCount: 0,
       jobsCount: 0,
-      createdAt: new Date().toISOString(),
+      createdAt: new Date().toISOString().split('T')[0],
     };
 
     dispatch({ type: 'ADD_PROJECT', payload: newProject });
@@ -89,17 +99,19 @@ export default function ProjectList() {
                 <th>Name</th>
                 <th>Files</th>
                 <th>Jobs</th>
+                <th>Created Date</th>
                 <th className={styles.action}>Actions</th>
               </tr>
             </thead>
             <tbody>
-              {state.projects.map((project) => (
+              {currentData.map((project) => (
                 <tr key={project.id}>
                   <td data-label="Name" className={styles.projectName}>
                     {project.name}
                   </td>
                   <td data-label="Files">{project.filesCount}</td>
                   <td data-label="Jobs">{project.jobsCount}</td>
+                  <td data-label="CreatedAt">{project.createdAt}</td>
                   <td data-label="Actions" className={styles.actionsCell}>
                     <button
                       className={styles.open}
@@ -116,6 +128,27 @@ export default function ProjectList() {
               ))}
             </tbody>
           </table>
+
+          {/*  Pagination Controls */}
+          {currentData.length > 10 && (
+            <div className={styles.pagination}>
+              <button
+                className={styles.pageBtn}
+                onClick={prevPage}
+                disabled={!hasPrevPage}>
+                &larr; Previous
+              </button>
+              <span className={styles.pageInfo}>
+                Page <strong>{currentPage}</strong> of {totalPages}
+              </span>
+              <button
+                className={styles.pageBtn}
+                onClick={nextPage}
+                disabled={!hasNextPage}>
+                Next &rarr;
+              </button>
+            </div>
+          )}
         </div>
       )}
 
