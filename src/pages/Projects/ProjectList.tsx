@@ -1,6 +1,6 @@
 import React, { useReducer, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { initialState, projectReducer } from './ProjectReducer';
+import { initialState, projectReducer } from '../../reducers/ProjectReducer';
 import { projectService } from '../../services/projectService';
 import Modal from '../../components/modal/Modal';
 import styles from './ProjectList.module.css';

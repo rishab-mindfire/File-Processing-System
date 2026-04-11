@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { MOCK_PROJECTS } from '../Projects/ProjectReducer';
+import { MOCK_PROJECTS } from '../../reducers/ProjectReducer';
 import styles from './ProjectDetails.module.css';
 import { FileSection } from './file/FileSection';
 import { ZipSection } from './zip/ZipSection';

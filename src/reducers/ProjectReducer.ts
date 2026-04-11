@@ -1,4 +1,4 @@
-import type { Project, ProjectAction, ProjectState } from '../../models/Types';
+import type { Project, ProjectAction, ProjectState } from '../models/Types';
 
 // ProjectList dummy list
 export const MOCK_PROJECTS: Project[] = [
