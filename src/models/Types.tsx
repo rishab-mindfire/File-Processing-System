@@ -10,7 +10,7 @@ export type AuthContextType = {
 };
 
 // login
-export type Action =
+export type LoginAction =
   | { type: 'SET_FIELD'; field: string; value: string }
   | { type: 'SET_LOADING'; payload: boolean }
   | { type: 'SET_ERRORS'; payload: Errors }
@@ -20,7 +20,7 @@ export interface Errors {
   password?: string;
   general?: string;
 }
-export interface State {
+export interface LoginState {
   email: string;
   password: string;
   loading: boolean;
@@ -41,6 +41,13 @@ export type ProjectState = {
   loading: boolean;
   error: string | null;
 };
+
+export type ProjectAction =
+  | { type: 'FETCH_START' }
+  | { type: 'FETCH_SUCCESS'; payload: Project[] }
+  | { type: 'FETCH_ERROR'; payload: string }
+  | { type: 'ADD_PROJECT'; payload: Project }
+  | { type: 'DELETE_PROJECT'; payload: string };
 
 // file management
 export interface FileItem {

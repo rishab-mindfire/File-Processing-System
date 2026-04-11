@@ -1,4 +1,4 @@
-import type { Project, ProjectState } from '../../models/Types';
+import type { Project, ProjectAction, ProjectState } from '../../models/Types';
 
 // ProjectList dummy list
 export const MOCK_PROJECTS: Project[] = [
@@ -19,14 +19,6 @@ export const MOCK_PROJECTS: Project[] = [
     createdAt: new Date().toISOString().split('T')[0],
   },
 ];
-
-// Project Actions
-export type ProjectAction =
-  | { type: 'FETCH_START' }
-  | { type: 'FETCH_SUCCESS'; payload: Project[] }
-  | { type: 'FETCH_ERROR'; payload: string }
-  | { type: 'ADD_PROJECT'; payload: Project }
-  | { type: 'DELETE_PROJECT'; payload: string };
 
 export const initialState: ProjectState = {
   projects: MOCK_PROJECTS,

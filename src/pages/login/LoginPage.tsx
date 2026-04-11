@@ -2,47 +2,21 @@ import { useReducer } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../hooks/useAuth';
 import styles from './Login.module.css';
-import type { Action, Errors, State } from '../../models/Types';
-
-const initialState: State = {
-  email: 'user@gmail.com',
-  password: '12345',
-  loading: false,
-  errors: {},
-};
-
-// reducer function for login state control
-function reducer(state: State, action: Action): State {
-  switch (action.type) {
-    case 'SET_FIELD':
-      return {
-        ...state,
-        [action.field]: action.value,
-        errors: { ...state.errors, [action.field]: '' },
-      };
-
-    case 'SET_LOADING':
-      return { ...state, loading: action.payload };
-    case 'SET_ERRORS':
-      return { ...state, errors: action.payload };
-    case 'RESET':
-      return initialState;
-    default:
-      return state;
-  }
-}
+import type { Errors } from '../../models/Types';
+import { initialLoginState, loginReducer } from '../../reducers/loginReducer';
+import { loginApi } from '../../services/loginService';
 
 export default function Login() {
-  const [state, dispatch] = useReducer(reducer, initialState);
+  const [state, dispatch] = useReducer(loginReducer, initialLoginState);
   const { login } = useAuth();
   const navigate = useNavigate();
 
   // handle submit form
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.SyntheticEvent) => {
     e.preventDefault();
     const newErrors: Errors = {};
 
-    // 1. Validation Logic
+    // Validation Logic
     if (!state.email) {
       newErrors.email = 'Email is required';
     }
@@ -52,28 +26,30 @@ export default function Login() {
       newErrors.password = 'Password must be at least 5 characters';
     }
 
-    // If there are errors, stop and display them
     if (Object.keys(newErrors).length > 0) {
       dispatch({ type: 'SET_ERRORS', payload: newErrors });
       return;
     }
 
+    // API Call will be here for login
     dispatch({ type: 'SET_LOADING', payload: true });
 
-    // Mock API Call
-    setTimeout(() => {
-      //fack login
-      if (state.email === 'user@gmail.com' && state.password === '12345') {
-        login('file-processing-system@jwttoken');
-        navigate('/projects');
-      } else {
-        dispatch({
-          type: 'SET_ERRORS',
-          payload: { general: 'Invalid credentials' },
-        });
-      }
+    try {
+      const token = await loginApi({
+        email: state.email,
+        password: state.password,
+      });
+      login(token);
+      navigate('/projects');
+    } catch (error: unknown) {
+      dispatch({
+        type: 'SET_ERRORS',
+        payload: { general: 'Login failed' },
+      });
+      console.log(error);
+    } finally {
       dispatch({ type: 'SET_LOADING', payload: false });
-    }, 1000);
+    }
   };
 
   return (

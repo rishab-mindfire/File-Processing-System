@@ -1,5 +1,5 @@
 import { delay } from '../hooks/customeHooks';
-import type { FileItem, Project } from '../models/Types';
+import type { Project } from '../models/Types';
 import { MOCK_PROJECTS } from '../pages/Projects/ProjectReducer';
 
 export const projectService = {
@@ -22,54 +22,55 @@ export const projectService = {
       createdAt: new Date().toISOString(),
     };
   },
-
-  // File Management (upload)
-  async uploadFiles(
-    files: File[],
-    onProgress: (percent: number) => void,
-  ): Promise<unknown> {
-    return new Promise((resolve) => {
-      // Manual FormData usage
-      const formData = new FormData();
-      files.forEach((file) => formData.append('files', file));
-      //API
-
-      // Sending data for static testing mock data
-      let fakeProgress = 0;
-      const interval = setInterval(() => {
-        fakeProgress += 10;
-        onProgress(fakeProgress);
-        if (fakeProgress >= 100) {
-          clearInterval(interval);
-          resolve({ success: true });
-        }
-      }, 100);
-    });
-  },
 };
 
-export const fileUploadService = {
-  uploadFiles: async (
-    projectId: string,
-    formData: FormData,
-  ): Promise<FileItem[]> => {
-    console.log(projectId);
-    return new Promise((resolve) => {
-      const uploadedFiles: FileItem[] = [];
-      //API call will be here for file uplaod to server
+// File Management (upload)
+//   async uploadFiles(
+//     files: File[],
+//     onProgress: (percent: number) => void,
+//   ): Promise<unknown> {
+//     return new Promise((resolve) => {
+//       // Manual FormData usage
+//       const formData = new FormData();
+//       files.forEach((file) => formData.append('files', file));
+//       //API
 
-      formData.forEach((value) => {
-        const file = value as File;
-        uploadedFiles.push({
-          id: crypto.randomUUID(),
-          name: file.name,
-          size: file.size,
-          uploadedAt: new Date().toISOString(),
-          url: '',
-        });
-      });
+//       // Sending data for static testing mock data
+//       let fakeProgress = 0;
+//       const interval = setInterval(() => {
+//         fakeProgress += 10;
+//         onProgress(fakeProgress);
+//         if (fakeProgress >= 100) {
+//           clearInterval(interval);
+//           resolve({ success: true });
+//         }
+//       }, 100);
+//     });
+//   },
+// };
 
-      resolve(uploadedFiles);
-    });
-  },
-};
+// export const fileUploadService = {
+//   uploadFiles: async (
+//     projectId: string,
+//     formData: FormData,
+//   ): Promise<FileItem[]> => {
+//     console.log(projectId);
+//     return new Promise((resolve) => {
+//       const uploadedFiles: FileItem[] = [];
+//       //API call will be here for file uplaod to server
+
+//       formData.forEach((value) => {
+//         const file = value as File;
+//         uploadedFiles.push({
+//           id: crypto.randomUUID(),
+//           name: file.name,
+//           size: file.size,
+//           uploadedAt: new Date().toISOString(),
+//           url: '',
+//         });
+//       });
+
+//       resolve(uploadedFiles);
+//     });
+//   },
+// };
