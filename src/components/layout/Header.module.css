@@ -1,4 +1,4 @@
-/* --- Desktop & Container --- */
+/* ---  Container --- */
 .navbar {
   display: flex;
   justify-content: space-between;
@@ -70,7 +70,8 @@
   padding-inline: 14px;
 }
 .btnLogout:hover {
-  box-shadow: 0.4px -0.3px 5px red;
+  box-shadow: 0.4px -0.3px 5px #436b62;
+  transform: scale(1.02);
 }
 .btnLogout img {
   margin-top: 5px;

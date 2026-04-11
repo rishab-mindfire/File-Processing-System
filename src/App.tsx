@@ -1,7 +1,7 @@
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import Login from './pages/login/LoginPage';
 import PageNotFound from './pages/errorPage/PageNotFound';
-import ProtectedRoute from './components/common/ProtectedRoute';
+import ProtectedRoute from './auth/ProtectedRoute';
 import { useAuth } from './hooks/useAuth';
 import ProjectList from './pages/Projects/ProjectList';
 import Layout from './components/layout/Layout';
