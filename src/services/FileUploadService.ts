@@ -28,15 +28,7 @@ export const FileUploadService = {
         url: '',
       }));
       onSuccess(successFiles);
-      const recoveredFiles: FileItem[] = files.map((f) => ({
-        id: crypto.randomUUID(),
-        name: f.name,
-        size: f.size,
-        uploadedAt: new Date().toISOString(),
-        url: '',
-      }));
-
-      onError('Network Error :', recoveredFiles);
+      console.log(onError);
     }, 5000);
   },
 };

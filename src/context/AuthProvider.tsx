@@ -1,6 +1,7 @@
 import type { ReactNode } from 'react';
 import { useReducer } from 'react';
-import { AuthContext, type AuthState } from './AuthContext';
+import type { AuthState } from '../models/Types';
+import { AuthContext } from './AuthContext';
 
 type Action = { type: 'LOGIN'; payload: string } | { type: 'LOGOUT' };
 

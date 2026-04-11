@@ -1,23 +1,33 @@
+// auth context
+export type AuthState = {
+  token: string | null;
+  isAuthenticated: boolean;
+};
+export type AuthContextType = {
+  state: AuthState;
+  login: (token: string) => void;
+  logout: () => void;
+};
+
 // login
 export type Action =
   | { type: 'SET_FIELD'; field: string; value: string }
   | { type: 'SET_LOADING'; payload: boolean }
   | { type: 'SET_ERRORS'; payload: Errors }
   | { type: 'RESET' };
-
 export interface Errors {
   email?: string;
   password?: string;
   general?: string;
 }
-
 export interface State {
   email: string;
   password: string;
   loading: boolean;
   errors: Errors;
 }
-// project
+
+// project management
 export interface Project {
   id: string;
   name: string;
@@ -32,7 +42,7 @@ export type ProjectState = {
   error: string | null;
 };
 
-// file
+// file management
 export interface FileItem {
   id: string;
   name: string;
@@ -40,21 +50,19 @@ export interface FileItem {
   uploadedAt: string;
   url: string;
 }
-// job
+
+// zip job management
 export interface Job {
   id: string;
   status: 'PENDING' | 'PROCESSING' | 'COMPLETED' | 'FAILED';
   progress: number;
   fileName: string;
 }
-
 export interface FileSectionProps {
   projectId: string;
   onStartZip: (selectedIds: string[]) => void;
 }
-
 export type JobState = { jobs: Job[] };
-
 export type JobAction =
   | { type: 'ADD_JOB'; payload: Job }
   | { type: 'UPDATE_PROGRESS'; payload: { id: string; progress: number } }
