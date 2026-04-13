@@ -167,14 +167,15 @@
 }
 
 .progressTrack {
-  background: #dfe6e9;
+  margin-top: 10px;
+  background: #b8bcbf;
   height: 10px;
   border-radius: 5px;
   overflow: hidden;
   margin-bottom: 10px;
 }
 .progressBar {
-  background: #0984e3;
+  background: #436b62;
   height: 100%;
   transition: width 0.3s ease;
 }

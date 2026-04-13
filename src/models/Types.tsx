@@ -51,6 +51,7 @@ export type ProjectAction =
 
 // file management
 export interface FileItem {
+  projectId?: string;
   id: string;
   name: string;
   size: number;
