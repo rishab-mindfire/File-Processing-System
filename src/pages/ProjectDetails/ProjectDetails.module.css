@@ -23,7 +23,6 @@
   margin-left: 4rem;
   color: #323f3c;
 }
-
 .backBtn {
   background: #eee;
   border: none;
@@ -47,19 +46,19 @@
   margin-bottom: 2rem;
   transition: background 0.2s;
 }
-
 .dropZone:hover {
   background: #74afa23d;
 }
-
 .hiddenInput {
   display: none;
 }
-
 .grid {
   display: grid;
   grid-template-columns: 2fr 1fr;
   gap: 2rem;
+}
+.grid > * {
+  min-width: 0;
 }
 
 .card {
@@ -77,7 +76,9 @@
   flex-wrap: wrap;
   gap: 10px;
 }
-
+.mainTable {
+  overflow-x: auto;
+}
 .table {
   width: 100%;
   border-collapse: collapse;
@@ -87,17 +88,18 @@
 }
 .table td,
 .table th {
-  padding: 12px;
   text-align: left;
 }
 .table thead tr {
   color: #436b62;
 }
-.files {
-  margin-inline: 2px;
-  color: #436b62;
-  font-weight: bold;
+.table tbody tr td {
+  padding-top: 12px;
 }
+.fileNames {
+  min-width: 180px;
+}
+
 .validationErrro {
   display: flex;
   justify-content: center;
@@ -288,11 +290,6 @@
 
   .dropZone {
     padding: 1.5rem;
-  }
-
-  .card {
-    overflow-x: auto;
-    padding: 1rem;
   }
 
   .jobInfo {

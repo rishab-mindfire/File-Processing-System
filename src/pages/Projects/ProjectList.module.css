@@ -152,6 +152,18 @@
   transition: all 0.8 ease;
   width: 100px;
 }
+.createProject {
+  margin-top: 1rem;
+  padding: 8px;
+  cursor: pointer;
+  background-color: #4a90e2;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  margin-bottom: 15px;
+  transition: all 0.8 ease;
+  width: 200px;
+}
 .btnPrimary:hover {
   background-color: #1670d6;
   transform: scale(1.03);

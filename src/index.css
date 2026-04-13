@@ -29,4 +29,9 @@
   }
 }
 
-/* input filed */
+/* model button */
+.center {
+  display: flex;
+  justify-content: center;
+}
+/* table scroll */

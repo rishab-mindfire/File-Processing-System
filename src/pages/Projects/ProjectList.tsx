@@ -183,9 +183,11 @@ export default function ProjectList() {
               rows={3}
             />
           </div>
-          <button type="submit" className={styles.btnPrimary}>
-            Create Project
-          </button>
+          <div className="center">
+            <button type="submit" className={styles.createProject}>
+              Create Project
+            </button>
+          </div>
         </form>
       </Modal>
 
