@@ -136,52 +136,54 @@ export const FileSection: React.FC<FileSectionProps> = ({
             Create ZIP Job
           </button>
         </div>
-        <table className={styles.table}>
-          <thead>
-            <tr>
-              <th>Select</th>
-              <th>Name</th>
-              <th className={styles.sizeTd}>Size</th>
-              <th>Action</th>
-            </tr>
-          </thead>
-          <tbody>
-            {files.length > 0 ? (
-              files.map((f) => (
-                <tr key={f.id}>
-                  <td>
-                    <input
-                      type="checkbox"
-                      checked={selectedFileIds.includes(f.id)}
-                      onChange={() =>
-                        setSelectedFileIds((prev) =>
-                          prev.includes(f.id)
-                            ? prev.filter((i) => i !== f.id)
-                            : [...prev, f.id],
-                        )
-                      }
-                    />
-                  </td>
-                  <td>{f.name}</td>
-                  <td>{formatBytes(f.size)}</td>
-                  <td>
-                    <button
-                      onClick={() => handleDeleteFile(f.id)}
-                      className={styles.deleteBtn}>
-                      Delete
-                    </button>
+        <div className={styles.mainTable}>
+          <table className={styles.table}>
+            <thead>
+              <tr>
+                <th>Select</th>
+                <th className={styles.fileNames}>Name</th>
+                <th className={styles.sizeTd}>Size</th>
+                <th>Action</th>
+              </tr>
+            </thead>
+            <tbody>
+              {files.length > 0 ? (
+                files.map((f) => (
+                  <tr key={f.id} className={styles.tableRow}>
+                    <td>
+                      <input
+                        type="checkbox"
+                        checked={selectedFileIds.includes(f.id)}
+                        onChange={() =>
+                          setSelectedFileIds((prev) =>
+                            prev.includes(f.id)
+                              ? prev.filter((i) => i !== f.id)
+                              : [...prev, f.id],
+                          )
+                        }
+                      />
+                    </td>
+                    <td>{f.name}</td>
+                    <td>{formatBytes(f.size)}</td>
+                    <td>
+                      <button
+                        onClick={() => handleDeleteFile(f.id)}
+                        className={styles.deleteBtn}>
+                        Delete
+                      </button>
+                    </td>
+                  </tr>
+                ))
+              ) : (
+                <tr>
+                  <td colSpan={4}>
+                    <div className={styles.noFiles}> No Files !</div>
                   </td>
                 </tr>
-              ))
-            ) : (
-              <tr>
-                <td colSpan={4}>
-                  <div className={styles.noFiles}> No Files !</div>
-                </td>
-              </tr>
-            )}
-          </tbody>
-        </table>
+              )}
+            </tbody>
+          </table>
+        </div>
       </div>
 
       {/* Instant Preview Modal */}

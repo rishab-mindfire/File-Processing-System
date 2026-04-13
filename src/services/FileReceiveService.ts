@@ -3,14 +3,38 @@ import type { FileItem } from '../models/Types';
 export const FileReceiveService = {
   list: async (projectId: string): Promise<FileItem[]> => {
     //API can be called here for list all files
-    const response = await fetch(`/api/projects/${projectId}/files`);
+    // url - /api/projects/${projectId}/files;
 
-    if (!response.ok) throw new Error('Failed to fetch file list.');
     return [
       {
-        id: '13232',
-        name: 'fack file',
+        projectId: projectId,
+        id: '1111',
+        name: 'fack file 1',
         size: 3434,
+        uploadedAt: '3032',
+        url: 'www.google.com',
+      },
+      {
+        projectId: projectId,
+        id: '2222',
+        name: 'fack file 2',
+        size: 3432214,
+        uploadedAt: '3032',
+        url: 'www.google.com',
+      },
+      {
+        projectId: projectId,
+        id: '3333',
+        name: 'fack file 3',
+        size: 8928397,
+        uploadedAt: '3032',
+        url: 'www.google.com',
+      },
+      {
+        projectId: projectId,
+        id: '444',
+        name: 'fack file 4',
+        size: 8767,
         uploadedAt: '3032',
         url: 'www.google.com',
       },
@@ -19,9 +43,7 @@ export const FileReceiveService = {
 
   // delete file
   delete: async (projectId: string, fileId: string): Promise<void> => {
-    const response = await fetch(`/api/projects/${projectId}/files/${fileId}`, {
-      method: 'DELETE',
-    });
-    if (!response.ok) throw new Error('Delete operation failed.');
+    //url: `/api/projects/${projectId}/files/${fileId}`
+    console.log({ projectId: projectId, fileId: fileId });
   },
 };

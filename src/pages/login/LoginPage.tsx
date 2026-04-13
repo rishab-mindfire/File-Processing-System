@@ -7,7 +7,7 @@ import { initialLoginState, loginReducer } from '../../reducers/loginReducer';
 import { loginApi } from '../../services/loginService';
 
 export default function Login() {
-  const [state, dispatch] = useReducer(loginReducer, initialLoginState);
+  const [formState, dispatch] = useReducer(loginReducer, initialLoginState);
   const { login } = useAuth();
   const navigate = useNavigate();
 
@@ -17,15 +17,14 @@ export default function Login() {
     const newErrors: Errors = {};
 
     // Validation Logic
-    if (!state.email) {
+    if (!formState.email) {
       newErrors.email = 'Email is required';
     }
-    if (!state.password) {
+    if (!formState.password) {
       newErrors.password = 'Password is required';
-    } else if (state.password.length < 5) {
+    } else if (formState.password.length < 5) {
       newErrors.password = 'Password must be at least 5 characters';
     }
-
     if (Object.keys(newErrors).length > 0) {
       dispatch({ type: 'SET_ERRORS', payload: newErrors });
       return;
@@ -33,11 +32,10 @@ export default function Login() {
 
     // API Call will be here for login
     dispatch({ type: 'SET_LOADING', payload: true });
-
     try {
       const token = await loginApi({
-        email: state.email,
-        password: state.password,
+        email: formState.email,
+        password: formState.password,
       });
       login(token);
       navigate('/projects');
@@ -67,10 +65,12 @@ export default function Login() {
           <input
             type="email"
             placeholder="Email"
-            value={state.email}
-            className={`${styles.input} ${state.errors.email ? styles.inputError : ''}`}
-            aria-invalid={!!state.errors.email}
-            aria-describedby={state.errors.email ? 'email-error' : undefined}
+            value={formState.email}
+            className={`${styles.input} ${formState.errors.email ? styles.inputError : ''}`}
+            aria-invalid={!!formState.errors.email}
+            aria-describedby={
+              formState.errors.email ? 'email-error' : undefined
+            }
             onChange={(e) =>
               dispatch({
                 type: 'SET_FIELD',
@@ -79,8 +79,8 @@ export default function Login() {
               })
             }
           />
-          {state.errors.email && (
-            <span className={styles.fieldError}>{state.errors.email}</span>
+          {formState.errors.email && (
+            <span className={styles.fieldError}>{formState.errors.email}</span>
           )}
         </div>
 
@@ -89,11 +89,11 @@ export default function Login() {
           <input
             type="password"
             placeholder="Password"
-            value={state.password}
-            className={`${styles.input} ${state.errors.password ? styles.inputError : ''}`}
-            aria-invalid={!!state.errors.password}
+            value={formState.password}
+            className={`${styles.input} ${formState.errors.password ? styles.inputError : ''}`}
+            aria-invalid={!!formState.errors.password}
             aria-describedby={
-              state.errors.password ? 'password-error' : undefined
+              formState.errors.password ? 'password-error' : undefined
             }
             onChange={(e) =>
               dispatch({
@@ -103,19 +103,21 @@ export default function Login() {
               })
             }
           />
-          {state.errors.password && (
-            <span className={styles.fieldError}>{state.errors.password}</span>
+          {formState.errors.password && (
+            <span className={styles.fieldError}>
+              {formState.errors.password}
+            </span>
           )}
         </div>
 
-        {state.errors.general && (
+        {formState.errors.general && (
           <p className={styles.error} role="alert">
-            {state.errors.general}
+            {formState.errors.general}
           </p>
         )}
 
-        <button disabled={state.loading} className={styles.button}>
-          {state.loading ? 'Logging in...' : 'Login'}
+        <button disabled={formState.loading} className={styles.button}>
+          {formState.loading ? 'Logging in...' : 'Login'}
         </button>
       </form>
     </div>

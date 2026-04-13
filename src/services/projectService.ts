@@ -6,7 +6,7 @@ export const projectService = {
   // Project list :
   async getAllProjects(): Promise<Project[]> {
     // API can Be called here
-    await delay(800);
+    await delay(2000);
     return [...MOCK_PROJECTS];
   },
   // create project :
@@ -14,7 +14,7 @@ export const projectService = {
     await delay(1000);
     // API will be called here
     return {
-      id: Math.random().toString(36).substr(2, 9),
+      id: Math.random().toString(36),
       name,
       description,
       filesCount: 0,

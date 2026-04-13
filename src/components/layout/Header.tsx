@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import styles from './Header.module.css';
-import { Link, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../hooks/useAuth';
 import logoutImage from '../../assets/logout.png';
 
@@ -54,9 +54,6 @@ const Header: React.FC = () => {
         className={`${styles.navContainer} ${isOpen ? styles.navActive : ''}`}
         aria-label="Primary Navigation">
         <ul className={styles.navLinks}>
-          <li>
-            <Link to="/projects">Projects</Link>
-          </li>
           <li className={styles.mobileLogout}>
             <button className={styles.btnLogout} onClick={handleLogout}>
               <span>Logout</span> <img src={logoutImage} alt="logout" />
