@@ -1,27 +1,7 @@
-import type { Project, ProjectAction, ProjectState } from '../models/Types';
-
-// ProjectList dummy list
-export const MOCK_PROJECTS: Project[] = [
-  {
-    id: '1',
-    name: 'Project 1',
-    description: 'Main production website assets files.',
-    filesCount: 5,
-    jobsCount: 1,
-    createdAt: new Date().toISOString().split('T')[0],
-  },
-  {
-    id: '2',
-    name: 'Project 2',
-    description: 'Backend documentation and files.',
-    filesCount: 2,
-    jobsCount: 0,
-    createdAt: new Date().toISOString().split('T')[0],
-  },
-];
+import type { ProjectAction, ProjectState } from '../models/Types';
 
 export const initialState: ProjectState = {
-  projects: MOCK_PROJECTS,
+  projects: [],
   loading: false,
   error: null,
 };
