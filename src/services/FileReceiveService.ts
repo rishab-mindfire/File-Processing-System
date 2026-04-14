@@ -9,7 +9,7 @@ export const FileReceiveService = {
       {
         projectId: projectId,
         id: '1111',
-        name: 'fack file 1',
+        name: 'fake file 1',
         size: 3434,
         uploadedAt: '3032',
         url: 'www.google.com',
@@ -17,7 +17,7 @@ export const FileReceiveService = {
       {
         projectId: projectId,
         id: '2222',
-        name: 'fack file 2',
+        name: 'fake file 2',
         size: 3432214,
         uploadedAt: '3032',
         url: 'www.google.com',
@@ -25,7 +25,7 @@ export const FileReceiveService = {
       {
         projectId: projectId,
         id: '3333',
-        name: 'fack file 3',
+        name: 'fake file 3',
         size: 8928397,
         uploadedAt: '3032',
         url: 'www.google.com',
@@ -33,7 +33,7 @@ export const FileReceiveService = {
       {
         projectId: projectId,
         id: '444',
-        name: 'fack file 4',
+        name: 'fake file 4',
         size: 8767,
         uploadedAt: '3032',
         url: 'www.google.com',

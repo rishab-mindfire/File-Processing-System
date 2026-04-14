@@ -63,6 +63,7 @@ export default function Login() {
         <div className={styles.inputGroup}>
           <label htmlFor="email">Email Address</label>
           <input
+            id="email"
             type="email"
             placeholder="Email"
             value={formState.email}
@@ -88,6 +89,7 @@ export default function Login() {
           <label htmlFor="password">Password</label>
           <input
             type="password"
+            id="password"
             placeholder="Password"
             value={formState.password}
             className={`${styles.input} ${formState.errors.password ? styles.inputError : ''}`}

@@ -9,7 +9,7 @@ import Loader from '../../components/common/Loader';
 import { usePagination } from '../../hooks/usePagination';
 
 export default function ProjectList() {
-  const [state, dispatch] = useReducer(projectReducer, initialState);
+  const [projectState, dispatch] = useReducer(projectReducer, initialState);
   const {
     currentData,
     currentPage,
@@ -18,7 +18,7 @@ export default function ProjectList() {
     prevPage,
     hasPrevPage,
     hasNextPage,
-  } = usePagination(state.projects, 10);
+  } = usePagination(projectState.projects, 10);
   const [isCreateOpen, setIsCreateOpen] = useState(false);
   const [projectToDelete, setProjectToDelete] = useState<string | null>(null);
 
@@ -71,9 +71,9 @@ export default function ProjectList() {
     }
   };
 
-  if (state.loading)
+  if (projectState.loading)
     return (
-      <div className={styles.spinner}>
+      <div className={styles.spinner} data-testid="loader">
         <Loader />
       </div>
     );
@@ -89,7 +89,7 @@ export default function ProjectList() {
         </button>
       </header>
 
-      {state.projects.length === 0 ? (
+      {projectState.projects.length === 0 ? (
         <div className={styles.noProjectFound}>No projects found.</div>
       ) : (
         <div className={styles.tableContainer}>
