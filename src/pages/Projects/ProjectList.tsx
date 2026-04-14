@@ -196,16 +196,18 @@ export default function ProjectList() {
         isOpen={!!projectToDelete}
         onClose={() => setProjectToDelete(null)}
         title="Confirm Delete">
-        <p>Are you sure you want to delete this project ?</p>
-        <div className={styles.modalActions}>
-          <button
-            onClick={() => setProjectToDelete(null)}
-            className={styles.btnSecondary}>
-            Cancel
-          </button>
-          <button onClick={confirmDelete} className={styles.btnDanger}>
-            Confirm Delete
-          </button>
+        <div className={styles.form}>
+          <p>Are you sure you want to delete this project ?</p>
+          <div className={styles.modalActions}>
+            <button
+              onClick={() => setProjectToDelete(null)}
+              className={styles.createProject}>
+              Cancel
+            </button>
+            <button onClick={confirmDelete} className={styles.confirmDltBtn}>
+              Confirm Delete
+            </button>
+          </div>
         </div>
       </Modal>
     </div>
