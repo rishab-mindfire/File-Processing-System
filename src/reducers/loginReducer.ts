@@ -7,10 +7,7 @@ export const initialLoginState: LoginState = {
   errors: {},
 };
 
-export function loginReducer(
-  state: LoginState,
-  action: LoginAction,
-): LoginState {
+export function loginReducer(state: LoginState, action: LoginAction): LoginState {
   switch (action.type) {
     case 'SET_FIELD':
       return {

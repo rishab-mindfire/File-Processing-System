@@ -12,15 +12,14 @@ export default function ProjectDetails() {
 
   const project = MOCK_PROJECTS.find((p) => p.id === projectId);
 
-  if (!project || !projectId)
+  if (!project || !projectId) {
     return <div className={styles.noProjects}>Project not found.</div>;
+  }
 
   return (
     <div className={styles.container}>
       <header className={styles.header}>
-        <button
-          onClick={() => navigate('/projects')}
-          className={styles.backBtn}>
+        <button onClick={() => navigate('/projects')} className={styles.backBtn}>
           &larr; Back
         </button>
         <h1>{project.name}</h1>
@@ -31,14 +30,8 @@ export default function ProjectDetails() {
       </section>
 
       <div className={styles.grid}>
-        <FileSection
-          projectId={projectId}
-          onStartZip={(ids) => setJobTrigger(ids)}
-        />
-        <ZipSection
-          newJobSignal={jobTrigger}
-          onSignalProcessed={() => setJobTrigger(null)}
-        />
+        <FileSection projectId={projectId} onStartZip={(ids) => setJobTrigger(ids)} />
+        <ZipSection newJobSignal={jobTrigger} onSignalProcessed={() => setJobTrigger(null)} />
       </div>
     </div>
   );

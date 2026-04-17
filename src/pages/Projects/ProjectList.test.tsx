@@ -114,9 +114,7 @@ describe('ProjectList Component', () => {
     await user.click(deleteButtons[0]);
 
     // Check if Modal is open
-    expect(
-      screen.getByText(/are you sure you want to delete/i),
-    ).toBeInTheDocument();
+    expect(screen.getByText(/are you sure you want to delete/i)).toBeInTheDocument();
 
     // Confirm Delete
     await user.click(screen.getByRole('button', { name: /confirm delete/i }));
@@ -128,9 +126,7 @@ describe('ProjectList Component', () => {
   });
   //api call fails
   it('should show error message if API fails', async () => {
-    vi.mocked(projectService.getAllProjects).mockRejectedValue(
-      new Error('API Error'),
-    );
+    vi.mocked(projectService.getAllProjects).mockRejectedValue(new Error('API Error'));
 
     render(
       <MemoryRouter>

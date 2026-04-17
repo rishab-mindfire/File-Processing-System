@@ -42,9 +42,8 @@ export default function Login() {
     } catch (error: unknown) {
       dispatch({
         type: 'SET_ERRORS',
-        payload: { general: 'Login failed' },
+        payload: { general: `Login faile ${error}` },
       });
-      console.log(error);
     } finally {
       dispatch({ type: 'SET_LOADING', payload: false });
     }
@@ -52,10 +51,7 @@ export default function Login() {
 
   return (
     <div className={styles.loginContainer}>
-      <form
-        onSubmit={handleSubmit}
-        className={styles.loginForm}
-        aria-labelledby="login-title">
+      <form onSubmit={handleSubmit} className={styles.loginForm} aria-labelledby="login-title">
         <h2 id="login-title" className={styles.title}>
           Login
         </h2>
@@ -69,9 +65,7 @@ export default function Login() {
             value={formState.email}
             className={`${styles.input} ${formState.errors.email ? styles.inputError : ''}`}
             aria-invalid={!!formState.errors.email}
-            aria-describedby={
-              formState.errors.email ? 'email-error' : undefined
-            }
+            aria-describedby={formState.errors.email ? 'email-error' : undefined}
             onChange={(e) =>
               dispatch({
                 type: 'SET_FIELD',
@@ -94,9 +88,7 @@ export default function Login() {
             value={formState.password}
             className={`${styles.input} ${formState.errors.password ? styles.inputError : ''}`}
             aria-invalid={!!formState.errors.password}
-            aria-describedby={
-              formState.errors.password ? 'password-error' : undefined
-            }
+            aria-describedby={formState.errors.password ? 'password-error' : undefined}
             onChange={(e) =>
               dispatch({
                 type: 'SET_FIELD',
@@ -106,9 +98,7 @@ export default function Login() {
             }
           />
           {formState.errors.password && (
-            <span className={styles.fieldError}>
-              {formState.errors.password}
-            </span>
+            <span className={styles.fieldError}>{formState.errors.password}</span>
           )}
         </div>
 

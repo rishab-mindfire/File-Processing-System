@@ -42,9 +42,5 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     dispatch({ type: 'LOGOUT' });
   };
 
-  return (
-    <AuthContext.Provider value={{ state, login, logout }}>
-      {children}
-    </AuthContext.Provider>
-  );
+  return <AuthContext.Provider value={{ state, login, logout }}>{children}</AuthContext.Provider>;
 };

@@ -42,7 +42,8 @@ const Header: React.FC = () => {
         onClick={toggleMenu}
         aria-label="Toggle navigation menu"
         aria-expanded={isOpen}
-        aria-controls="main-navigation">
+        aria-controls="main-navigation"
+      >
         <div className={styles.line} aria-hidden="true"></div>
         <div className={styles.line} aria-hidden="true"></div>
         <div className={styles.line} aria-hidden="true"></div>
@@ -52,7 +53,8 @@ const Header: React.FC = () => {
       <nav
         id="main-navigation"
         className={`${styles.navContainer} ${isOpen ? styles.navActive : ''}`}
-        aria-label="Primary Navigation">
+        aria-label="Primary Navigation"
+      >
         <ul className={styles.navLinks}>
           <li className={styles.mobileLogout}>
             <button className={styles.btnLogout} onClick={handleLogout}>

@@ -42,8 +42,8 @@ export const FileReceiveService = {
   },
 
   // delete file
-  delete: async (projectId: string, fileId: string): Promise<void> => {
+  delete: async (): Promise<void> => {
     //url: `/api/projects/${projectId}/files/${fileId}`
-    console.log({ projectId: projectId, fileId: fileId });
+    //console.log({ projectId: projectId, fileId: fileId });
   },
 };

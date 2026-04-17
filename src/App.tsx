@@ -6,13 +6,12 @@ import { useAuth } from './hooks/useAuth';
 import ProjectList from './pages/Projects/ProjectList';
 import Layout from './components/layout/Layout';
 import ProjectDetails from './pages/ProjectDetails/ProjectDetails';
+import type { JSX } from 'react';
 
-const RootRedirect = () => {
+const RootRedirect = (): JSX.Element => {
   const { state } = useAuth();
 
-  return (
-    <Navigate to={state.isAuthenticated ? '/projects' : '/login'} replace />
-  );
+  return <Navigate to={state.isAuthenticated ? '/projects' : '/login'} replace />;
 };
 
 function App() {

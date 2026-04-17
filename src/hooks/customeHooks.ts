@@ -1,6 +1,8 @@
 // formate bytes
 export const formatBytes = (bytes: number): string => {
-  if (bytes === 0) return '0 Bytes';
+  if (bytes === 0) {
+    return '0 Bytes';
+  }
   const k = 1024;
   const sizes = ['Bytes', 'KB', 'MB', 'GB'];
   const i = Math.floor(Math.log(bytes) / Math.log(k));
@@ -8,8 +10,7 @@ export const formatBytes = (bytes: number): string => {
 };
 
 // fack delay
-export const delay = (ms: number) =>
-  new Promise((resolve) => setTimeout(resolve, ms));
+export const delay = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
 
 // --  file Validations for size check
 export const validateFiles = (files: File[], maxSizeMB: number = 5) => {

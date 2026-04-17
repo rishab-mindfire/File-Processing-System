@@ -11,7 +11,9 @@ interface ModalProps {
 const Modal: React.FC<ModalProps> = ({ isOpen, onClose, title, children }) => {
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') onClose();
+      if (e.key === 'Escape') {
+        onClose();
+      }
     };
 
     if (isOpen) {
@@ -26,7 +28,9 @@ const Modal: React.FC<ModalProps> = ({ isOpen, onClose, title, children }) => {
     };
   }, [isOpen, onClose]);
 
-  if (!isOpen) return null;
+  if (!isOpen) {
+    return null;
+  }
 
   return (
     <div className={styles.overlay} onClick={onClose}>

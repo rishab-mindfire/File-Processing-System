@@ -58,9 +58,7 @@ describe('Login Form Integration', () => {
 
     // Verify validation messages appear
     expect(await screen.findByText(/email is required/i)).toBeInTheDocument();
-    expect(
-      await screen.findByText(/password is required/i),
-    ).toBeInTheDocument();
+    expect(await screen.findByText(/password is required/i)).toBeInTheDocument();
 
     // check API will be not called here until validation
     expect(loginApi).not.toHaveBeenCalled();

@@ -6,10 +6,7 @@ import { FileUploadService } from '../../../services/FileUploadService';
 import { formatBytes, validateFiles } from '../../../hooks/customeHooks';
 import Modal from '../../../components/modal/Modal';
 
-export const FileSection: React.FC<FileSectionProps> = ({
-  projectId,
-  onStartZip,
-}) => {
+export const FileSection: React.FC<FileSectionProps> = ({ projectId, onStartZip }) => {
   const [files, setFiles] = useState<FileItem[]>([]);
   const [selectedFileIds, setSelectedFileIds] = useState<string[]>([]);
   const [isUploading, setIsUploading] = useState(false);
@@ -23,7 +20,7 @@ export const FileSection: React.FC<FileSectionProps> = ({
   const [isPreviewOpen, setIsPreviewOpen] = useState(false);
 
   useEffect(() => {
-    FileReceiveService.list(projectId).then(setFiles).catch(console.error);
+    FileReceiveService.list(projectId).then(setFiles).catch();
   }, [projectId]);
 
   // Clean up blob URLs to prevent memory leaks
@@ -32,7 +29,9 @@ export const FileSection: React.FC<FileSectionProps> = ({
   }, [previewUrls]);
 
   const handleFileSelection = (selectedFiles: FileList | null) => {
-    if (!selectedFiles || !projectId) return;
+    if (!selectedFiles || !projectId) {
+      return;
+    }
 
     const fileArray = Array.from(selectedFiles);
     const urls = fileArray.map((file) => URL.createObjectURL(file));
@@ -79,16 +78,13 @@ export const FileSection: React.FC<FileSectionProps> = ({
       await FileReceiveService.delete(projectId, fileId);
       setFiles((prev) => prev.filter((f) => f.id !== fileId));
     } catch (err) {
-      console.log(err);
-      alert('Delete failed');
+      alert(`Delete failed ${err}`);
     }
   };
 
   return (
     <section className={styles.fileSection}>
-      {uploadError && (
-        <div className={styles.validationErrro}>{uploadError}</div>
-      )}
+      {uploadError && <div className={styles.validationErrro}>{uploadError}</div>}
 
       <div
         className={styles.dropZone}
@@ -97,15 +93,13 @@ export const FileSection: React.FC<FileSectionProps> = ({
           e.preventDefault();
           handleFileSelection(e.dataTransfer.files);
         }}
-        onClick={() => !isUploading && fileInputRef.current?.click()}>
+        onClick={() => !isUploading && fileInputRef.current?.click()}
+      >
         {isUploading ? (
           <div className={styles.uploadingState}>
             <p>Uploading... {uploadProgress}%</p>
             <div className={styles.progressTrack}>
-              <div
-                className={styles.progressBar}
-                style={{ width: `${uploadProgress}%` }}
-              />
+              <div className={styles.progressBar} style={{ width: `${uploadProgress}%` }} />
             </div>
           </div>
         ) : (
@@ -132,7 +126,8 @@ export const FileSection: React.FC<FileSectionProps> = ({
               setSelectedFileIds([]);
             }}
             disabled={selectedFileIds.length === 0}
-            className={styles.zipBtn}>
+            className={styles.zipBtn}
+          >
             Create ZIP Job
           </button>
         </div>
@@ -156,9 +151,7 @@ export const FileSection: React.FC<FileSectionProps> = ({
                         checked={selectedFileIds.includes(f.id)}
                         onChange={() =>
                           setSelectedFileIds((prev) =>
-                            prev.includes(f.id)
-                              ? prev.filter((i) => i !== f.id)
-                              : [...prev, f.id],
+                            prev.includes(f.id) ? prev.filter((i) => i !== f.id) : [...prev, f.id],
                           )
                         }
                       />
@@ -166,9 +159,7 @@ export const FileSection: React.FC<FileSectionProps> = ({
                     <td>{f.name}</td>
                     <td>{formatBytes(f.size)}</td>
                     <td>
-                      <button
-                        onClick={() => handleDeleteFile(f.id)}
-                        className={styles.deleteBtn}>
+                      <button onClick={() => handleDeleteFile(f.id)} className={styles.deleteBtn}>
                         Delete
                       </button>
                     </td>
@@ -190,16 +181,13 @@ export const FileSection: React.FC<FileSectionProps> = ({
       <Modal
         isOpen={isPreviewOpen}
         onClose={() => setIsPreviewOpen(false)}
-        title="Preview Selected Files">
+        title="Preview Selected Files"
+      >
         <div className={styles.previewGrid}>
           {previewUrls.map((url, idx) => (
             <div key={idx} className={styles.previewItem}>
               {pendingFiles[idx]?.type.startsWith('image/') ? (
-                <img
-                  src={url}
-                  alt="preview thumb"
-                  className={styles.previewImage}
-                />
+                <img src={url} alt="preview thumb" className={styles.previewImage} />
               ) : (
                 <div className={styles.filePlaceholder}>
                   {pendingFiles[idx]?.name.split('.').pop()?.toUpperCase()}
@@ -211,9 +199,7 @@ export const FileSection: React.FC<FileSectionProps> = ({
         </div>
 
         <div className={styles.modalActions}>
-          <button
-            onClick={() => setIsPreviewOpen(false)}
-            className={styles.cancelBtn}>
+          <button onClick={() => setIsPreviewOpen(false)} className={styles.cancelBtn}>
             Cancel
           </button>
           <button onClick={uploadOnServer} className={styles.saveBtn}>

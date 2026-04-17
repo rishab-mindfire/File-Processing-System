@@ -18,7 +18,7 @@ export const ZipService = {
         if (progress >= 100) {
           clearInterval(interval);
           resolve({
-            fileName: `filename.zip`,
+            fileName: 'filename.zip',
             size: fileIds.length * 1024 * 50,
             base64: 'base 64 fack',
           });

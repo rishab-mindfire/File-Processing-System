@@ -6,10 +6,7 @@ export const initialState: ProjectState = {
   error: null,
 };
 // project reducer
-export function projectReducer(
-  state: ProjectState,
-  action: ProjectAction,
-): ProjectState {
+export function projectReducer(state: ProjectState, action: ProjectAction): ProjectState {
   switch (action.type) {
     case 'FETCH_START':
       return { ...state, loading: true, error: null };

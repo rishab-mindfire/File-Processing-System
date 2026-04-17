@@ -15,7 +15,9 @@ export const FileUploadService = {
     const progressInterval = setInterval(() => {
       progress += 20;
       onProgress(progress);
-      if (progress >= 100) clearInterval(progressInterval);
+      if (progress >= 100) {
+        clearInterval(progressInterval);
+      }
     }, 500);
     setTimeout(() => {
       // Success path mock data add
@@ -28,7 +30,6 @@ export const FileUploadService = {
         url: '',
       }));
       onSuccess(successFiles);
-      console.log(onError);
     }, 5000);
   },
 };

@@ -12,10 +12,7 @@ interface JobWithData extends Job {
   base64?: string;
 }
 
-export const ZipSection: React.FC<ZipSectionProps> = ({
-  newJobSignal,
-  onSignalProcessed,
-}) => {
+export const ZipSection: React.FC<ZipSectionProps> = ({ newJobSignal, onSignalProcessed }) => {
   const [jobs, setJobs] = useState<JobWithData[]>([]);
 
   const lastProcessedSignalRef = useRef<string | null>(null);
@@ -36,9 +33,7 @@ export const ZipSection: React.FC<ZipSectionProps> = ({
       const result = await ZipService.createZip(fileIds, (percent: number) => {
         setJobs((currentJobs) =>
           currentJobs.map((j) =>
-            j.id === jobId
-              ? { ...j, progress: percent, status: 'PROCESSING' }
-              : j,
+            j.id === jobId ? { ...j, progress: percent, status: 'PROCESSING' } : j,
           ),
         );
       });
@@ -58,26 +53,20 @@ export const ZipSection: React.FC<ZipSectionProps> = ({
         ),
       );
     } catch (error) {
-      console.error('Zip generation failed:', error);
-
-      setJobs((currentJobs) =>
-        currentJobs.map((j) =>
-          j.id === jobId ? { ...j, status: 'FAILED' } : j,
-        ),
-      );
+      if (error) {
+        setJobs((currentJobs) =>
+          currentJobs.map((j) => (j.id === jobId ? { ...j, status: 'FAILED' } : j)),
+        );
+      }
     }
   }, []);
 
   useEffect(() => {
     const signalKey: string | null = newJobSignal?.join(',') ?? null;
 
-    if (
-      newJobSignal &&
-      newJobSignal.length > 0 &&
-      signalKey !== lastProcessedSignalRef.current
-    ) {
+    if (newJobSignal && newJobSignal.length > 0 && signalKey !== lastProcessedSignalRef.current) {
       lastProcessedSignalRef.current = signalKey;
-      // eslint-disable-next-line
+
       handleNewZipRequest(newJobSignal);
     }
   }, [newJobSignal, handleNewZipRequest]);
@@ -117,25 +106,19 @@ export const ZipSection: React.FC<ZipSectionProps> = ({
               </div>
 
               <div className={styles.progressTrack}>
-                <div
-                  className={styles.progressBar}
-                  style={{ width: `${job.progress}%` }}
-                />
+                <div className={styles.progressBar} style={{ width: `${job.progress}%` }} />
               </div>
 
               {job.status === 'COMPLETED' && job.base64 && (
                 <button
-                  onClick={() =>
-                    triggerDownload(job.base64 as string, job.fileName)
-                  }
-                  className={styles.download}>
+                  onClick={() => triggerDownload(job.base64 as string, job.fileName)}
+                  className={styles.download}
+                >
                   Download
                 </button>
               )}
 
-              {job.status === 'FAILED' && (
-                <span className={styles.error}>Failed</span>
-              )}
+              {job.status === 'FAILED' && <span className={styles.error}>Failed</span>}
             </div>
           ))}
         </div>
