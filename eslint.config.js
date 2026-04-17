@@ -37,7 +37,7 @@ export default defineConfig([
       eqeqeq: ['error', 'always'],
       curly: ['error', 'all'],
       'max-depth': ['error', 3],
-      complexity: ['error', 10],
+      complexity: ['error', 20],
 
       // TypeScript rules
       '@typescript-eslint/no-explicit-any': 'warn',

@@ -1,10 +1,9 @@
 import React, { useRef, useState, useEffect } from 'react';
 import styles from '../ProjectDetails.module.css';
 import type { FileItem, FileSectionProps } from '../../../models/Types';
-import { FileReceiveService } from '../../../services/FileReceiveService';
-import { FileUploadService } from '../../../services/FileUploadService';
 import { formatBytes, validateFiles } from '../../../hooks/customeHooks';
 import Modal from '../../../components/modal/Modal';
+import { FileService } from '../../../services/fileService';
 
 export const FileSection: React.FC<FileSectionProps> = ({ projectId, onStartZip }) => {
   const [files, setFiles] = useState<FileItem[]>([]);
@@ -20,8 +19,8 @@ export const FileSection: React.FC<FileSectionProps> = ({ projectId, onStartZip 
   const [isPreviewOpen, setIsPreviewOpen] = useState(false);
 
   useEffect(() => {
-    FileReceiveService.list(projectId).then(setFiles).catch();
-  }, [projectId]);
+    FileService.listFile(projectId).then(setFiles).catch();
+  }, []);
 
   // Clean up blob URLs to prevent memory leaks
   useEffect(() => {
@@ -41,7 +40,7 @@ export const FileSection: React.FC<FileSectionProps> = ({ projectId, onStartZip 
     setIsPreviewOpen(true);
   };
 
-  const uploadOnServer = () => {
+  const uploadOnServer = async () => {
     const error = validateFiles(pendingFiles);
     if (error?.errors.length > 0) {
       setUploadError(error.errors[0]);
@@ -51,33 +50,39 @@ export const FileSection: React.FC<FileSectionProps> = ({ projectId, onStartZip 
 
     setIsPreviewOpen(false);
     setIsUploading(true);
+    setUploadProgress(0);
     setUploadError(null);
+    try {
+      setIsUploading(true);
+      setUploadError('');
+      setUploadProgress(0);
+      const newFiles = await FileService.uploadFile(projectId, pendingFiles, setUploadProgress);
 
-    FileUploadService.upload(
-      projectId,
-      pendingFiles,
-      (percent) => setUploadProgress(percent),
-      (newFiles) => {
-        setFiles((prev) => [...newFiles, ...prev]);
-        setIsUploading(false);
-        setPendingFiles([]);
-        setPreviewUrls([]);
-      },
-      async (err, mockRecoveredFiles) => {
-        setUploadError(err);
-        setIsUploading(false);
-        if (mockRecoveredFiles) {
-          setFiles((prev) => [...mockRecoveredFiles, ...prev]);
-        }
-      },
-    );
+      // SUCCESS
+      setFiles((prev) => [...newFiles, ...prev]);
+      console.log('Uploaded files:', newFiles);
+    } catch (err: any) {
+      console.error('ERROR:', err);
+      console.error('MESSAGE:', err?.message);
+      console.error('STATUS:', err?.response?.status);
+      console.error('BACKEND DATA:', err?.response?.data);
+
+      setUploadError(err.message || 'Upload failed');
+    } finally {
+      setIsUploading(false);
+    }
   };
 
-  const handleDeleteFile = async (fileId: string) => {
+  const handleDeleteFile = async (fieldId: string) => {
+    const prevFiles = files;
+    // optimistic update UI
+    setFiles((prev) => prev.filter((f) => f._id !== fieldId));
+
     try {
-      await FileReceiveService.delete(projectId, fileId);
-      setFiles((prev) => prev.filter((f) => f.id !== fileId));
+      await FileService.deleteFile(projectId, fieldId);
     } catch (err) {
+      // rollback UI
+      setFiles(prevFiles);
       alert(`Delete failed ${err}`);
     }
   };
@@ -144,14 +149,16 @@ export const FileSection: React.FC<FileSectionProps> = ({ projectId, onStartZip 
             <tbody>
               {files.length > 0 ? (
                 files.map((f) => (
-                  <tr key={f.id} className={styles.tableRow}>
+                  <tr key={f._id} className={styles.tableRow}>
                     <td>
                       <input
                         type="checkbox"
-                        checked={selectedFileIds.includes(f.id)}
+                        checked={selectedFileIds.includes(f._id)}
                         onChange={() =>
                           setSelectedFileIds((prev) =>
-                            prev.includes(f.id) ? prev.filter((i) => i !== f.id) : [...prev, f.id],
+                            prev.includes(f._id)
+                              ? prev.filter((i) => i !== f._id)
+                              : [...prev, f._id],
                           )
                         }
                       />
@@ -159,7 +166,7 @@ export const FileSection: React.FC<FileSectionProps> = ({ projectId, onStartZip 
                     <td>{f.name}</td>
                     <td>{formatBytes(f.size)}</td>
                     <td>
-                      <button onClick={() => handleDeleteFile(f.id)} className={styles.deleteBtn}>
+                      <button onClick={() => handleDeleteFile(f._id)} className={styles.deleteBtn}>
                         Delete
                       </button>
                     </td>
@@ -187,7 +194,7 @@ export const FileSection: React.FC<FileSectionProps> = ({ projectId, onStartZip 
           {previewUrls.map((url, idx) => (
             <div key={idx} className={styles.previewItem}>
               {pendingFiles[idx]?.type.startsWith('image/') ? (
-                <img src={url} alt="preview thumb" className={styles.previewImage} />
+                <img src={url} alt="preview" className={styles.previewImage} />
               ) : (
                 <div className={styles.filePlaceholder}>
                   {pendingFiles[idx]?.name.split('.').pop()?.toUpperCase()}

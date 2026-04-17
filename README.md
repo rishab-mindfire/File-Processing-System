@@ -1,4 +1,5 @@
 <<<<<<< HEAD
+
 # React + TypeScript + Vite
 
 This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
@@ -41,15 +42,15 @@ export default defineConfig([
       // other options...
     },
   },
-])
+]);
 ```
 
 You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
 
 ```js
 // eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+import reactX from 'eslint-plugin-react-x';
+import reactDom from 'eslint-plugin-react-dom';
 
 export default defineConfig([
   globalIgnores(['dist']),
@@ -70,9 +71,13 @@ export default defineConfig([
       // other options...
     },
   },
-])
+]);
 ```
+
 =======
+
 # File-Processing-System
+
 A frontend project created using react+ts. where authentication process, project management, file upload and background job tracking will be there.
->>>>>>> 0d66857a29b43df0964ae3bae28b7169de462abe
+
+> > > > > > > 0d66857a29b43df0964ae3bae28b7169de462abe

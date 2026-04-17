@@ -5,7 +5,7 @@ import { AuthContext } from './AuthContext';
 
 type Action = { type: 'LOGIN'; payload: string } | { type: 'LOGOUT' };
 
-const token = localStorage.getItem('token');
+const token = localStorage.getItem('File-System');
 
 const initialState: AuthState = {
   token,
@@ -33,12 +33,12 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [state, dispatch] = useReducer(reducer, initialState);
 
   const login = (token: string) => {
-    localStorage.setItem('token', token);
+    localStorage.setItem('File-System', token);
     dispatch({ type: 'LOGIN', payload: token });
   };
 
   const logout = () => {
-    localStorage.removeItem('token');
+    localStorage.removeItem('File-System');
     dispatch({ type: 'LOGOUT' });
   };
 

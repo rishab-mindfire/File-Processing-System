@@ -16,25 +16,34 @@ export type LoginAction =
   | { type: 'SET_ERRORS'; payload: Errors }
   | { type: 'RESET' };
 export interface Errors {
-  email?: string;
-  password?: string;
+  userEmail?: string;
+  userPassword?: string;
   general?: string;
 }
 export interface LoginState {
-  email: string;
-  password: string;
+  userEmail: string;
+  userPassword: string;
   loading: boolean;
   errors: Errors;
 }
 
+export type LoginResponse = {
+  token: string;
+};
+
 // project management
 export interface Project {
-  id: string;
-  name: string;
+  _id: string;
+  projectName: string;
   description: string;
-  filesCount: number;
-  jobsCount: number;
+  totalFiles: number;
+  totalZips: number;
   createdAt: string;
+}
+// create new Project
+export interface CreateNewProject {
+  projectName: string;
+  projectDescription?: string;
 }
 export type ProjectState = {
   projects: Project[];
@@ -51,8 +60,7 @@ export type ProjectAction =
 
 // file management
 export interface FileItem {
-  projectId?: string;
-  id: string;
+  _id: string;
   name: string;
   size: number;
   uploadedAt: string;
@@ -61,7 +69,7 @@ export interface FileItem {
 
 // zip job management
 export interface Job {
-  id: string;
+  _id: string;
   status: 'PENDING' | 'PROCESSING' | 'COMPLETED' | 'FAILED';
   progress: number;
   fileName: string;
@@ -73,6 +81,6 @@ export interface FileSectionProps {
 export type JobState = { jobs: Job[] };
 export type JobAction =
   | { type: 'ADD_JOB'; payload: Job }
-  | { type: 'UPDATE_PROGRESS'; payload: { id: string; progress: number } }
+  | { type: 'UPDATE_PROGRESS'; payload: { _id: string; progress: number } }
   | { type: 'COMPLETE_JOB'; payload: string }
   | { type: 'FAIL_JOB'; payload: string };

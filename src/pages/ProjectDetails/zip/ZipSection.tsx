@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import styles from '../ProjectDetails.module.css';
 import type { Job } from '../../../models/Types';
-import { ZipService } from '../../../services/ZipService';
+import { ZipService } from '../../../services/zipService';
 
 interface ZipSectionProps {
   newJobSignal: string[] | null;

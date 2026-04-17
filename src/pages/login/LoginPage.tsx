@@ -1,5 +1,6 @@
 import { useReducer } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { AxiosError } from 'axios';
 import { useAuth } from '../../hooks/useAuth';
 import styles from './Login.module.css';
 import type { Errors } from '../../models/Types';
@@ -11,38 +12,46 @@ export default function Login() {
   const { login } = useAuth();
   const navigate = useNavigate();
 
-  // handle submit form
   const handleSubmit = async (e: React.SyntheticEvent) => {
     e.preventDefault();
+
     const newErrors: Errors = {};
 
-    // Validation Logic
-    if (!formState.email) {
-      newErrors.email = 'Email is required';
+    // Validation
+    if (!formState.userEmail) {
+      newErrors.userEmail = 'Email is required';
     }
-    if (!formState.password) {
-      newErrors.password = 'Password is required';
-    } else if (formState.password.length < 5) {
-      newErrors.password = 'Password must be at least 5 characters';
+
+    if (!formState.userPassword) {
+      newErrors.userPassword = 'Password is required';
+    } else if (formState.userPassword.length < 5) {
+      newErrors.userPassword = 'Password must be at least 5 characters';
     }
+
     if (Object.keys(newErrors).length > 0) {
       dispatch({ type: 'SET_ERRORS', payload: newErrors });
       return;
     }
 
-    // API Call will be here for login
     dispatch({ type: 'SET_LOADING', payload: true });
+
     try {
       const token = await loginApi({
-        email: formState.email,
-        password: formState.password,
+        userEmail: formState.userEmail,
+        userPassword: formState.userPassword,
       });
+
       login(token);
       navigate('/projects');
     } catch (error: unknown) {
+      let message = 'Login failed';
+
+      if (error instanceof AxiosError) {
+        message = error.response?.data?.details || error.response?.data?.message || error.message;
+      }
       dispatch({
         type: 'SET_ERRORS',
-        payload: { general: `Login faile ${error}` },
+        payload: { general: message },
       });
     } finally {
       dispatch({ type: 'SET_LOADING', payload: false });
@@ -51,63 +60,65 @@ export default function Login() {
 
   return (
     <div className={styles.loginContainer}>
-      <form onSubmit={handleSubmit} className={styles.loginForm} aria-labelledby="login-title">
-        <h2 id="login-title" className={styles.title}>
-          Login
-        </h2>
+      <form onSubmit={handleSubmit} className={styles.loginForm}>
+        <h2 className={styles.title}>Login</h2>
 
+        {/* EMAIL */}
         <div className={styles.inputGroup}>
           <label htmlFor="email">Email Address</label>
+
           <input
             id="email"
             type="email"
             placeholder="Email"
-            value={formState.email}
-            className={`${styles.input} ${formState.errors.email ? styles.inputError : ''}`}
-            aria-invalid={!!formState.errors.email}
-            aria-describedby={formState.errors.email ? 'email-error' : undefined}
+            value={formState.userEmail}
+            className={`${styles.input} ${formState.errors.userEmail ? styles.inputError : ''}`}
             onChange={(e) =>
               dispatch({
                 type: 'SET_FIELD',
-                field: 'email',
+                field: 'userEmail',
                 value: e.target.value,
               })
             }
           />
-          {formState.errors.email && (
-            <span className={styles.fieldError}>{formState.errors.email}</span>
+
+          {formState.errors.userEmail && (
+            <span className={styles.fieldError}>{formState.errors.userEmail}</span>
           )}
         </div>
 
+        {/* PASSWORD */}
         <div className={styles.inputGroup}>
           <label htmlFor="password">Password</label>
+
           <input
-            type="password"
             id="password"
+            type="password"
             placeholder="Password"
-            value={formState.password}
-            className={`${styles.input} ${formState.errors.password ? styles.inputError : ''}`}
-            aria-invalid={!!formState.errors.password}
-            aria-describedby={formState.errors.password ? 'password-error' : undefined}
+            value={formState.userPassword}
+            className={`${styles.input} ${formState.errors.userPassword ? styles.inputError : ''}`}
             onChange={(e) =>
               dispatch({
                 type: 'SET_FIELD',
-                field: 'password',
+                field: 'userPassword',
                 value: e.target.value,
               })
             }
           />
-          {formState.errors.password && (
-            <span className={styles.fieldError}>{formState.errors.password}</span>
+
+          {formState.errors.userPassword && (
+            <span className={styles.fieldError}>{formState.errors.userPassword}</span>
           )}
         </div>
 
+        {/* GENERAL ERROR */}
         {formState.errors.general && (
           <p className={styles.error} role="alert">
             {formState.errors.general}
           </p>
         )}
 
+        {/* BUTTON */}
         <button disabled={formState.loading} className={styles.button}>
           {formState.loading ? 'Logging in...' : 'Login'}
         </button>

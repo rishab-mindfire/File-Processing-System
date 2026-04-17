@@ -25,7 +25,7 @@ const Header: React.FC = () => {
 
   // log-out
   const handleLogout = () => {
-    localStorage.removeItem('file-processing-system');
+    localStorage.removeItem('File-System');
     logout();
     navigate('/login');
   };

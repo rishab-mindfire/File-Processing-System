@@ -3,6 +3,11 @@
   max-width: 1200px;
   margin: 0 auto;
 }
+.noProjectsData {
+  margin-top: 16px;
+  display: flex;
+  justify-content: center;
+}
 .noProjects {
   display: flex;
   justify-content: center;
@@ -30,9 +35,11 @@
   border-radius: 4px;
   cursor: pointer;
   white-space: nowrap;
+  color: #323f3c;
+  font-size: large;
 }
 .backBtn:hover {
-  transform: scale(1.1);
+  transform: scale(1.05);
   background-color: #cfcfcf;
 }
 .dropZone {
@@ -96,6 +103,7 @@
 .table tbody tr td {
   padding-top: 12px;
 }
+
 .fileNames {
   min-width: 180px;
 }
@@ -299,5 +307,9 @@
 
   .statusLabel {
     align-self: flex-start;
+  }
+
+  .fileNames {
+    min-width: 300px;
   }
 }

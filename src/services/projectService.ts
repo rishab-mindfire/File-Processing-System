@@ -1,45 +1,39 @@
-import { delay } from '../hooks/customeHooks';
-import type { Project } from '../models/Types';
-
-// ProjectList dummy list
-export const MOCK_PROJECTS: Project[] = [
-  {
-    id: '1',
-    name: 'Project 1',
-    description: 'Main production website assets files.',
-    filesCount: 5,
-    jobsCount: 1,
-    createdAt: new Date().toISOString().split('T')[0],
-  },
-  {
-    id: '2',
-    name: 'Project 2',
-    description: 'Backend documentation and files.',
-    filesCount: 2,
-    jobsCount: 0,
-    createdAt: new Date().toISOString().split('T')[0],
-  },
-];
+import axios, { type AxiosResponse } from 'axios';
+import type { CreateNewProject, Project } from '../models/Types';
+import { api } from './apiInterceptor';
 
 export const projectService = {
   // Project list :
   async getAllProjects(): Promise<Project[]> {
-    // API can Be called here
-    await delay(2000);
-    // throw new Error('Failed to fetch projects network err');
-    return [...MOCK_PROJECTS];
+    const response: AxiosResponse<Project[]> = await api.get('/projects');
+    return response.data;
   },
   // create project :
-  async createProject(name: string, description: string): Promise<Project> {
-    await delay(1000);
-    // API will be called here
-    return {
-      id: Math.random().toString(36),
-      name,
-      description,
-      filesCount: 0,
-      jobsCount: 0,
-      createdAt: new Date().toISOString(),
-    };
+  async createProject(payload: CreateNewProject): Promise<Project> {
+    try {
+      const response = await api.post<Project>('/projects', payload);
+      return response.data;
+    } catch (error: unknown) {
+      let message = 'Failed to create project';
+      if (axios.isAxiosError(error)) {
+        if (error.response?.status === 400) {
+          message = error?.response?.data?.error;
+        }
+      }
+      throw new Error(message);
+    }
+  },
+  // Get project by ID
+  async getProjectById(id: string): Promise<Project> {
+    const response: AxiosResponse<Project> = await api.get(`/projects/${id}`);
+    return response.data;
+  },
+  // delete Project
+  async deleteProject(id: string): Promise<string> {
+    // Axios will throw an error automatically if status is not 2xx
+    const response = await api.delete(`/projects/${id}`);
+
+    // Return the success message from the backend
+    return response.data.message || 'Project deleted successfully';
   },
 };
