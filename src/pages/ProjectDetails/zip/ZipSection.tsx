@@ -78,10 +78,7 @@ export const ZipSection: React.FC<ZipSectionProps> = ({
                       ...j,
                       status: statusRes.status,
                       progress: statusRes.progress ?? j.progress,
-                      fileName:
-                        statusRes.status === 'COMPLETED'
-                          ? statusRes.fileName //force replace
-                          : j.fileName,
+                      size: statusRes.size,
                     }
                   : j,
               ),
@@ -171,7 +168,10 @@ export const ZipSection: React.FC<ZipSectionProps> = ({
             <div key={job.jobId} className={styles.jobItem}>
               <div className={styles.jobInfo}>
                 <span className={styles.fileName}>{job.fileName}</span>
-                <span className={styles.statusLabel} data-status={job.status}>
+                <span
+                  className={`${styles.statusLabel} ${styles[job.status]}`}
+                  data-status={job.status}
+                >
                   {job.status}
                 </span>
               </div>

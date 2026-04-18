@@ -164,7 +164,6 @@
   font-size: 0.9rem;
   font-weight: 500;
 }
-
 .progressTrack {
   margin-top: 10px;
   background: #b8bcbf;
@@ -178,13 +177,33 @@
   height: 100%;
   transition: width 0.3s ease;
 }
+.PENDING {
+  color: #92400e;
+}
+.PROCESSING {
+  color: #1e40af;
+}
+.COMPLETED {
+  color: green;
+}
+
+/* FAILED */
+.FAILED {
+  background: #fee2e2;
+  color: #991b1b;
+}
 .download {
   padding: 3px;
   padding-inline: 13px;
-  background-color: #436b62;
+  background: linear-gradient(90deg, #436b62, #1f423b);
   border: none;
   border-radius: 4px;
   color: #ffffff;
+}
+.download:hover {
+  background-color: #436b62;
+  cursor: pointer;
+  scale: 1.05;
 }
 /*  model preview */
 .modalActions {
@@ -257,7 +276,6 @@
   border-radius: 4px;
   cursor: pointer;
 }
-
 .saveBtn {
   background: #007bff;
   color: white;
