@@ -22,12 +22,18 @@
 .table th,
 .table td {
   padding: 0.4rem;
-  text-align: left;
   border-bottom: 1px solid #eee;
 }
 .tableHeader {
   font-weight: 600;
   color: #436b62;
+  text-align: left;
+}
+.actionsCell {
+  text-align: center;
+}
+.projectName {
+  min-width: 200px;
 }
 .noProjectFound {
   min-height: 50vh;
@@ -36,11 +42,6 @@
   align-items: center;
   font-weight: 600;
   color: #436b62;
-}
-.actionsCell {
-  display: flex;
-  gap: 0.5rem;
-  justify-content: flex-start;
 }
 /* cancel */
 

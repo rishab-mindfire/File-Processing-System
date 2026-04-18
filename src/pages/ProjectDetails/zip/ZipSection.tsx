@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import styles from '../ProjectDetails.module.css';
 import type { Job } from '../../../models/Types';
-import { ZipService } from '../../../services/ZipService';
+import { ZipService } from '../../../services/zipService';
 
 interface ZipSectionProps {
   newJobSignal: string[] | null;
@@ -22,10 +22,11 @@ export const ZipSection: React.FC<ZipSectionProps> = ({
   const lastProcessedSignalRef = useRef<string | null>(null);
   const intervalsRef = useRef<Record<string, ReturnType<typeof setInterval>>>({});
 
-  // 🔥 fetch existing zip history
+  // fetch existing zip history
   const fetchZipList = async () => {
     try {
       const res = await ZipService.getZipList(projectId);
+      console.log(res);
       setZipHistory(res.data);
     } catch (err) {
       console.error('Failed to fetch zip list', err);
@@ -50,7 +51,7 @@ export const ZipSection: React.FC<ZipSectionProps> = ({
 
         setJobs((prev) => [newJob, ...prev]);
 
-        // 🔁 polling
+        // polling
         const interval = setInterval(async () => {
           try {
             const statusRes = await ZipService.getStatus(projectId, jobId);
@@ -64,7 +65,7 @@ export const ZipSection: React.FC<ZipSectionProps> = ({
                       progress: statusRes.progress ?? j.progress,
                       fileName:
                         statusRes.status === 'COMPLETED'
-                          ? statusRes.fileName // 🔥 force replace
+                          ? statusRes.fileName //force replace
                           : j.fileName,
                     }
                   : j,
@@ -75,7 +76,7 @@ export const ZipSection: React.FC<ZipSectionProps> = ({
               clearInterval(intervalsRef.current[jobId]);
               delete intervalsRef.current[jobId];
 
-              // 🔥 refresh list after completion
+              // refresh list after completion
               fetchZipList();
             }
 
@@ -116,7 +117,7 @@ export const ZipSection: React.FC<ZipSectionProps> = ({
     }
   }, [jobs, onSignalProcessed]);
 
-  // 🧹 cleanup
+  // cleanup
   useEffect(() => {
     return () => {
       Object.values(intervalsRef.current).forEach(clearInterval);

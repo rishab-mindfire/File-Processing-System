@@ -48,7 +48,7 @@ export const FileSection: React.FC<FileSectionProps> = ({ projectId, onStartZip 
       return;
     }
 
-    //Generate preview URLs
+    // Generate preview URLs
     const urls = validFiles.map((file) => URL.createObjectURL(file));
 
     setPendingFiles(validFiles);
@@ -229,7 +229,7 @@ export const FileSection: React.FC<FileSectionProps> = ({ projectId, onStartZip 
         </div>
       </div>
 
-      {/* Instant Preview Modal */}
+      {/* Preview Modal */}
       <Modal
         isOpen={isPreviewOpen}
         onClose={() => setIsPreviewOpen(false)}

@@ -138,7 +138,7 @@ export default function ProjectList() {
                 <th>Files</th>
                 <th>Jobs</th>
                 <th>Created Date</th>
-                <th>Actions</th>
+                <th className={styles.actionsCell}>Actions</th>
               </tr>
             </thead>
             <tbody>
