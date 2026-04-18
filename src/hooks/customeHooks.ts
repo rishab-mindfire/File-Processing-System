@@ -12,15 +12,16 @@ export const formatBytes = (bytes: number): string => {
 // fack delay
 export const delay = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
 
-// --  file Validations for size check
 export const validateFiles = (files: File[], maxSizeMB: number = 5) => {
   const maxBytes = maxSizeMB * 1024 * 1024;
   const validFiles: File[] = [];
   const errors: string[] = [];
 
   files.forEach((file) => {
+    const path = (file as any).webkitRelativePath || file.name;
+
     if (file.size > maxBytes) {
-      errors.push(`${file.name} is too large (max ${maxSizeMB}MB)`);
+      errors.push(`${path} is too large (max ${maxSizeMB}MB)`);
     } else {
       validFiles.push(file);
     }

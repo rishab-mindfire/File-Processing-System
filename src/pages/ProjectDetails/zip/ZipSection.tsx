@@ -1,72 +1,111 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import styles from '../ProjectDetails.module.css';
 import type { Job } from '../../../models/Types';
-import { ZipService } from '../../../services/zipService';
+import { ZipService } from '../../../services/ZipService';
 
 interface ZipSectionProps {
   newJobSignal: string[] | null;
   onSignalProcessed: () => void;
+  projectId: string;
 }
 
-interface JobWithData extends Job {
-  base64?: string;
-}
+interface JobWithData extends Job {}
 
-export const ZipSection: React.FC<ZipSectionProps> = ({ newJobSignal, onSignalProcessed }) => {
+export const ZipSection: React.FC<ZipSectionProps> = ({
+  projectId,
+  newJobSignal,
+  onSignalProcessed,
+}) => {
   const [jobs, setJobs] = useState<JobWithData[]>([]);
+  const [zipHistory, setZipHistory] = useState<any[]>([]);
 
   const lastProcessedSignalRef = useRef<string | null>(null);
+  const intervalsRef = useRef<Record<string, ReturnType<typeof setInterval>>>({});
 
-  const handleNewZipRequest = useCallback(async (fileIds: string[]) => {
-    const jobId = crypto.randomUUID();
-
-    const newJob: JobWithData = {
-      id: jobId,
-      status: 'PENDING',
-      progress: 0,
-      fileName: 'Preparing archive...',
-    };
-
-    setJobs((prev) => [newJob, ...prev]);
-
+  // 🔥 fetch existing zip history
+  const fetchZipList = async () => {
     try {
-      const result = await ZipService.createZip(fileIds, (percent: number) => {
-        setJobs((currentJobs) =>
-          currentJobs.map((j) =>
-            j.id === jobId ? { ...j, progress: percent, status: 'PROCESSING' } : j,
-          ),
-        );
-      });
-
-      //job store
-      setJobs((currentJobs) =>
-        currentJobs.map((j) =>
-          j.id === jobId
-            ? {
-                ...j,
-                status: 'COMPLETED',
-                progress: 100,
-                fileName: result.fileName,
-                base64: result.base64,
-              }
-            : j,
-        ),
-      );
-    } catch (error) {
-      if (error) {
-        setJobs((currentJobs) =>
-          currentJobs.map((j) => (j.id === jobId ? { ...j, status: 'FAILED' } : j)),
-        );
-      }
+      const res = await ZipService.getZipList(projectId);
+      setZipHistory(res.data);
+    } catch (err) {
+      console.error('Failed to fetch zip list', err);
     }
+  };
+
+  useEffect(() => {
+    fetchZipList();
   }, []);
+
+  const handleNewZipRequest = useCallback(
+    async (fileIds: string[]) => {
+      try {
+        const { jobId } = await ZipService.createZip(projectId, fileIds);
+
+        const newJob: JobWithData = {
+          jobId,
+          status: 'PENDING',
+          progress: 0,
+          fileName: 'Preparing archive...',
+        };
+
+        setJobs((prev) => [newJob, ...prev]);
+
+        // 🔁 polling
+        const interval = setInterval(async () => {
+          try {
+            const statusRes = await ZipService.getStatus(projectId, jobId);
+
+            setJobs((currentJobs) =>
+              currentJobs.map((j) =>
+                j.jobId === jobId
+                  ? {
+                      ...j,
+                      status: statusRes.status,
+                      progress: statusRes.progress ?? j.progress,
+                      fileName:
+                        statusRes.status === 'COMPLETED'
+                          ? statusRes.fileName // 🔥 force replace
+                          : j.fileName,
+                    }
+                  : j,
+              ),
+            );
+
+            if (statusRes.status === 'COMPLETED') {
+              clearInterval(intervalsRef.current[jobId]);
+              delete intervalsRef.current[jobId];
+
+              // 🔥 refresh list after completion
+              fetchZipList();
+            }
+
+            if (statusRes.status === 'FAILED') {
+              clearInterval(intervalsRef.current[jobId]);
+              delete intervalsRef.current[jobId];
+            }
+          } catch (err) {
+            clearInterval(intervalsRef.current[jobId]);
+            delete intervalsRef.current[jobId];
+
+            setJobs((jobs) =>
+              jobs.map((j) => (j.jobId === jobId ? { ...j, status: 'FAILED' } : j)),
+            );
+          }
+        }, 3000);
+
+        intervalsRef.current[jobId] = interval;
+      } catch (error) {
+        console.error(error);
+      }
+    },
+    [projectId],
+  );
 
   useEffect(() => {
     const signalKey: string | null = newJobSignal?.join(',') ?? null;
 
     if (newJobSignal && newJobSignal.length > 0 && signalKey !== lastProcessedSignalRef.current) {
       lastProcessedSignalRef.current = signalKey;
-
       handleNewZipRequest(newJobSignal);
     }
   }, [newJobSignal, handleNewZipRequest]);
@@ -77,13 +116,29 @@ export const ZipSection: React.FC<ZipSectionProps> = ({ newJobSignal, onSignalPr
     }
   }, [jobs, onSignalProcessed]);
 
-  const triggerDownload = (base64: string, fileName: string) => {
-    const link = document.createElement('a');
-    link.href = `data:application/zip;base64,${base64}`;
-    link.download = fileName;
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
+  // 🧹 cleanup
+  useEffect(() => {
+    return () => {
+      Object.values(intervalsRef.current).forEach(clearInterval);
+      intervalsRef.current = {};
+    };
+  }, []);
+
+  const triggerDownload = async (jobId: string, fileName: string) => {
+    try {
+      const res = await ZipService.downloadZip(projectId, jobId);
+
+      const url = URL.createObjectURL(res.data);
+
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = fileName;
+
+      a.click();
+      URL.revokeObjectURL(url);
+    } catch (err) {
+      console.error('Download failed', err);
+    }
   };
 
   return (
@@ -97,7 +152,7 @@ export const ZipSection: React.FC<ZipSectionProps> = ({ newJobSignal, onSignalPr
       ) : (
         <div className={styles.jobList}>
           {jobs.map((job) => (
-            <div key={job.id} className={styles.jobItem}>
+            <div key={job.jobId} className={styles.jobItem}>
               <div className={styles.jobInfo}>
                 <span className={styles.fileName}>{job.fileName}</span>
                 <span className={styles.statusLabel} data-status={job.status}>
@@ -109,9 +164,9 @@ export const ZipSection: React.FC<ZipSectionProps> = ({ newJobSignal, onSignalPr
                 <div className={styles.progressBar} style={{ width: `${job.progress}%` }} />
               </div>
 
-              {job.status === 'COMPLETED' && job.base64 && (
+              {job.status === 'COMPLETED' && (
                 <button
-                  onClick={() => triggerDownload(job.base64 as string, job.fileName)}
+                  onClick={() => triggerDownload(job.jobId, job.fileName)}
                   className={styles.download}
                 >
                   Download

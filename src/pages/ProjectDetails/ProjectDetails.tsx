@@ -76,7 +76,11 @@ export default function ProjectDetails() {
 
       <div className={styles.grid}>
         <FileSection projectId={projectId!} onStartZip={(ids) => setJobTrigger(ids)} />
-        <ZipSection newJobSignal={jobTrigger} onSignalProcessed={() => setJobTrigger(null)} />
+        <ZipSection
+          projectId={projectId!}
+          newJobSignal={jobTrigger}
+          onSignalProcessed={() => setJobTrigger(null)}
+        />
       </div>
     </div>
   );

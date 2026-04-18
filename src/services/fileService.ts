@@ -48,4 +48,17 @@ export const FileService = {
       console.log('error in delete', error);
     }
   },
+  downloaFile: async (projectId: string, fieldId: string) => {
+    try {
+      const response = await api.get(`/projects/${projectId}/files/${fieldId}/download`, {
+        responseType: 'blob',
+      });
+
+      return response;
+    } catch (error) {
+      if (error) {
+        throw error;
+      }
+    }
+  },
 };

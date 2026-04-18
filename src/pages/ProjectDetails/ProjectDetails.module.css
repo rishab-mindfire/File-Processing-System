@@ -104,10 +104,6 @@
   padding-top: 12px;
 }
 
-.fileNames {
-  min-width: 180px;
-}
-
 .validationErrro {
   display: flex;
   justify-content: center;
@@ -124,10 +120,11 @@
   padding-inline: 13px;
   border-radius: 4px;
 }
-.deleteBtn,
 .zipBtn:hover {
   cursor: pointer;
+  scale: 1.05;
 }
+
 .zipBtn {
   padding: 3px;
   padding-inline: 13px;
@@ -140,6 +137,16 @@
   background: #a29bfe;
   opacity: 0.7;
   cursor: not-allowed;
+}
+.centerCell {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.actions {
+  display: flex;
+  justify-content: space-evenly;
+  align-items: center;
 }
 .empty {
   margin-top: 55px;
@@ -308,7 +315,9 @@
   .statusLabel {
     align-self: flex-start;
   }
-
+  .actions {
+    gap: 10px;
+  }
   .fileNames {
     min-width: 300px;
   }

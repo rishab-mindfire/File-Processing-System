@@ -93,8 +93,6 @@ export default function ProjectList() {
       return;
     }
     setIsSubmitting(true);
-    // Start loading state to disable buttons
-    dispatch({ type: 'FETCH_START' });
 
     try {
       await projectService.deleteProject(projectToDelete._id);
@@ -195,7 +193,6 @@ export default function ProjectList() {
           setIsCreateOpen(false);
           dispatch({ type: 'FETCH_SUCCESS', payload: projectState.projects });
           projectState.error = '';
-          setFormData({ name: '', description: '' });
         }}
         title="Create New Project"
       >
@@ -238,7 +235,6 @@ export default function ProjectList() {
         isOpen={!!projectToDelete}
         onClose={() => {
           setProjectToDelete(null);
-          dispatch({ type: 'FETCH_SUCCESS', payload: projectState.projects });
           projectState.error = '';
         }}
         title="Confirm Delete"

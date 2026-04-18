@@ -33,10 +33,27 @@ export const FileSection: React.FC<FileSectionProps> = ({ projectId, onStartZip 
     }
 
     const fileArray = Array.from(selectedFiles);
-    const urls = fileArray.map((file) => URL.createObjectURL(file));
 
-    setPendingFiles(fileArray);
+    // Block folders allow only files
+    const hasFolder = fileArray.some((file: any) => file.webkitRelativePath);
+    if (hasFolder) {
+      setUploadError('Folder upload is not allowed.');
+      return;
+    }
+
+    //filter empty files
+    const validFiles = fileArray.filter((file) => file.size > 0);
+    if (validFiles.length === 0) {
+      setUploadError('Not valid files selected');
+      return;
+    }
+
+    //Generate preview URLs
+    const urls = validFiles.map((file) => URL.createObjectURL(file));
+
+    setPendingFiles(validFiles);
     setPreviewUrls(urls);
+    setUploadError(null);
     setIsPreviewOpen(true);
   };
 
@@ -74,16 +91,35 @@ export const FileSection: React.FC<FileSectionProps> = ({ projectId, onStartZip 
   };
 
   const handleDeleteFile = async (fieldId: string) => {
-    const prevFiles = files;
-    // optimistic update UI
-    setFiles((prev) => prev.filter((f) => f._id !== fieldId));
+    if (fieldId) {
+      const prevFiles = files;
+      // optimistic update UI
+      setFiles((prev) => prev.filter((f) => f._id !== fieldId));
 
+      try {
+        await FileService.deleteFile(projectId, fieldId);
+      } catch (err) {
+        // rollback UI
+        setFiles(prevFiles);
+        alert(`Delete failed ${err}`);
+      }
+    }
+  };
+  const handleDownloadFile = async (fieldId: string) => {
     try {
-      await FileService.deleteFile(projectId, fieldId);
+      const response = await FileService.downloaFile(projectId, fieldId);
+      if (response) {
+        const url = URL.createObjectURL(response.data);
+
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = 'file';
+
+        a.click();
+        URL.revokeObjectURL(url);
+      }
     } catch (err) {
-      // rollback UI
-      setFiles(prevFiles);
-      alert(`Delete failed ${err}`);
+      console.error(err);
     }
   };
 
@@ -143,7 +179,9 @@ export const FileSection: React.FC<FileSectionProps> = ({ projectId, onStartZip 
                 <th>Select</th>
                 <th className={styles.fileNames}>Name</th>
                 <th className={styles.sizeTd}>Size</th>
-                <th>Action</th>
+                <th>
+                  <div className={styles.centerCell}>Action</div>
+                </th>
               </tr>
             </thead>
             <tbody>
@@ -163,9 +201,16 @@ export const FileSection: React.FC<FileSectionProps> = ({ projectId, onStartZip 
                         }
                       />
                     </td>
-                    <td>{f.name}</td>
-                    <td>{formatBytes(f.size)}</td>
                     <td>
+                      {f.name.length > 20
+                        ? `${f.name.slice(0, 10)}.......${f.name.slice(-6)}`
+                        : f.name}
+                    </td>
+                    <td>{formatBytes(f.size)}</td>
+                    <td className={styles.actions}>
+                      <button onClick={() => handleDownloadFile(f._id)} className={styles.zipBtn}>
+                        Download
+                      </button>
                       <button onClick={() => handleDeleteFile(f._id)} className={styles.deleteBtn}>
                         Delete
                       </button>

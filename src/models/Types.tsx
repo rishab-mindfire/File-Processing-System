@@ -69,7 +69,7 @@ export interface FileItem {
 
 // zip job management
 export interface Job {
-  _id: string;
+  jobId: string;
   status: 'PENDING' | 'PROCESSING' | 'COMPLETED' | 'FAILED';
   progress: number;
   fileName: string;

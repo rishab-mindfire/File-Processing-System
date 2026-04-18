@@ -1,29 +1,25 @@
+import { api } from './apiInterceptor';
+
 export const ZipService = {
-  async createZip(
-    fileIds: string[],
-    onProgress: (percent: number) => void,
-  ): Promise<{
-    base64: string | undefined;
-    fileName: string;
-    size: number;
-  }> {
-    return new Promise((resolve) => {
-      //api call can be here as of now use mock progress and data
-      let progress = 0;
+  async createZip(projectId: string, fileIds: string[]) {
+    const res = await api.post(`/projects/${projectId}/jobs/zip`, { fileIds });
+    return res.data;
+  },
 
-      const interval = setInterval(() => {
-        progress += 10;
-        onProgress(progress);
+  async getStatus(projectId: string, jobId: string) {
+    const res = await api.get(`/projects/${projectId}/jobs/${jobId}`);
+    return res.data;
+  },
 
-        if (progress >= 100) {
-          clearInterval(interval);
-          resolve({
-            fileName: 'filename.zip',
-            size: fileIds.length * 1024 * 50,
-            base64: 'base 64 fack',
-          });
-        }
-      }, 300);
+  async getZipList(projectId: string) {
+    const res = await api.get(`/projects/${projectId}/zip`);
+    return res;
+  },
+
+  async downloadZip(projectId: string, jobId: string) {
+    const res = await api.get(`/projects/${projectId}/jobs/${jobId}/download`, {
+      responseType: 'blob',
     });
+    return res;
   },
 };
