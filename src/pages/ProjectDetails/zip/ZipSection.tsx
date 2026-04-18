@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef, useCallback } from 'react';
 import styles from '../ProjectDetails.module.css';
 import type { Job } from '../../../models/Types';
 import { ZipService } from '../../../services/zipService';
+import { formatBytes } from '../../../hooks/customeHooks';
 
 interface ZipSectionProps {
   newJobSignal: string[] | null;
@@ -9,15 +10,12 @@ interface ZipSectionProps {
   projectId: string;
 }
 
-interface JobWithData extends Job {}
-
 export const ZipSection: React.FC<ZipSectionProps> = ({
   projectId,
   newJobSignal,
   onSignalProcessed,
 }) => {
-  const [jobs, setJobs] = useState<JobWithData[]>([]);
-  const [zipHistory, setZipHistory] = useState<any[]>([]);
+  const [jobs, setJobs] = useState<Job[]>([]);
 
   const lastProcessedSignalRef = useRef<string | null>(null);
   const intervalsRef = useRef<Record<string, ReturnType<typeof setInterval>>>({});
@@ -26,8 +24,24 @@ export const ZipSection: React.FC<ZipSectionProps> = ({
   const fetchZipList = async () => {
     try {
       const res = await ZipService.getZipList(projectId);
-      console.log(res);
-      setZipHistory(res.data);
+
+      const completedJobs = res.data.map((zip: any) => ({
+        jobId: zip.jobId,
+        status: 'COMPLETED',
+        progress: 100,
+        fileName: zip.fileName,
+        completedAt: zip.completedAt,
+        size: zip.size,
+      }));
+
+      setJobs((prev) => {
+        const existingIds = new Set(prev.map((j) => j.jobId));
+
+        // avoid duplicates
+        const merged = [...completedJobs.filter((j: any) => !existingIds.has(j.jobId)), ...prev];
+
+        return merged;
+      });
     } catch (err) {
       console.error('Failed to fetch zip list', err);
     }
@@ -42,11 +56,12 @@ export const ZipSection: React.FC<ZipSectionProps> = ({
       try {
         const { jobId } = await ZipService.createZip(projectId, fileIds);
 
-        const newJob: JobWithData = {
+        const newJob: Job = {
           jobId,
           status: 'PENDING',
           progress: 0,
           fileName: 'Preparing archive...',
+          size: 0,
         };
 
         setJobs((prev) => [newJob, ...prev]);
@@ -165,15 +180,17 @@ export const ZipSection: React.FC<ZipSectionProps> = ({
                 <div className={styles.progressBar} style={{ width: `${job.progress}%` }} />
               </div>
 
-              {job.status === 'COMPLETED' && (
-                <button
-                  onClick={() => triggerDownload(job.jobId, job.fileName)}
-                  className={styles.download}
-                >
-                  Download
-                </button>
-              )}
-
+              <div className={styles.buttom}>
+                {job.status === 'COMPLETED' && (
+                  <button
+                    onClick={() => triggerDownload(job.jobId, job.fileName)}
+                    className={styles.download}
+                  >
+                    Download
+                  </button>
+                )}
+                <span className={styles.size}>{formatBytes(job.size)}</span>
+              </div>
               {job.status === 'FAILED' && <span className={styles.error}>Failed</span>}
             </div>
           ))}

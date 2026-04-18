@@ -73,6 +73,7 @@ export interface Job {
   status: 'PENDING' | 'PROCESSING' | 'COMPLETED' | 'FAILED';
   progress: number;
   fileName: string;
+  size: number;
 }
 export interface FileSectionProps {
   projectId: string;

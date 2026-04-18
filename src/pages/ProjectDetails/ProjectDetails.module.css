@@ -120,24 +120,6 @@
   padding-inline: 13px;
   border-radius: 4px;
 }
-.zipBtn:hover {
-  cursor: pointer;
-  scale: 1.05;
-}
-
-.zipBtn {
-  padding: 3px;
-  padding-inline: 13px;
-  background-color: #0984e3;
-  border: none;
-  border-radius: 4px;
-  color: #ffffff;
-}
-.zipBtn:disabled {
-  background: #a29bfe;
-  opacity: 0.7;
-  cursor: not-allowed;
-}
 .centerCell {
   display: flex;
   justify-content: center;
@@ -283,6 +265,34 @@
   padding: 8px 16px;
   border-radius: 4px;
   cursor: pointer;
+}
+
+/* zip */
+
+.zipBtn:hover {
+  cursor: pointer;
+  scale: 1.05;
+}
+
+.zipBtn {
+  padding: 3px;
+  padding-inline: 13px;
+  background-color: #0984e3;
+  border: none;
+  border-radius: 4px;
+  color: #ffffff;
+}
+.zipBtn:disabled {
+  background: #a29bfe;
+  opacity: 0.7;
+  cursor: not-allowed;
+}
+.buttom {
+  display: flex;
+  justify-content: space-between;
+}
+.size {
+  font-weight: bold;
 }
 /* --- media QUERIES --- */
 
