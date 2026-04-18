@@ -205,6 +205,26 @@
   cursor: pointer;
   scale: 1.05;
 }
+.deleteSection {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+}
+.iconButton {
+  background: transparent;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+}
+.iconButton:hover {
+  transform: scale(1.1);
+  transition: 0.2s ease;
+}
+.iconButton > img {
+  height: 20px;
+}
 /*  model preview */
 .modalActions {
   display: flex;

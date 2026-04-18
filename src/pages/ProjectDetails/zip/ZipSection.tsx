@@ -3,6 +3,7 @@ import styles from '../ProjectDetails.module.css';
 import type { Job } from '../../../models/Types';
 import { ZipService } from '../../../services/zipService';
 import { formatBytes } from '../../../hooks/customeHooks';
+import deleteBtn from '../../../assets/delete.png';
 
 interface ZipSectionProps {
   newJobSignal: string[] | null;
@@ -34,14 +35,7 @@ export const ZipSection: React.FC<ZipSectionProps> = ({
         size: zip.size,
       }));
 
-      setJobs((prev) => {
-        const existingIds = new Set(prev.map((j) => j.jobId));
-
-        // avoid duplicates
-        const merged = [...completedJobs.filter((j: any) => !existingIds.has(j.jobId)), ...prev];
-
-        return merged;
-      });
+      setJobs(completedJobs);
     } catch (err) {
       console.error('Failed to fetch zip list', err);
     }
@@ -124,10 +118,10 @@ export const ZipSection: React.FC<ZipSectionProps> = ({
   }, [newJobSignal, handleNewZipRequest]);
 
   useEffect(() => {
-    if (lastProcessedSignalRef.current !== null) {
+    if (lastProcessedSignalRef.current !== null && jobs.length > 0) {
       onSignalProcessed();
     }
-  }, [jobs, onSignalProcessed]);
+  }, [jobs]);
 
   // cleanup
   useEffect(() => {
@@ -154,6 +148,18 @@ export const ZipSection: React.FC<ZipSectionProps> = ({
     }
   };
 
+  // delete
+  const deleteJob = async (projectId: string, jobId: string) => {
+    try {
+      const res = await ZipService.deleteZip(projectId, jobId);
+      if (res.status === 200) {
+        await fetchZipList();
+      }
+    } catch (err) {
+      console.error('delete failed', err);
+    }
+  };
+
   return (
     <section className={styles.card}>
       <div className={styles.sectionHeader}>
@@ -168,6 +174,7 @@ export const ZipSection: React.FC<ZipSectionProps> = ({
             <div key={job.jobId} className={styles.jobItem}>
               <div className={styles.jobInfo}>
                 <span className={styles.fileName}>{job.fileName}</span>
+
                 <span
                   className={`${styles.statusLabel} ${styles[job.status]}`}
                   data-status={job.status}
@@ -189,7 +196,17 @@ export const ZipSection: React.FC<ZipSectionProps> = ({
                     Download
                   </button>
                 )}
-                <span className={styles.size}>{formatBytes(job.size)}</span>
+                <div className={styles.deleteSection}>
+                  <span className={styles.size}>{formatBytes(job.size)}</span>
+
+                  <button
+                    type="button"
+                    onClick={() => deleteJob(projectId, job.jobId)}
+                    className={styles.iconButton}
+                  >
+                    <img src={deleteBtn} alt="Delete job" />
+                  </button>
+                </div>
               </div>
               {job.status === 'FAILED' && <span className={styles.error}>Failed</span>}
             </div>

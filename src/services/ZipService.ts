@@ -22,4 +22,9 @@ export const ZipService = {
     });
     return res;
   },
+
+  async deleteZip(projectId: string, jobId: string) {
+    const res = await api.delete(`/projects/${projectId}/jobs/${jobId}`);
+    return res;
+  },
 };
