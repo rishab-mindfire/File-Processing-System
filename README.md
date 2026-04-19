@@ -103,8 +103,6 @@ npm run test      # All tests
 
 ```
 
-```mermaid
-
 flowchart TD
 
 %% ================= AUTH FLOW =================
@@ -176,7 +174,4 @@ AJ --> AK[Trigger Browser Download]
 %% ================= DELETE =================
 AH --> AL[Delete ZIP Job]
 AA --> AM[Delete File]
-
-```
-
 
