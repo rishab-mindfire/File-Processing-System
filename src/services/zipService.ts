@@ -12,7 +12,7 @@ import { api } from './apiInterceptor';
  * - Download zip
  * - Delete zip
  */
-export const ZipService = {
+export const zipService = {
   /**
    * Create a new ZIP job
    */
