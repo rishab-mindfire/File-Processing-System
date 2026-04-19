@@ -7,6 +7,7 @@ import styles from './ProjectList.module.css';
 import type { CreateNewProject, Project } from '../../models/Types';
 import Loader from '../../components/common/Loader';
 import { usePagination } from '../../hooks/usePagination';
+import { formatDate } from '../../hooks/customeHooks';
 
 export default function ProjectList() {
   const [projectState, dispatch] = useReducer(projectReducer, initialState);
@@ -24,18 +25,6 @@ export default function ProjectList() {
 
   const navigate = useNavigate();
 
-  // Formate date
-  const formatDate = (dateString: string) => {
-    return new Date(dateString).toLocaleDateString('en-US', {
-      year: 'numeric',
-      month: 'long',
-      day: 'numeric',
-      hour: '2-digit',
-      minute: '2-digit',
-      hour12: true,
-    });
-  };
-
   useEffect(() => {
     const loadData = async () => {
       dispatch({ type: 'FETCH_START' });
@@ -50,6 +39,7 @@ export default function ProjectList() {
     };
     loadData();
   }, []);
+
   const handleCreateProject = async (e: React.FormEvent) => {
     e.preventDefault();
     projectState.error = '';

@@ -127,7 +127,7 @@
 }
 .actions {
   display: flex;
-  justify-content: space-evenly;
+  justify-content: space-around;
   align-items: center;
 }
 .empty {
@@ -223,7 +223,7 @@
   transition: 0.2s ease;
 }
 .iconButton > img {
-  height: 20px;
+  height: 25px;
 }
 /*  model preview */
 .modalActions {

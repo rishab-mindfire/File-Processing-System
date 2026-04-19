@@ -4,6 +4,8 @@ import type { Job } from '../../../models/Types';
 import { ZipService } from '../../../services/zipService';
 import { formatBytes } from '../../../hooks/customeHooks';
 import deleteBtn from '../../../assets/delete.png';
+import downloadBtn from '../../../assets/download.png';
+import Modal from '../../../components/modal/Modal';
 
 interface ZipSectionProps {
   newJobSignal: string[] | null;
@@ -20,6 +22,9 @@ export const ZipSection: React.FC<ZipSectionProps> = ({
 
   const lastProcessedSignalRef = useRef<string | null>(null);
   const intervalsRef = useRef<Record<string, ReturnType<typeof setInterval>>>({});
+  // Delete modal state
+  const [isDeleteOpen, setIsDeleteOpen] = useState(false);
+  const [deleteFileSelected, setDeleteFileSelected] = useState<Job>();
 
   // fetch existing zip history
   const fetchZipList = async () => {
@@ -149,15 +154,19 @@ export const ZipSection: React.FC<ZipSectionProps> = ({
   };
 
   // delete
-  const deleteJob = async (projectId: string, jobId: string) => {
-    try {
-      const res = await ZipService.deleteZip(projectId, jobId);
-      if (res.status === 200) {
-        await fetchZipList();
+  const deleteJob = async () => {
+    if (deleteFileSelected?.jobId) {
+      const jobId = deleteFileSelected.jobId;
+      try {
+        const res = await ZipService.deleteZip(projectId, jobId);
+        if (res.status === 200) {
+          await fetchZipList();
+        }
+      } catch (err) {
+        console.error('delete failed', err);
       }
-    } catch (err) {
-      console.error('delete failed', err);
     }
+    setIsDeleteOpen(false);
   };
 
   return (
@@ -191,9 +200,9 @@ export const ZipSection: React.FC<ZipSectionProps> = ({
                 {job.status === 'COMPLETED' && (
                   <button
                     onClick={() => triggerDownload(job.jobId, job.fileName)}
-                    className={styles.download}
+                    className={styles.iconButton}
                   >
-                    Download
+                    {job.status === 'COMPLETED' && <img src={downloadBtn} alt="Download job" />}
                   </button>
                 )}
                 <div className={styles.deleteSection}>
@@ -201,10 +210,13 @@ export const ZipSection: React.FC<ZipSectionProps> = ({
 
                   <button
                     type="button"
-                    onClick={() => deleteJob(projectId, job.jobId)}
+                    onClick={() => {
+                      setIsDeleteOpen(true);
+                      setDeleteFileSelected(job);
+                    }}
                     className={styles.iconButton}
                   >
-                    <img src={deleteBtn} alt="Delete job" />
+                    {job.status === 'COMPLETED' && <img src={deleteBtn} alt="Delete job" />}
                   </button>
                 </div>
               </div>
@@ -213,6 +225,38 @@ export const ZipSection: React.FC<ZipSectionProps> = ({
           ))}
         </div>
       )}
+      {/* Delete confirmation modal */}
+      <Modal
+        isOpen={isDeleteOpen}
+        onClose={() => {
+          setIsDeleteOpen(false);
+          setDeleteFileSelected(undefined);
+        }}
+        title="Delete File confirm"
+      >
+        <div className={styles.form}>
+          <p>
+            <strong>{deleteFileSelected?.fileName}</strong>
+          </p>
+          <p>Are you sure you want to delete your zip-File from list ?</p>
+
+          <div className={styles.modalActions}>
+            <button
+              onClick={() => {
+                setDeleteFileSelected(undefined);
+                setIsDeleteOpen(false);
+              }}
+              className={styles.zipBtn}
+            >
+              Cancel
+            </button>
+
+            <button onClick={() => deleteJob()} className={styles.deleteBtn}>
+              Confirm Delete
+            </button>
+          </div>
+        </div>
+      </Modal>
     </section>
   );
 };

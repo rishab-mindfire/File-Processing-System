@@ -9,19 +9,19 @@ import type { Project } from '../../models/Types';
 
 const MOCK_PROJECTS: Project[] = [
   {
-    id: '1',
-    name: 'Project 1',
+    _id: '1',
+    projectName: 'Project 1',
     description: 'Main production website assets files.',
-    filesCount: 5,
-    jobsCount: 1,
+    totalFiles: 5,
+    totalZips: 1,
     createdAt: new Date().toISOString().split('T')[0],
   },
   {
-    id: '2',
-    name: 'Project 2',
+    _id: '2',
+    projectName: 'Project 2',
     description: 'Backend documentation and files.',
-    filesCount: 2,
-    jobsCount: 0,
+    totalFiles: 2,
+    totalZips: 0,
     createdAt: new Date().toISOString().split('T')[0],
   },
 ];

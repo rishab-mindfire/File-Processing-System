@@ -67,12 +67,11 @@ export default function ProjectDetails() {
         <button onClick={() => navigate('/projects')} className={styles.backBtn}>
           &larr; Back
         </button>
-        <h1>{project.projectName}</h1>
+        <section className={styles.projectInfo}>
+          <h1>{project.projectName}</h1>
+          <span>{project.projectDescription}</span>
+        </section>
       </header>
-
-      <section className={styles.projectInfo}>
-        <span>{project.description}</span>
-      </section>
 
       <div className={styles.grid}>
         <FileSection projectId={projectId!} onStartZip={(ids) => setJobTrigger(ids)} />

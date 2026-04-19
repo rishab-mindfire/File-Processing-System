@@ -29,4 +29,16 @@ export const validateFiles = (files: File[], maxSizeMB: number = 5) => {
 
   return { validFiles, errors };
 };
+
 //
+// Formate date
+export const formatDate = (dateString: string) => {
+  return new Date(dateString).toLocaleDateString('en-US', {
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric',
+    hour: '2-digit',
+    minute: '2-digit',
+    hour12: true,
+  });
+};

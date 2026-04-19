@@ -35,7 +35,7 @@ export type LoginResponse = {
 export interface Project {
   _id: string;
   projectName: string;
-  description: string;
+  projectDescription: string;
   totalFiles: number;
   totalZips: number;
   createdAt: string;
