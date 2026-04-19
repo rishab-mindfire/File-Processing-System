@@ -103,7 +103,7 @@ npm run test      # All tests
 
 
 
-````Mermaid.js diagram
+```Mermaid.js diagram
 
 flowchart TD
 
@@ -177,6 +177,6 @@ AJ --> AK[Trigger Browser Download]
 AH --> AL[Delete ZIP Job]
 AA --> AM[Delete File]
 
-````
+```
 
 
