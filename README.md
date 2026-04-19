@@ -101,7 +101,7 @@ npm run test      # All tests
 | **Styling**  | CSS Modules                    |
 | **Testing**  | Vitest + React Testing Library |
 
-
+```
 
 ```Mermaid.js diagram
 
