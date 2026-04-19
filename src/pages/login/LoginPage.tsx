@@ -107,6 +107,7 @@ export default function Login() {
             id="email"
             type="email"
             placeholder="Email"
+            aria-describedby="email-error"
             value={formState.userEmail}
             className={`${styles.input} ${formState.errors.userEmail ? styles.inputError : ''}`}
             onChange={(e) =>
@@ -119,7 +120,9 @@ export default function Login() {
           />
 
           {formState.errors.userEmail && (
-            <span className={styles.fieldError}>{formState.errors.userEmail}</span>
+            <span className={styles.fieldError} id="email-error">
+              {formState.errors.userEmail}
+            </span>
           )}
         </div>
 
@@ -155,7 +158,7 @@ export default function Login() {
         )}
 
         {/* BUTTON */}
-        <button disabled={formState.loading} className={styles.button}>
+        <button disabled={formState.loading} className={styles.button} role="button">
           {formState.loading ? 'Logging in...' : 'Login'}
         </button>
       </form>

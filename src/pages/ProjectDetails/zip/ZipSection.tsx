@@ -266,6 +266,7 @@ export const ZipSection: React.FC<ZipSectionProps> = ({
                         setDeleteFileSelected(job);
                       }}
                       className={styles.iconButton}
+                      aria-label="delete ZIP file"
                     >
                       <img src={deleteBtn} alt="Delete job" />
                     </button>

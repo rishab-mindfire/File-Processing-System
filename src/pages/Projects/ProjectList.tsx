@@ -217,7 +217,7 @@ export default function ProjectList() {
           </table>
 
           {/* Pagination - Only show if needed */}
-          {currentData.length > 0 && (
+          {currentData.length > 9 && (
             <div className={styles.pagination} role="navigation" aria-label="Pagination">
               <button
                 className={styles.pageBtn}
@@ -283,7 +283,12 @@ export default function ProjectList() {
           </div>
 
           <div className="center">
-            <button type="submit" className={styles.createProject} disabled={isSubmitting}>
+            <button
+              type="submit"
+              role="button"
+              className={styles.createProject}
+              disabled={isSubmitting}
+            >
               {isSubmitting ? 'Creating...' : 'Create Project'}
             </button>
           </div>
@@ -312,6 +317,7 @@ export default function ProjectList() {
               onClick={confirmDelete}
               className={styles.confirmDltBtn}
               disabled={isSubmitting}
+              role="button"
             >
               {isSubmitting ? 'Deleting...' : 'Confirm Delete'}
             </button>

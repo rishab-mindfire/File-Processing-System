@@ -198,6 +198,9 @@ export const FileSection: React.FC<FileSectionProps> = ({ projectId, onStartZip 
       <div>
         <div
           className={styles.dropZone}
+          role="button"
+          tabIndex={0}
+          aria-label="Upload files"
           onDragOver={(e) => e.preventDefault()}
           onDrop={(e) => {
             e.preventDefault();
@@ -207,7 +210,9 @@ export const FileSection: React.FC<FileSectionProps> = ({ projectId, onStartZip 
         >
           {isUploading ? (
             <div>
-              <p>Uploading... {uploadProgress}%</p>
+              <p role="status" aria-live="polite">
+                Uploading... {uploadProgress}%
+              </p>
             </div>
           ) : (
             <p>
@@ -265,10 +270,14 @@ export const FileSection: React.FC<FileSectionProps> = ({ projectId, onStartZip 
           <table className={styles.table}>
             <thead>
               <tr>
-                <th>Select</th>
-                <th className={styles.fileNames}>Name</th>
-                <th className={styles.sizeTd}>Size</th>
-                <th>
+                <th scope="col">Select</th>
+                <th scope="col" className={styles.fileNames}>
+                  Name
+                </th>
+                <th scope="col" className={styles.sizeTd}>
+                  Size
+                </th>
+                <th scope="col">
                   <div className={styles.centerCell}>Action</div>
                 </th>
               </tr>
@@ -308,6 +317,7 @@ export const FileSection: React.FC<FileSectionProps> = ({ projectId, onStartZip 
                       <button
                         onClick={() => handleDownloadFile(f._id)}
                         className={styles.iconButton}
+                        aria-label="Download file"
                       >
                         <img src={downloadBtn} alt="Downlaod file" />
                       </button>
@@ -318,6 +328,7 @@ export const FileSection: React.FC<FileSectionProps> = ({ projectId, onStartZip 
                           setIsDeleteOpen(true);
                         }}
                         className={styles.iconButton}
+                        aria-label="Delete file"
                       >
                         <img src={deleteBtn} alt="Delete file" />
                       </button>
