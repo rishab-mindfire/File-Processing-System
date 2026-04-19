@@ -1,128 +1,101 @@
-File Management & ZIP Job System
+```markdown
+# File Management and ZIP Job System
 
-A modern React + TypeScript application for managing projects, uploading files, and generating downloadable ZIP archives asynchronously.
+React and TypeScript application designed for managing projects, handling multi-file uploads, and generating downloadable ZIP archives asynchronously through a job-based polling system.
 
- Features
- Project Management
-Create, view, and delete projects
-Paginated project listing
-Project metadata (files count, jobs count, created date)
- File Management
-Upload multiple files
-Drag & drop support
-File preview before upload
-File validation (size, type restrictions)
-Download & delete files
- ZIP Job System
-Select files and create ZIP jobs
-Real-time job progress tracking (polling)
-Download completed ZIP files
-Delete ZIP jobs
- Authentication
-Login with token-based authentication
-Protected routes
-Persistent session via localStorage
- Tech Stack
-Frontend: React + TypeScript
-State Management: useReducer + Context API
-Routing: React Router
-HTTP Client: Axios
-Styling: CSS Modules
-Testing: Vitest + React Testing Library
- Folder Structure
+## Features
+
+### Project Management
+
+- **Operations**: Create, view, and delete projects
+- **Dashboard**: Paginated project listing with metadata including file counts, job counts, and timestamps
+
+### File Management
+
+- **Advanced Upload**: Drag and drop support with multi-file upload capabilities
+- **Validation**: Pre-upload file validation for size limits and type restrictions
+- **Preview**: Visual file preview before committing to upload
+
+### ZIP Job System
+
+- **Asynchronous Processing**: Select specific files to initiate a ZIP compression job
+- **Real-time Tracking**: Progress tracking via an automated polling mechanism
+- **Management**: Download completed archives or delete job history
+
+### Authentication
+
+- **Security**: Token-based authentication with protected routing
+- **Persistence**: Session persistence via localStorage
+- **Interceptors**: Automated header injection via Axios interceptors
+
+## 🛠 Tech Stack
+
+| Category     | Technology                     |
+| ------------ | ------------------------------ |
+| **Frontend** | React 18 + TypeScript          |
+| **State**    | useReducer + Context API       |
+| **Routing**  | React Router                   |
+| **HTTP**     | Axios                          |
+| **Styling**  | CSS Modules                    |
+| **Testing**  | Vitest + React Testing Library |
+
+## Folder Structure
+```
+
 src/
-│
-├── components/        # Reusable UI components (Modal, Layout, Loader)
-├── pages/             # Page-level components
-│   ├── login/
-│   ├── Projects/
-│   ├── ProjectDetails/
-│
-├── services/          # API service layer
-├── hooks/             # Custom hooks (pagination, auth)
-├── reducers/          # State reducers
-├── context/           # Auth context provider
-├── models/            # TypeScript types
-├── auth/              # Protected routes
-├── assets/            # Images/icons
- Authentication Flow
-User logs in via /login
-Token is received from API
-Token stored in localStorage
-Axios interceptor attaches token to every request
-Protected routes check authentication state
- Installation & Setup
-# Clone repo
-git clone <your-repo-url>
+├── assets/ # Images/icons
+├── auth/ # Auth guards
+├── components/ # UI components
+├── context/ # State providers
+├── hooks/ # Custom hooks
+├── models/ # TypeScript types
+├── pages/ # Page components
+├── reducers/ # State logic
+└── services/ # API layer
 
-# Install dependencies
+````
+
+## Installation & Setup
+
+```bash
+# 1. Clone & Install
+git clone https://github.com/rishab-mindfire/File-Processing-System
+cd File-Processing-System
 npm install
 
-# Run development server
+# 2. Environment (.env)
+echo "VITE_BASE_URL=http://localhost:5000/api" > .env
+
+# 3. Run
 npm run dev
- Environment Variables
+````
 
-Create a .env file:
+## System Workflows
 
-VITE_BASE_URL=http://localhost:5000/api
- API Integration
+```
+Authentication: Login → JWT Token → localStorage → Axios Interceptor → Protected Routes
+ZIP Jobs: Select Files → Create Job → jobId → Poll → 100% → Download Link get
+```
 
-All API calls are centralized using Axios:
+## Scripts
 
-projectService → project 
-FileService → file upload/download/delete
-ZipService → zip job creation & tracking
-loginApi → authentication
- ZIP Job Flow
-User selects files
-Clicks Create ZIP Job
-Backend returns jobId
-Frontend polls job status every 3s
-On completion:
-Progress = 100%
-File becomes downloadable
- Testing Setup
+| Command         | Description        |
+| --------------- | ------------------ |
+| `npm run dev`   | Development server |
+| `npm run build` | Production build   |
+| `npm run test`  | Run tests          |
 
-Global test setup:
+## Testing
 
-afterEach(() => {
-  cleanup();
-});
+```bash
+npm run test      # All tests
+```
 
-Run tests:
-
-npm run test
- Important Design Decisions
-1. Polling instead of WebSockets
-Simpler implementation
-Works reliably for async jobs
-2. Reducer-based state
-Predictable state updates
-Better than multiple useState for complex flows
-3. Service layer abstraction
-Keeps components clean
-Centralized error handling
- Known Limitations
-No refresh token mechanism
-No real-time updates (polling used)
-No file type filtering UI (basic validation only)
-Modal lacks focus trapping (basic accessibility)
- Future Improvements
-Add WebSocket support for real-time job updates
-Implement refresh token authentication
-Add file type filtering & sorting
-Improve modal accessibility (focus trap)
-Add drag-select & bulk actions
-Add retry for failed jobs
- Developer Notes
-Avoid using any → use unknown + type guards
-Always handle API errors via helper (getErrorMessage)
-Clean up side effects (useEffect)
-Keep services pure (no UI logic)
- Scripts
-npm run dev       # Start dev server
-npm run build     # Build project
-npm run preview   # Preview build
-npm run test      # Run tests
-
-
+| Category     | Technology                     |
+| ------------ | ------------------------------ |
+| **Frontend** | React 19 + TypeScript          |
+| **State**    | useReducer + Context API       |
+| **Routing**  | React Router                   |
+| **HTTP**     | Axios                          |
+| **Styling**  | CSS Modules                    |
+| **Testing**  | Vitest + React Testing Library |
