@@ -102,21 +102,11 @@ export interface FileSectionProps {
 // Represents a ZIP processing job.
 export interface Job {
   jobId: string;
-
-  // Current job status
   status: 'PENDING' | 'PROCESSING' | 'COMPLETED' | 'FAILED';
-
-  // Progress percentage (0–100)
   progress: number;
-
-  // Generated ZIP file name
   fileName: string;
-
-  /**
-   * Size of ZIP file (in bytes)
-   * NOTE: may be undefined before completion
-   */
   size?: number;
+  completedAt?: string;
 }
 
 // Job state for reducer.
@@ -136,6 +126,8 @@ export interface ZipStatusResponse {
 
 export interface ZipItem {
   jobId: string;
+  status?: 'PENDING' | 'PROCESSING' | 'COMPLETED' | 'FAILED';
+  progress?: number;
   fileName: string;
   size: number;
   completedAt: string;
