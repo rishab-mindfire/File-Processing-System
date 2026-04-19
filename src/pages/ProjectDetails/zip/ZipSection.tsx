@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import styles from '../ProjectDetails.module.css';
-import type { Job } from '../../../models/Types';
-import { ZipService } from '../../../services/zipService';
+import type { Job, ZipJob } from '../../../models/Types';
+import { zipService } from '../../../services/zipService';
 import { formatBytes } from '../../../hooks/customeHooks';
 import deleteBtn from '../../../assets/delete.png';
 import Modal from '../../../components/modal/Modal';
@@ -53,9 +53,9 @@ export const ZipSection: React.FC<ZipSectionProps> = ({
   // Fetch completed ZIP history from server
   const fetchZipList = async () => {
     try {
-      const res = await ZipService.getZipList(projectId);
+      const res = await zipService.getZipList(projectId);
 
-      const completedJobs: Job[] = res.map((zip) => ({
+      const completedJobs: Job[] = res.map((zip: ZipJob) => ({
         jobId: zip.jobId,
         status: 'COMPLETED',
         progress: 100,
@@ -81,7 +81,7 @@ export const ZipSection: React.FC<ZipSectionProps> = ({
   const handleNewZipRequest = useCallback(
     async (fileIds: string[]) => {
       try {
-        const { jobId } = await ZipService.createZip(projectId, fileIds);
+        const { jobId } = await zipService.createZip(projectId, fileIds);
 
         // Add new job to UI immediately
         const newJob: Job = {
@@ -97,7 +97,7 @@ export const ZipSection: React.FC<ZipSectionProps> = ({
         // Poll job status every 3 seconds
         const interval = setInterval(async () => {
           try {
-            const statusRes = await ZipService.getStatus(projectId, jobId);
+            const statusRes = await zipService.getStatus(projectId, jobId);
 
             setJobs((currentJobs) =>
               currentJobs.map((j) =>
@@ -178,7 +178,7 @@ export const ZipSection: React.FC<ZipSectionProps> = ({
   // Download completed ZIP file
   const triggerDownload = async (jobId: string, fileName: string) => {
     try {
-      const res = await ZipService.downloadZip(projectId, jobId);
+      const res = await zipService.downloadZip(projectId, jobId);
 
       const url = URL.createObjectURL(res);
       const a = document.createElement('a');
@@ -201,7 +201,7 @@ export const ZipSection: React.FC<ZipSectionProps> = ({
       const jobId = deleteFileSelected.jobId;
 
       try {
-        await ZipService.deleteZip(projectId, jobId);
+        await zipService.deleteZip(projectId, jobId);
         await fetchZipList();
       } catch (err) {
         if (err instanceof Error) {
