@@ -42,7 +42,8 @@ export const loginApi = async (
   } catch (err: unknown) {
     // Normalize error
     if (axios.isAxiosError(err)) {
-      const message = err.response?.data?.message || err.response?.data?.error || err.message;
+      const message =
+        err.response?.data?.message || err.response?.data?.error || 'Server unavailable';
 
       throw new Error(message);
     }
