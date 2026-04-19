@@ -11,7 +11,7 @@ const MOCK_PROJECTS: Project[] = [
   {
     _id: '1',
     projectName: 'Project 1',
-    description: 'Main production website assets files.',
+    projectDescription: 'Main production website assets files.',
     totalFiles: 5,
     totalZips: 1,
     createdAt: new Date().toISOString().split('T')[0],
@@ -19,7 +19,7 @@ const MOCK_PROJECTS: Project[] = [
   {
     _id: '2',
     projectName: 'Project 2',
-    description: 'Backend documentation and files.',
+    projectDescription: 'Backend documentation and files.',
     totalFiles: 2,
     totalZips: 0,
     createdAt: new Date().toISOString().split('T')[0],

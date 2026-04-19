@@ -3,8 +3,27 @@ import userEvent from '@testing-library/user-event';
 import { MemoryRouter, Route, Routes } from 'react-router-dom';
 import { vi, describe, it, expect } from 'vitest';
 import ProjectDetails from './ProjectDetails';
-import { MOCK_PROJECTS } from '../../services/projectService';
 import '@testing-library/jest-dom';
+import type { Project } from '../../models/Types';
+
+const MOCK_PROJECTS: Project[] = [
+  {
+    _id: '1',
+    projectName: 'Project 1',
+    projectDescription: 'Main production website assets files.',
+    totalFiles: 5,
+    totalZips: 1,
+    createdAt: new Date().toISOString().split('T')[0],
+  },
+  {
+    _id: '2',
+    projectName: 'Project 2',
+    projectDescription: 'Backend documentation and files.',
+    totalFiles: 2,
+    totalZips: 0,
+    createdAt: new Date().toISOString().split('T')[0],
+  },
+];
 
 // Mock useNavigate
 const mockNavigate = vi.fn();
@@ -40,10 +59,10 @@ describe('ProjectDetails Component', () => {
 
   it('should render project details when a valid ID is provided', () => {
     const targetProject = MOCK_PROJECTS[0];
-    renderWithRouter(targetProject.id);
+    renderWithRouter(targetProject._id);
 
-    expect(screen.getByText(targetProject.name)).toBeInTheDocument();
-    expect(screen.getByText(targetProject.description)).toBeInTheDocument();
+    expect(screen.getByText(targetProject.projectName)).toBeInTheDocument();
+    expect(screen.getByText(targetProject.projectDescription)).toBeInTheDocument();
   });
 
   it('should show "Project not found" when an invalid ID is provided', () => {
@@ -54,7 +73,7 @@ describe('ProjectDetails Component', () => {
 
   it('should navigate back to project list when Back button is clicked', async () => {
     const user = userEvent.setup();
-    renderWithRouter(MOCK_PROJECTS[0].id);
+    renderWithRouter(MOCK_PROJECTS[0]._id);
 
     const backBtn = screen.getByRole('button', { name: /back/i });
     await user.click(backBtn);
@@ -64,7 +83,7 @@ describe('ProjectDetails Component', () => {
 
   it('should update jobTrigger when FileSection signals a zip start', async () => {
     const user = userEvent.setup();
-    renderWithRouter(MOCK_PROJECTS[0].id);
+    renderWithRouter(MOCK_PROJECTS[0]._id);
 
     // Click the button in our mocked FileSection
     const zipBtn = screen.getByText('Mock Start Zip');

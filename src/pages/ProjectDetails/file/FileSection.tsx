@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
-import type { FileItem, FileSectionProps } from '../../../models/Types';
+import type { FileItem, FileSectionProps, WebkitFile } from '../../../models/Types';
 import { FileService } from '../../../services/fileService';
 import { formatBytes, validateFiles } from '../../../hooks/customeHooks';
 import styles from '../ProjectDetails.module.css';
@@ -11,7 +11,7 @@ import downloadBtn from '../../../assets/download.png';
  * FileSection Component
  *
  * Handles file management for a project:
- * - Upload files (with preview + validation)
+ * - Upload files
  * - Display uploaded files
  * - Select files for ZIP creation
  * - Download and delete files
@@ -40,6 +40,7 @@ export const FileSection: React.FC<FileSectionProps> = ({ projectId, onStartZip 
   // Delete modal state
   const [isDeleteOpen, setIsDeleteOpen] = useState(false);
   const [deleteFileSelected, setDeleteFileSelected] = useState<FileItem>();
+  const [errorMessage, setErrorMessage] = useState<string>('');
 
   // Error handling for uploads
   const [uploadError, setUploadError] = useState<string | null>(null);
@@ -52,16 +53,12 @@ export const FileSection: React.FC<FileSectionProps> = ({ projectId, onStartZip 
   const [previewUrls, setPreviewUrls] = useState<string[]>([]);
   const [isPreviewOpen, setIsPreviewOpen] = useState(false);
 
-  /**
-   * Fetch files on component mount
-   */
+  // Fetch files on component mount
   useEffect(() => {
     FileService.listFile(projectId).then(setFiles).catch();
-  }, []);
+  }, [projectId]);
 
-  /**
-   * Cleanup: revoke generated preview URLs to prevent memory leaks
-   */
+  // Cleanup: revoke generated preview URLs to prevent memory leaks
   useEffect(() => {
     return () => previewUrls.forEach((url) => URL.revokeObjectURL(url));
   }, [previewUrls]);
@@ -79,21 +76,31 @@ export const FileSection: React.FC<FileSectionProps> = ({ projectId, onStartZip 
 
     const fileArray = Array.from(selectedFiles);
 
-    // Block folder uploads (browser-specific property)
-    const hasFolder = fileArray.some((file: any) => file.webkitRelativePath);
+    // Block folders
+    const hasFolder = fileArray.some((file: WebkitFile) => file.webkitRelativePath);
     if (hasFolder) {
       setUploadError('Folder upload is not allowed.');
       return;
     }
 
-    // Filter out empty files
-    const validFiles = fileArray.filter((file) => file.size > 0);
-    if (validFiles.length === 0) {
-      setUploadError('Not valid files selected');
+    // Block ZIP files
+    const hasZip = fileArray.some(
+      (file) => file.type === 'application/zip' || file.name.toLowerCase().endsWith('.zip'),
+    );
+
+    if (hasZip) {
+      setUploadError('ZIP files are not allowed.');
       return;
     }
 
-    // Create preview URLs for UI display
+    // Filter empty files
+    const validFiles = fileArray.filter((file) => file.size > 0);
+    if (validFiles.length === 0) {
+      setUploadError('No valid files selected.');
+      return;
+    }
+
+    // Generate preview
     const urls = validFiles.map((file) => URL.createObjectURL(file));
 
     setPendingFiles(validFiles);
@@ -128,33 +135,36 @@ export const FileSection: React.FC<FileSectionProps> = ({ projectId, onStartZip 
 
       // Add newly uploaded files to the top of list
       setFiles((prev) => [...newFiles, ...prev]);
-    } catch (err: any) {
-      // Capture backend or network error
-      setUploadError(err.message || 'Upload failed');
+    } catch (err: unknown) {
+      if (err instanceof Error) {
+        setUploadError(err.message || 'Upload failed');
+      }
     } finally {
       setIsUploading(false);
     }
   };
 
   /**
-   * Downloads a file from server
+   * - Downloads a file from server
    * - Converts blob to downloadable link
    */
   const handleDownloadFile = async (fieldId: string) => {
     try {
-      const response = await FileService.downloaFile(projectId, fieldId);
+      const response = await FileService.downloadFile(projectId, fieldId);
       if (response) {
-        const url = URL.createObjectURL(response.data);
+        const url = URL.createObjectURL(response);
 
         const a = document.createElement('a');
         a.href = url;
-        a.download = 'file'; // You may want to pass actual filename
+        a.download = 'file';
 
         a.click();
         URL.revokeObjectURL(url);
       }
     } catch (err) {
-      console.error(err);
+      if (err instanceof Error) {
+        setErrorMessage(err.message);
+      }
     }
   };
 
@@ -185,33 +195,40 @@ export const FileSection: React.FC<FileSectionProps> = ({ projectId, onStartZip 
 
   return (
     <section className={styles.fileSection}>
-      {/* Display upload errors */}
-      {uploadError && <div className={styles.validationErrro}>{uploadError}</div>}
-
-      {/* File Upload Drop Zone */}
-      <div
-        className={styles.dropZone}
-        onDragOver={(e) => e.preventDefault()}
-        onDrop={(e) => {
-          e.preventDefault();
-          handleFileSelection(e.dataTransfer.files);
-        }}
-        onClick={() => !isUploading && fileInputRef.current?.click()}
-      >
-        {isUploading ? (
-          <div className={styles.uploadingState}>
-            <p>Uploading... {uploadProgress}%</p>
-
-            {/* Progress bar */}
-            <div className={styles.progressTrack}>
-              <div className={styles.progressBar} style={{ width: `${uploadProgress}%` }} />
+      <div>
+        <div
+          className={styles.dropZone}
+          onDragOver={(e) => e.preventDefault()}
+          onDrop={(e) => {
+            e.preventDefault();
+            handleFileSelection(e.dataTransfer.files);
+          }}
+          onClick={() => !isUploading && fileInputRef.current?.click()}
+        >
+          {isUploading ? (
+            <div>
+              <p>Uploading... {uploadProgress}%</p>
             </div>
-          </div>
-        ) : (
-          <p>
-            Drag & Drop files or <strong>Browse</strong>
-          </p>
-        )}
+          ) : (
+            <p>
+              Drag & Drop files or <strong>Browse</strong>
+            </p>
+          )}
+
+          {/* The Overlay Error */}
+          {uploadError && (
+            <div
+              className={styles.validationErrro}
+              onClick={(e) => {
+                e.stopPropagation();
+                setUploadError(null);
+              }}
+            >
+              {uploadError}
+              <span className={styles.dismissHint}>Click to dismiss</span>
+            </div>
+          )}
+        </div>
 
         {/* Hidden file input */}
         <input
@@ -244,6 +261,7 @@ export const FileSection: React.FC<FileSectionProps> = ({ projectId, onStartZip 
 
         {/* Files Table */}
         <div className={styles.mainTable}>
+          <span>{errorMessage}</span>
           <table className={styles.table}>
             <thead>
               <tr>

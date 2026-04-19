@@ -1,39 +1,50 @@
-import axios, { type AxiosResponse } from 'axios';
+import { getErrorMessage } from '../hooks/customeHooks';
 import type { CreateNewProject, Project } from '../models/Types';
 import { api } from './apiInterceptor';
 
+/**
+ * projectService
+ *
+ * Handles all project-related API operations
+ */
 export const projectService = {
-  // Project list :
+  // Fetch all projects
   async getAllProjects(): Promise<Project[]> {
-    const response: AxiosResponse<Project[]> = await api.get('/projects');
-    return response.data;
+    try {
+      const response = await api.get<Project[]>('/projects');
+      return response.data;
+    } catch (error: unknown) {
+      throw new Error(getErrorMessage(error));
+    }
   },
-  // create project :
+
+  // Create a new project
   async createProject(payload: CreateNewProject): Promise<Project> {
     try {
       const response = await api.post<Project>('/projects', payload);
       return response.data;
     } catch (error: unknown) {
-      let message = 'Failed to create project';
-      if (axios.isAxiosError(error)) {
-        if (error.response?.status === 400) {
-          message = error?.response?.data?.error;
-        }
-      }
-      throw new Error(message);
+      throw new Error(getErrorMessage(error));
     }
   },
+
   // Get project by ID
   async getProjectById(id: string): Promise<Project> {
-    const response: AxiosResponse<Project> = await api.get(`/projects/${id}`);
-    return response.data;
+    try {
+      const response = await api.get<Project>(`/projects/${id}`);
+      return response.data;
+    } catch (error: unknown) {
+      throw new Error(getErrorMessage(error));
+    }
   },
-  // delete Project
-  async deleteProject(id: string): Promise<string> {
-    // Axios will throw an error automatically if status is not 2xx
-    const response = await api.delete(`/projects/${id}`);
 
-    // Return the success message from the backend
-    return response.data.message || 'Project deleted successfully';
+  // Delete project by ID
+  async deleteProject(id: string): Promise<string> {
+    try {
+      const response = await api.delete(`/projects/${id}`);
+      return response.data?.message || 'Project deleted successfully';
+    } catch (error: unknown) {
+      throw new Error(getErrorMessage(error));
+    }
   },
 };

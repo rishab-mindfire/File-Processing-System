@@ -6,13 +6,43 @@ import styles from './Login.module.css';
 import type { Errors } from '../../models/Types';
 import { initialLoginState, loginReducer } from '../../reducers/loginReducer';
 import { loginApi } from '../../services/loginService';
+import folderImage from '../../assets/document-management.png';
 
+/**
+ * Login Component
+ *
+ * Handles user authentication by:
+ * - Managing form state via reducer
+ * - Performing client-side validation
+ * - Calling login API
+ * - Storing auth token via context
+ *
+ * Features:
+ * - Field-level validation
+ * - API error handling
+ * - Loading state handling
+ *
+ * @component
+ *
+ * @returns {JSX.Element} Login form UI
+ *
+ * @example
+ * <Login />
+ */
 export default function Login() {
   const [formState, dispatch] = useReducer(loginReducer, initialLoginState);
   const { login } = useAuth();
   const navigate = useNavigate();
 
-  const handleSubmit = async (e: React.SyntheticEvent) => {
+  /**
+   * Handles login form submission.
+   *
+   * - Validates input fields
+   * - Calls login API
+   * - Stores token on success
+   * - Displays error messages on failure
+   */
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
     const newErrors: Errors = {};
@@ -48,7 +78,10 @@ export default function Login() {
 
       if (error instanceof AxiosError) {
         message = error.response?.data?.details || error.response?.data?.message || error.message;
+      } else if (error instanceof Error) {
+        message = error.message;
       }
+
       dispatch({
         type: 'SET_ERRORS',
         payload: { general: message },
@@ -61,7 +94,10 @@ export default function Login() {
   return (
     <div className={styles.loginContainer}>
       <form onSubmit={handleSubmit} className={styles.loginForm}>
-        <h2 className={styles.title}>Login</h2>
+        <div className={styles.logoSection}>
+          <img src={folderImage} alt="Application logo" className={styles.logoImage} />
+          <h2 className={styles.title}>Login</h2>
+        </div>
 
         {/* EMAIL */}
         <div className={styles.inputGroup}>

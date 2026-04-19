@@ -4,34 +4,58 @@ import type { Job } from '../../../models/Types';
 import { ZipService } from '../../../services/zipService';
 import { formatBytes } from '../../../hooks/customeHooks';
 import deleteBtn from '../../../assets/delete.png';
-import downloadBtn from '../../../assets/download.png';
 import Modal from '../../../components/modal/Modal';
+
+/**
+ * ZipSection Component
+ *
+ * Manages ZIP job lifecycle:
+ * - Fetches existing ZIP history
+ * - Starts new ZIP jobs
+ * - Polls job status (progress, completion, failure)
+ * - Allows download and deletion of completed ZIPs
+ *
+ * Key Behavior:
+ * - Uses polling (3s interval) for job progress tracking
+ * - Prevents duplicate job triggers using signal reference
+ * - Cleans up intervals on unmount to avoid memory leaks
+ *
+ * @param {Object} props
+ * @param {string} props.projectId - Current project ID
+ * @param {string[] | null} props.newJobSignal - File IDs to trigger new ZIP job
+ * @param {() => void} props.onSignalProcessed - Callback after job trigger handled
+ */
 
 interface ZipSectionProps {
   newJobSignal: string[] | null;
   onSignalProcessed: () => void;
   projectId: string;
 }
-
 export const ZipSection: React.FC<ZipSectionProps> = ({
   projectId,
   newJobSignal,
   onSignalProcessed,
 }) => {
+  // List of ZIP jobs (active + completed)
   const [jobs, setJobs] = useState<Job[]>([]);
+  const [errorMessage, setErrorMessage] = useState<string>('');
 
+  // Prevents re-processing same signal
   const lastProcessedSignalRef = useRef<string | null>(null);
+
+  // Stores polling intervals per jobId
   const intervalsRef = useRef<Record<string, ReturnType<typeof setInterval>>>({});
+
   // Delete modal state
   const [isDeleteOpen, setIsDeleteOpen] = useState(false);
   const [deleteFileSelected, setDeleteFileSelected] = useState<Job>();
 
-  // fetch existing zip history
+  // Fetch completed ZIP history from server
   const fetchZipList = async () => {
     try {
       const res = await ZipService.getZipList(projectId);
 
-      const completedJobs = res.data.map((zip: any) => ({
+      const completedJobs: Job[] = res.map((zip) => ({
         jobId: zip.jobId,
         status: 'COMPLETED',
         progress: 100,
@@ -42,19 +66,24 @@ export const ZipSection: React.FC<ZipSectionProps> = ({
 
       setJobs(completedJobs);
     } catch (err) {
-      console.error('Failed to fetch zip list', err);
+      if (err instanceof Error) {
+        setErrorMessage(err.message);
+      }
     }
   };
 
+  // Load ZIP history on mount or when project changes
   useEffect(() => {
     fetchZipList();
-  }, []);
+  }, [projectId]);
 
+  // Handles new ZIP job creation + polling
   const handleNewZipRequest = useCallback(
     async (fileIds: string[]) => {
       try {
         const { jobId } = await ZipService.createZip(projectId, fileIds);
 
+        // Add new job to UI immediately
         const newJob: Job = {
           jobId,
           status: 'PENDING',
@@ -65,7 +94,7 @@ export const ZipSection: React.FC<ZipSectionProps> = ({
 
         setJobs((prev) => [newJob, ...prev]);
 
-        // polling
+        // Poll job status every 3 seconds
         const interval = setInterval(async () => {
           try {
             const statusRes = await ZipService.getStatus(projectId, jobId);
@@ -83,21 +112,24 @@ export const ZipSection: React.FC<ZipSectionProps> = ({
               ),
             );
 
-            if (statusRes.status === 'COMPLETED') {
-              clearInterval(intervalsRef.current[jobId]);
-              delete intervalsRef.current[jobId];
+            // Stop polling when job completes or fails
+            if (statusRes.status === 'COMPLETED' || statusRes.status === 'FAILED') {
+              if (intervalsRef.current[jobId]) {
+                clearInterval(intervalsRef.current[jobId]);
+                delete intervalsRef.current[jobId];
+              }
 
-              // refresh list after completion
-              fetchZipList();
-            }
-
-            if (statusRes.status === 'FAILED') {
-              clearInterval(intervalsRef.current[jobId]);
-              delete intervalsRef.current[jobId];
+              // Refresh full list after completion
+              if (statusRes.status === 'COMPLETED') {
+                fetchZipList();
+              }
             }
           } catch (err) {
-            clearInterval(intervalsRef.current[jobId]);
-            delete intervalsRef.current[jobId];
+            // Stop polling on error
+            if (intervalsRef.current[jobId] && err) {
+              clearInterval(intervalsRef.current[jobId]);
+              delete intervalsRef.current[jobId];
+            }
 
             setJobs((jobs) =>
               jobs.map((j) => (j.jobId === jobId ? { ...j, status: 'FAILED' } : j)),
@@ -107,14 +139,20 @@ export const ZipSection: React.FC<ZipSectionProps> = ({
 
         intervalsRef.current[jobId] = interval;
       } catch (error) {
-        console.error(error);
+        if (error instanceof Error) {
+          setErrorMessage(error.message);
+        }
       }
     },
     [projectId],
   );
 
+  /**
+   * Listen for new ZIP trigger signal
+   * Prevents duplicate execution using ref
+   */
   useEffect(() => {
-    const signalKey: string | null = newJobSignal?.join(',') ?? null;
+    const signalKey = newJobSignal?.join(',') ?? null;
 
     if (newJobSignal && newJobSignal.length > 0 && signalKey !== lastProcessedSignalRef.current) {
       lastProcessedSignalRef.current = signalKey;
@@ -122,13 +160,14 @@ export const ZipSection: React.FC<ZipSectionProps> = ({
     }
   }, [newJobSignal, handleNewZipRequest]);
 
+  //  Notify parent that signal is processed
   useEffect(() => {
     if (lastProcessedSignalRef.current !== null && jobs.length > 0) {
       onSignalProcessed();
     }
-  }, [jobs]);
+  }, [jobs, onSignalProcessed]);
 
-  // cleanup
+  // Cleanup all polling intervals on unmount
   useEffect(() => {
     return () => {
       Object.values(intervalsRef.current).forEach(clearInterval);
@@ -136,36 +175,41 @@ export const ZipSection: React.FC<ZipSectionProps> = ({
     };
   }, []);
 
+  // Download completed ZIP file
   const triggerDownload = async (jobId: string, fileName: string) => {
     try {
       const res = await ZipService.downloadZip(projectId, jobId);
 
-      const url = URL.createObjectURL(res.data);
-
+      const url = URL.createObjectURL(res);
       const a = document.createElement('a');
+
       a.href = url;
-      a.download = fileName;
+      a.download = fileName || 'archive.zip';
 
       a.click();
       URL.revokeObjectURL(url);
     } catch (err) {
-      console.error('Download failed', err);
+      if (err instanceof Error) {
+        setErrorMessage(err.message);
+      }
     }
   };
 
-  // delete
+  // Delete ZIP job from server
   const deleteJob = async () => {
     if (deleteFileSelected?.jobId) {
       const jobId = deleteFileSelected.jobId;
+
       try {
-        const res = await ZipService.deleteZip(projectId, jobId);
-        if (res.status === 200) {
-          await fetchZipList();
-        }
+        await ZipService.deleteZip(projectId, jobId);
+        await fetchZipList();
       } catch (err) {
-        console.error('delete failed', err);
+        if (err instanceof Error) {
+          setErrorMessage(err.message);
+        }
       }
     }
+
     setIsDeleteOpen(false);
   };
 
@@ -179,11 +223,13 @@ export const ZipSection: React.FC<ZipSectionProps> = ({
         <p className={styles.empty}>No active jobs.</p>
       ) : (
         <div className={styles.jobList}>
+          <span>{errorMessage}</span>
           {jobs.map((job) => (
             <div key={job.jobId} className={styles.jobItem}>
               <div className={styles.jobInfo}>
                 <span className={styles.fileName}>{job.fileName}</span>
 
+                {/* Status label */}
                 <span
                   className={`${styles.statusLabel} ${styles[job.status]}`}
                   data-status={job.status}
@@ -192,39 +238,48 @@ export const ZipSection: React.FC<ZipSectionProps> = ({
                 </span>
               </div>
 
+              {/* Progress bar */}
               <div className={styles.progressTrack}>
                 <div className={styles.progressBar} style={{ width: `${job.progress}%` }} />
               </div>
 
               <div className={styles.buttom}>
+                {/* Download only when completed */}
                 {job.status === 'COMPLETED' && (
                   <button
                     onClick={() => triggerDownload(job.jobId, job.fileName)}
                     className={styles.iconButton}
                   >
-                    {job.status === 'COMPLETED' && <img src={downloadBtn} alt="Download job" />}
+                    <span className={styles.download}>Downlaod</span>
                   </button>
                 )}
-                <div className={styles.deleteSection}>
-                  <span className={styles.size}>{formatBytes(job.size)}</span>
 
-                  <button
-                    type="button"
-                    onClick={() => {
-                      setIsDeleteOpen(true);
-                      setDeleteFileSelected(job);
-                    }}
-                    className={styles.iconButton}
-                  >
-                    {job.status === 'COMPLETED' && <img src={deleteBtn} alt="Delete job" />}
-                  </button>
+                <div className={styles.deleteSection}>
+                  <span className={styles.size}>{formatBytes(job.size ?? 0)}</span>
+
+                  {/* Delete option (only meaningful after completion) */}
+                  {job.status === 'COMPLETED' && (
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setIsDeleteOpen(true);
+                        setDeleteFileSelected(job);
+                      }}
+                      className={styles.iconButton}
+                    >
+                      <img src={deleteBtn} alt="Delete job" />
+                    </button>
+                  )}
                 </div>
               </div>
+
+              {/* Error state */}
               {job.status === 'FAILED' && <span className={styles.error}>Failed</span>}
             </div>
           ))}
         </div>
       )}
+
       {/* Delete confirmation modal */}
       <Modal
         isOpen={isDeleteOpen}
@@ -238,7 +293,7 @@ export const ZipSection: React.FC<ZipSectionProps> = ({
           <p>
             <strong>{deleteFileSelected?.fileName}</strong>
           </p>
-          <p>Are you sure you want to delete your zip-File from list ?</p>
+          <p>Are you sure you want to delete your zip file?</p>
 
           <div className={styles.modalActions}>
             <button
@@ -251,7 +306,7 @@ export const ZipSection: React.FC<ZipSectionProps> = ({
               Cancel
             </button>
 
-            <button onClick={() => deleteJob()} className={styles.deleteBtn}>
+            <button onClick={deleteJob} className={styles.deleteBtn}>
               Confirm Delete
             </button>
           </div>

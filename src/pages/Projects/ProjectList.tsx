@@ -8,16 +8,38 @@ import type { CreateNewProject, Project } from '../../models/Types';
 import Loader from '../../components/common/Loader';
 import { usePagination } from '../../hooks/usePagination';
 import { formatDate } from '../../hooks/customeHooks';
+import deleteBtn from '../../assets/delete.png';
 
+/**
+ * ProjectList Page
+ *
+ * Responsibilities:
+ * - Fetch and display all projects
+ * - Create new project
+ * - Delete existing project
+ * - Handle pagination
+ *
+ * Uses:
+ * - useReducer for centralized state management
+ * - usePagination for client-side pagination
+ *
+ * @component
+ */
 export default function ProjectList() {
   const [projectState, dispatch] = useReducer(projectReducer, initialState);
+
+  // Pagination hook for project list
   const { currentData, currentPage, totalPages, nextPage, prevPage, hasPrevPage, hasNextPage } =
     usePagination(projectState.projects, 10);
+
+  // Modal states
   const [isCreateOpen, setIsCreateOpen] = useState(false);
   const [projectToDelete, setProjectToDelete] = useState<Project | null>(null);
+
+  // UI states
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  // Track form inputs as strings
+  // Controlled form state
   const [formData, setFormData] = useState({
     name: '',
     description: '',
@@ -25,26 +47,31 @@ export default function ProjectList() {
 
   const navigate = useNavigate();
 
+  // Fetch all projects on mount
   useEffect(() => {
     const loadData = async () => {
       dispatch({ type: 'FETCH_START' });
+
       try {
         const data = await projectService.getAllProjects();
         dispatch({ type: 'FETCH_SUCCESS', payload: data });
-      } catch (err) {
-        if (err) {
-          dispatch({ type: 'FETCH_ERROR', payload: 'Failed to load projects' });
+      } catch (error) {
+        if (error) {
+          dispatch({
+            type: 'FETCH_ERROR',
+            payload: 'Failed to load projects',
+          });
         }
       }
     };
+
     loadData();
   }, []);
 
+  // Handle project creation
   const handleCreateProject = async (e: React.FormEvent) => {
     e.preventDefault();
-    projectState.error = '';
-    //  Clear previous errors
-    dispatch({ type: 'FETCH_SUCCESS', payload: projectState.projects });
+
     setIsSubmitting(true);
 
     try {
@@ -54,52 +81,65 @@ export default function ProjectList() {
       };
 
       const newProject = await projectService.createProject(projectPayload);
-      const populatedProject = {
+
+      // Enrich with UI-required fields
+      const populatedProject: Project = {
         ...newProject,
         totalFiles: 0,
         totalZips: 0,
       };
+
       dispatch({ type: 'ADD_PROJECT', payload: populatedProject });
-      setIsCreateOpen(false);
+
+      // Reset form & close modal
       setFormData({ name: '', description: '' });
+      setIsCreateOpen(false);
     } catch (error: unknown) {
-      let errorMessage = 'An unexpected error occurred';
-      if (error instanceof Error) {
-        errorMessage = error.message;
-      }
+      const message = error instanceof Error ? error.message : 'Failed to create project';
 
       dispatch({
         type: 'FETCH_ERROR',
-        payload: errorMessage,
+        payload: message,
       });
     } finally {
       setIsSubmitting(false);
     }
-    setFormData({ name: '', description: '' });
   };
 
+  // Confirm and delete selected project
   const confirmDelete = async () => {
     if (!projectToDelete) {
       return;
     }
+
     setIsSubmitting(true);
 
     try {
       await projectService.deleteProject(projectToDelete._id);
-      dispatch({ type: 'DELETE_PROJECT', payload: projectToDelete._id });
+
+      dispatch({
+        type: 'DELETE_PROJECT',
+        payload: projectToDelete._id,
+      });
+
       setProjectToDelete(null);
     } catch (err: unknown) {
-      const error = err as Error & { response?: { data?: { message?: string } } };
-      const errorMessage = error.response?.data?.message || error.message || 'Delete failed';
+      const error = err as Error & {
+        response?: { data?: { message?: string } };
+      };
+
+      const message = error.response?.data?.message || error.message || 'Delete failed';
 
       dispatch({
         type: 'FETCH_ERROR',
-        payload: errorMessage,
+        payload: message,
       });
+    } finally {
+      setIsSubmitting(false);
     }
-    setIsSubmitting(false);
   };
 
+  // Loading state
   if (projectState.loading) {
     return (
       <div className={styles.spinner} data-testid="loader">
@@ -110,48 +150,59 @@ export default function ProjectList() {
 
   return (
     <div className={styles.container}>
+      {/* Header */}
       <header className={styles.header}>
         <h1>Projects</h1>
+
         <button className={styles.newProject} onClick={() => setIsCreateOpen(true)}>
           + New Project
         </button>
       </header>
 
+      {/* Empty state */}
       {projectState.projects.length === 0 ? (
         <div className={styles.noProjectFound}>No projects found.</div>
       ) : (
         <div className={styles.tableContainer}>
+          {/* Project Table */}
           <table className={styles.table}>
             <thead>
               <tr className={styles.tableHeader}>
-                <th>Name</th>
+                <th className={styles.projectName}>Name</th>
                 <th>Files</th>
                 <th>Jobs</th>
                 <th>Created Date</th>
-                <th className={styles.actionsCell}>Actions</th>
+                <th className={styles.actionsCell}>
+                  <div>Actions</div>
+                </th>
               </tr>
             </thead>
+
             <tbody>
               {currentData.map((project) => (
                 <tr key={project._id}>
                   <td data-label="Name" className={styles.projectName}>
                     {project.projectName}
                   </td>
+
                   <td data-label="Files">{project.totalFiles}</td>
                   <td data-label="Jobs">{project.totalZips}</td>
-                  <td data-label="CreatedAt">{formatDate(project.createdAt)}</td>
-                  <td data-label="Actions" className={styles.actionsCell}>
+
+                  <td data-label="Created Date">{formatDate(project.createdAt)}</td>
+
+                  <td className={styles.actions}>
                     <button
                       className={styles.open}
                       onClick={() => navigate(`/projects/${project._id}`)}
                     >
                       Open
                     </button>
+
                     <button
-                      className={styles.btnDanger}
-                      onClick={() => setProjectToDelete({ ...project })}
+                      className={styles.iconButton}
+                      onClick={() => setProjectToDelete(project)}
                     >
-                      Delete
+                      <img src={deleteBtn} alt="Delete project" />
                     </button>
                   </td>
                 </tr>
@@ -159,15 +210,17 @@ export default function ProjectList() {
             </tbody>
           </table>
 
-          {/*  Pagination Controls */}
+          {/* Pagination */}
           {projectState.projects.length > 10 && (
             <div className={styles.pagination}>
               <button className={styles.pageBtn} onClick={prevPage} disabled={!hasPrevPage}>
                 &larr; Previous
               </button>
+
               <span className={styles.pageInfo}>
                 Page <strong>{currentPage}</strong> of {totalPages}
               </span>
+
               <button className={styles.pageBtn} onClick={nextPage} disabled={!hasNextPage}>
                 Next &rarr;
               </button>
@@ -176,38 +229,42 @@ export default function ProjectList() {
         </div>
       )}
 
-      {/* Creating new project Modal */}
+      {/* Create Project Modal */}
       <Modal
         isOpen={isCreateOpen}
         onClose={() => {
           setIsCreateOpen(false);
-          dispatch({ type: 'FETCH_SUCCESS', payload: projectState.projects });
-          projectState.error = '';
+          setFormData({ name: '', description: '' });
         }}
         title="Create New Project"
       >
         <form onSubmit={handleCreateProject} className={styles.form}>
           <div className={styles.formGroup}>
             <label>Project Name</label>
+
             <input
               className={styles.modelInputField}
               type="text"
               value={formData.name}
               onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-              placeholder="Enter Project Name"
               required
             />
-            {/* Display Validation Error */}
+
             {projectState.error && <div className={styles.errorMessage}>{projectState.error}</div>}
           </div>
 
           <div className={styles.formGroup}>
             <label>Description</label>
+
             <textarea
               className={styles.modelAeraField}
               value={formData.description}
-              onChange={(e) => setFormData({ ...formData, description: e.target.value })}
-              placeholder="What is this project about?"
+              onChange={(e) =>
+                setFormData({
+                  ...formData,
+                  description: e.target.value,
+                })
+              }
               rows={3}
             />
           </div>
@@ -220,28 +277,24 @@ export default function ProjectList() {
         </form>
       </Modal>
 
-      {/* Deletion of project based on id */}
+      {/* Delete Modal */}
       <Modal
         isOpen={!!projectToDelete}
-        onClose={() => {
-          setProjectToDelete(null);
-          projectState.error = '';
-        }}
+        onClose={() => setProjectToDelete(null)}
         title="Confirm Delete"
       >
         <div className={styles.form}>
           <p>
-            Are you sure you want to delete <strong>{projectToDelete?.projectName}</strong> from
-            project list ?
+            Are you sure you want to delete <strong>{projectToDelete?.projectName}</strong>?
           </p>
 
-          {/* Show error message if deletion fails */}
           {projectState.error && <div className={styles.errorMessage}>{projectState.error}</div>}
 
           <div className={styles.modalActions}>
-            <button onClick={() => setProjectToDelete(null)} className={styles.createProject}>
+            <button onClick={() => setProjectToDelete(null)} className={styles.cancelBtn}>
               Cancel
             </button>
+
             <button
               onClick={confirmDelete}
               className={styles.confirmDltBtn}

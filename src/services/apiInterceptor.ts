@@ -1,15 +1,35 @@
 import axios from 'axios';
+
+/**
+ * Axios instance configuration
+ *
+ * - Sets base URL from environment
+ * - Attaches auth token automatically
+ * - Handles JSON vs FormData requests
+ */
 export const api = axios.create({
   baseURL: import.meta.env.VITE_BASE_URL,
 });
-// add interceptor to each request
+
+/**
+ * Request Interceptor
+ *
+ * - Adds Authorization header if token exists
+ * - Sets Content-Type for non-FormData requests
+ */
 api.interceptors.request.use(
   (config) => {
     const token = localStorage.getItem('File-System');
 
+    // Ensure headers object exists
+    config.headers = config.headers ?? {};
+
+    // Attach token if available
     if (token) {
       config.headers.Authorization = `Bearer ${token}`;
     }
+
+    // Set JSON content type only when not sending FormData
     if (!(config.data instanceof FormData)) {
       config.headers['Content-Type'] = 'application/json';
     }
@@ -18,4 +38,26 @@ api.interceptors.request.use(
   },
   (error) => Promise.reject(error),
 );
-//get projects
+
+/**
+ * Response Interceptor
+ *
+ * - Handles global API errors
+ * - Example: auto logout on 401
+ */
+api.interceptors.response.use(
+  (response) => response,
+  (error) => {
+    const status = error?.response?.status;
+
+    // Handle unauthorized (token expired / invalid)
+    if (status === 401) {
+      localStorage.removeItem('File-System');
+
+      // redirect to login
+      window.location.href = '/login';
+    }
+
+    return Promise.reject(error);
+  },
+);

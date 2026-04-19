@@ -1,7 +1,18 @@
 import type { FileItem } from '../models/Types';
 import { api } from './apiInterceptor';
+import { getErrorMessage } from '../hooks/customeHooks';
 
+/**
+ * FileService
+ *
+ * Handles all file-related API operations:
+ * - Upload
+ * - List
+ * - Delete
+ * - Download
+ */
 export const FileService = {
+  // Upload multiple files with progress tracking
   uploadFile: async (
     projectId: string,
     files: File[],
@@ -24,41 +35,42 @@ export const FileService = {
       }
 
       return res.data.data;
-    } catch (err: any) {
-      throw new Error(err?.response?.data?.error || 'Upload failed');
+    } catch (err: unknown) {
+      throw new Error(getErrorMessage(err));
     }
   },
-  listFile: async (projectId: string) => {
+
+  // Get all files for a project
+  listFile: async (projectId: string): Promise<FileItem[]> => {
     try {
-      const response = await api.get(`/projects/${projectId}/files`);
-      if (response.status === 200) {
-        return response.data;
-      }
-    } catch (error) {
-      console.log('error in list', error);
+      const res = await api.get(`/projects/${projectId}/files`);
+      return res.data;
+    } catch (err: unknown) {
+      throw new Error(getErrorMessage(err));
     }
   },
-  deleteFile: async (projectId: string, fieldId: string) => {
+
+  // Delete a file by ID
+  deleteFile: async (projectId: string, fieldId: string): Promise<string | undefined> => {
     try {
-      const response = await api.delete(`/projects/${projectId}/files/${fieldId}`);
-      if (response.status === 200) {
-        return response.data.message;
-      }
-    } catch (error) {
-      console.log('error in delete', error);
+      const res = await api.delete(`/projects/${projectId}/files/${fieldId}`);
+
+      return res.data?.message || 'File deleted';
+    } catch (err: unknown) {
+      throw new Error(getErrorMessage(err));
     }
   },
-  downloaFile: async (projectId: string, fieldId: string) => {
+
+  // Download file as blob
+  downloadFile: async (projectId: string, fieldId: string): Promise<Blob | undefined> => {
     try {
-      const response = await api.get(`/projects/${projectId}/files/${fieldId}/download`, {
+      const res = await api.get(`/projects/${projectId}/files/${fieldId}/download`, {
         responseType: 'blob',
       });
 
-      return response;
-    } catch (error) {
-      if (error) {
-        throw error;
-      }
+      return res.data;
+    } catch (err: unknown) {
+      throw new Error(getErrorMessage(err));
     }
   },
 };
