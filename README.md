@@ -103,6 +103,80 @@ npm run test      # All tests
 
 
 
-<img width="2027" height="6897" alt="mermaid-diagram" src="https://github.com/user-attachments/assets/85a55adb-e808-448a-a1c5-bc65d9e4f37f" /><img width="2027" height="6897" alt="mermaid-diagram" src="https://github.com/user-attachments/assets/fa5750ab-e769-470a-a75f-50a218f90e8e" />
+````Mermaid.js diagram
+
+flowchart TD
+
+%% ================= AUTH FLOW =================
+A[User Opens App] --> B{Authenticated?}
+
+B -- No --> C[Go to Login Page]
+C --> D[Enter Email & Password]
+D --> E[Frontend Validation]
+
+E -- Invalid --> F[Show Errors]
+E -- Valid --> G[Call Login API]
+
+G --> H{API Success?}
+H -- No --> I[Show Error Message]
+H -- Yes --> J[Store Token in localStorage]
+
+J --> K[Set Auth State]
+K --> L[Redirect to /projects]
+
+B -- Yes --> L
+
+%% ================= PROJECT FLOW =================
+L --> M[Project List Page]
+
+M --> N[Fetch Projects API]
+N --> O[Display Projects]
+
+O --> P[Create Project]
+O --> Q[Delete Project]
+O --> R[Open Project]
+
+%% ================= PROJECT DETAILS =================
+R --> S[Project Details Page]
+
+S --> T[Load Files + ZIP Jobs]
+
+%% ================= FILE FLOW =================
+T --> U[File Section]
+
+U --> V[Drag & Drop / Browse Files]
+V --> W[Validate Files]
+
+W -- Invalid --> X[Show Validation Error]
+W -- Valid --> Y[Preview Files]
+
+Y --> Z[Upload Files API]
+Z --> AA[Update File List]
+
+AA --> AB[Select Files for ZIP]
+
+%% ================= ZIP JOB FLOW =================
+AB --> AC[Click Create ZIP Job]
+
+AC --> AD[Call Create ZIP API]
+AD --> AE[Receive Job ID]
+
+AE --> AF[Start Polling (3s interval)]
+
+AF --> AG{Job Status}
+
+AG -- PENDING/PROCESSING --> AF
+AG -- COMPLETED --> AH[Update UI]
+AG -- FAILED --> AI[Mark as Failed]
+
+%% ================= DOWNLOAD =================
+AH --> AJ[Download ZIP]
+AJ --> AK[Trigger Browser Download]
+
+%% ================= DELETE =================
+AH --> AL[Delete ZIP Job]
+AA --> AM[Delete File]
+
+````
 
 
