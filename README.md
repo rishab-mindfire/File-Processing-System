@@ -100,3 +100,9 @@ npm run test      # All tests
 | **HTTP**     | Axios                          |
 | **Styling**  | CSS Modules                    |
 | **Testing**  | Vitest + React Testing Library |
+
+
+
+<img width="2027" height="6897" alt="mermaid-diagram" src="https://github.com/user-attachments/assets/85a55adb-e808-448a-a1c5-bc65d9e4f37f" /><img width="2027" height="6897" alt="mermaid-diagram" src="https://github.com/user-attachments/assets/fa5750ab-e769-470a-a75f-50a218f90e8e" />
+
+
