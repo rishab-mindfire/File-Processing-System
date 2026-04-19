@@ -141,6 +141,15 @@ export interface ZipItem {
   completedAt: string;
 }
 
+export interface ZipJob {
+  jobId: string;
+  status: string;
+  progress: number;
+  fileName: string;
+  size: number;
+  completedAt: string;
+}
+
 // Actions for job reducer.
 export type JobAction =
   | { type: 'ADD_JOB'; payload: Job }
