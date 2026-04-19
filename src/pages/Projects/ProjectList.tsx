@@ -64,7 +64,6 @@ export default function ProjectList() {
         }
       }
     };
-
     loadData();
   }, []);
 
@@ -158,77 +157,91 @@ export default function ProjectList() {
           + New Project
         </button>
       </header>
-
-      {/* Empty state */}
+      {/* Projects Table with Empty State & Pagination */}
       {projectState.projects.length === 0 ? (
         <div className={styles.noProjectFound}>No projects found.</div>
       ) : (
         <div className={styles.tableContainer}>
           {/* Project Table */}
-          <table className={styles.table}>
+          <table className={styles.table} role="table" aria-label="Projects table">
             <thead>
               <tr className={styles.tableHeader}>
-                <th className={styles.projectName}>Name</th>
-                <th>Files</th>
-                <th>Jobs</th>
-                <th>Created Date</th>
-                <th className={styles.actionsCell}>
+                <th scope="col" className={styles.projectName}>
+                  Name
+                </th>
+                <th scope="col">Files</th>
+                <th scope="col">Jobs</th>
+                <th scope="col">Created Date</th>
+                <th scope="col" className={styles.actionsCell}>
                   <div>Actions</div>
                 </th>
               </tr>
             </thead>
-
             <tbody>
-              {currentData.map((project) => (
-                <tr key={project._id}>
-                  <td data-label="Name" className={styles.projectName}>
-                    {project.projectName}
-                  </td>
-
-                  <td data-label="Files">{project.totalFiles}</td>
-                  <td data-label="Jobs">{project.totalZips}</td>
-
-                  <td data-label="Created Date">{formatDate(project.createdAt)}</td>
-
-                  <td className={styles.actions}>
-                    <button
-                      className={styles.open}
-                      onClick={() => navigate(`/projects/${project._id}`)}
-                    >
-                      Open
-                    </button>
-
-                    <button
-                      className={styles.iconButton}
-                      onClick={() => setProjectToDelete(project)}
-                    >
-                      <img src={deleteBtn} alt="Delete project" />
-                    </button>
+              {Array.isArray(currentData) && currentData.length > 0 ? (
+                currentData.map((project) => (
+                  <tr key={project._id} role="row">
+                    <td data-label="Name" className={styles.projectName}>
+                      {project.projectName}
+                    </td>
+                    <td data-label="Files">{project.totalFiles || 0}</td>
+                    <td data-label="Jobs">{project.totalZips || 0}</td>
+                    <td data-label="Created Date">{formatDate(project.createdAt)}</td>
+                    <td className={styles.actions}>
+                      <button
+                        className={styles.open}
+                        onClick={() => navigate(`/projects/${project._id}`)}
+                        aria-label={`Open project ${project.projectName}`}
+                      >
+                        Open
+                      </button>
+                      <button
+                        className={styles.iconButton}
+                        onClick={() => setProjectToDelete(project)}
+                        aria-label={`Delete project ${project.projectName}`}
+                        title="Delete project"
+                      >
+                        <img src={deleteBtn} alt="Delete project" aria-hidden="true" />
+                      </button>
+                    </td>
+                  </tr>
+                ))
+              ) : (
+                <tr>
+                  <td colSpan={5} className={styles.noData} role="status">
+                    No projects available.
                   </td>
                 </tr>
-              ))}
+              )}
             </tbody>
           </table>
 
-          {/* Pagination */}
-          {projectState.projects.length > 10 && (
-            <div className={styles.pagination}>
-              <button className={styles.pageBtn} onClick={prevPage} disabled={!hasPrevPage}>
-                &larr; Previous
+          {/* Pagination - Only show if needed */}
+          {currentData.length > 0 && (
+            <div className={styles.pagination} role="navigation" aria-label="Pagination">
+              <button
+                className={styles.pageBtn}
+                onClick={prevPage}
+                disabled={!hasPrevPage}
+                aria-label="Previous page"
+              >
+                ← Previous
               </button>
-
-              <span className={styles.pageInfo}>
-                Page <strong>{currentPage}</strong> of {totalPages}
+              <span className={styles.pageInfo} aria-live="polite">
+                Page <strong>{currentPage}</strong> of <strong>{totalPages}</strong>
               </span>
-
-              <button className={styles.pageBtn} onClick={nextPage} disabled={!hasNextPage}>
-                Next &rarr;
+              <button
+                className={styles.pageBtn}
+                onClick={nextPage}
+                disabled={!hasNextPage}
+                aria-label="Next page"
+              >
+                Next →
               </button>
             </div>
           )}
         </div>
       )}
-
       {/* Create Project Modal */}
       <Modal
         isOpen={isCreateOpen}
