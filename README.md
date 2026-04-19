@@ -42,6 +42,7 @@ React and TypeScript application designed for managing projects, handling multi-
 ## Folder Structure
 ```
 
+```
 src/
 ├── assets/ # Images/icons
 ├── auth/ # Auth guards
@@ -53,7 +54,7 @@ src/
 ├── reducers/ # State logic
 └── services/ # API layer
 
-````
+```
 
 ## Installation & Setup
 
@@ -68,7 +69,7 @@ echo "VITE_BASE_URL=http://localhost:5000/api" > .env
 
 # 3. Run
 npm run dev
-````
+```
 
 ## System Workflows
 
