@@ -103,7 +103,7 @@ npm run test      # All tests
 
 ```
 
-```Mermaid.js diagram
+```mermaid
 
 flowchart TD
 
