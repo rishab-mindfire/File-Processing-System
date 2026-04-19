@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import styles from '../ProjectDetails.module.css';
-import type { Job, ZipJob } from '../../../models/Types';
+import type { Job, ZipItem } from '../../../models/Types';
 import { zipService } from '../../../services/zipService';
 import { formatBytes } from '../../../hooks/customeHooks';
 import deleteBtn from '../../../assets/delete.png';
@@ -55,7 +55,7 @@ export const ZipSection: React.FC<ZipSectionProps> = ({
     try {
       const res = await zipService.getZipList(projectId);
 
-      const completedJobs: Job[] = res.map((zip: ZipJob) => ({
+      const completedJobs: Job[] = res.map((zip: ZipItem) => ({
         jobId: zip.jobId,
         status: 'COMPLETED',
         progress: 100,
