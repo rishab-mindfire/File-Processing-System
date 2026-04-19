@@ -1,49 +1,124 @@
-import React, { useRef, useState, useEffect } from 'react';
-import styles from '../ProjectDetails.module.css';
-import type { FileItem, FileSectionProps } from '../../../models/Types';
-import { FileReceiveService } from '../../../services/FileReceiveService';
-import { FileUploadService } from '../../../services/FileUploadService';
+import { useEffect, useRef, useState } from 'react';
+import type { FileItem, FileSectionProps, WebkitFile } from '../../../models/Types';
+import { FileService } from '../../../services/fileService';
 import { formatBytes, validateFiles } from '../../../hooks/customeHooks';
+import styles from '../ProjectDetails.module.css';
 import Modal from '../../../components/modal/Modal';
+import deleteBtn from '../../../assets/delete.png';
+import downloadBtn from '../../../assets/download.png';
 
-export const FileSection: React.FC<FileSectionProps> = ({
-  projectId,
-  onStartZip,
-}) => {
+/**
+ * FileSection Component
+ *
+ * Handles file management for a project:
+ * - Upload files
+ * - Display uploaded files
+ * - Select files for ZIP creation
+ * - Download and delete files
+ *
+ * Key Features:
+ * - Drag & drop + manual file selection
+ * - Preview before upload
+ * - Upload progress tracking
+ * - Optimistic UI update for delete
+ *
+ * @param {Object} props
+ * @param {string} props.projectId - Unique project identifier
+ * @param {(fileIds: string[]) => void} props.onStartZip - Callback to trigger ZIP creation
+ */
+export const FileSection: React.FC<FileSectionProps> = ({ projectId, onStartZip }) => {
+  // Stores all uploaded files
   const [files, setFiles] = useState<FileItem[]>([]);
+
+  // Tracks selected file IDs for ZIP operation
   const [selectedFileIds, setSelectedFileIds] = useState<string[]>([]);
+
+  // Upload state management
   const [isUploading, setIsUploading] = useState(false);
   const [uploadProgress, setUploadProgress] = useState(0);
+
+  // Delete modal state
+  const [isDeleteOpen, setIsDeleteOpen] = useState(false);
+  const [deleteFileSelected, setDeleteFileSelected] = useState<FileItem>();
+  const [errorMessage, setErrorMessage] = useState<string>('');
+
+  // Error handling for uploads
   const [uploadError, setUploadError] = useState<string | null>(null);
+
+  // Hidden file input reference (for triggering click)
   const fileInputRef = useRef<HTMLInputElement>(null);
 
-  // Preview States
+  // Preview states (before upload)
   const [pendingFiles, setPendingFiles] = useState<File[]>([]);
   const [previewUrls, setPreviewUrls] = useState<string[]>([]);
   const [isPreviewOpen, setIsPreviewOpen] = useState(false);
 
+  // Fetch files on component mount
   useEffect(() => {
-    FileReceiveService.list(projectId).then(setFiles).catch(console.error);
+    FileService.listFile(projectId).then(setFiles).catch();
   }, [projectId]);
 
-  // Clean up blob URLs to prevent memory leaks
+  // Cleanup: revoke generated preview URLs to prevent memory leaks
   useEffect(() => {
     return () => previewUrls.forEach((url) => URL.revokeObjectURL(url));
   }, [previewUrls]);
 
+  /**
+   * Handles file selection (drag-drop or input)
+   * - Filters invalid files
+   * - Blocks folder uploads
+   * - Generates preview URLs
+   */
   const handleFileSelection = (selectedFiles: FileList | null) => {
-    if (!selectedFiles || !projectId) return;
+    if (!selectedFiles || !projectId) {
+      return;
+    }
 
     const fileArray = Array.from(selectedFiles);
-    const urls = fileArray.map((file) => URL.createObjectURL(file));
 
-    setPendingFiles(fileArray);
+    // Block folders
+    const hasFolder = fileArray.some((file: WebkitFile) => file.webkitRelativePath);
+    if (hasFolder) {
+      setUploadError('Folder upload is not allowed.');
+      return;
+    }
+
+    // Block ZIP files
+    const hasZip = fileArray.some(
+      (file) => file.type === 'application/zip' || file.name.toLowerCase().endsWith('.zip'),
+    );
+
+    if (hasZip) {
+      setUploadError('ZIP files are not allowed.');
+      return;
+    }
+
+    // Filter empty files
+    const validFiles = fileArray.filter((file) => file.size > 0);
+    if (validFiles.length === 0) {
+      setUploadError('No valid files selected.');
+      return;
+    }
+
+    // Generate preview
+    const urls = validFiles.map((file) => URL.createObjectURL(file));
+
+    setPendingFiles(validFiles);
     setPreviewUrls(urls);
+    setUploadError(null);
     setIsPreviewOpen(true);
   };
 
-  const uploadOnServer = () => {
+  /**
+   * Upload files to server after validation
+   * - Validates files before upload
+   * - Tracks progress
+   * - Updates UI on success
+   */
+  const uploadOnServer = async () => {
     const error = validateFiles(pendingFiles);
+
+    // Stop upload if validation fails
     if (error?.errors.length > 0) {
       setUploadError(error.errors[0]);
       setIsPreviewOpen(false);
@@ -52,67 +127,110 @@ export const FileSection: React.FC<FileSectionProps> = ({
 
     setIsPreviewOpen(false);
     setIsUploading(true);
+    setUploadProgress(0);
     setUploadError(null);
 
-    FileUploadService.upload(
-      projectId,
-      pendingFiles,
-      (percent) => setUploadProgress(percent),
-      (newFiles) => {
-        setFiles((prev) => [...newFiles, ...prev]);
-        setIsUploading(false);
-        setPendingFiles([]);
-        setPreviewUrls([]);
-      },
-      async (err, mockRecoveredFiles) => {
-        setUploadError(err);
-        setIsUploading(false);
-        if (mockRecoveredFiles) {
-          setFiles((prev) => [...mockRecoveredFiles, ...prev]);
-        }
-      },
-    );
+    try {
+      const newFiles = await FileService.uploadFile(projectId, pendingFiles, setUploadProgress);
+
+      // Add newly uploaded files to the top of list
+      setFiles((prev) => [...newFiles, ...prev]);
+    } catch (err: unknown) {
+      if (err instanceof Error) {
+        setUploadError(err.message || 'Upload failed');
+      }
+    } finally {
+      setIsUploading(false);
+    }
   };
 
-  const handleDeleteFile = async (fileId: string) => {
+  /**
+   * - Downloads a file from server
+   * - Converts blob to downloadable link
+   */
+  const handleDownloadFile = async (fieldId: string) => {
     try {
-      await FileReceiveService.delete(projectId, fileId);
-      setFiles((prev) => prev.filter((f) => f.id !== fileId));
+      const response = await FileService.downloadFile(projectId, fieldId);
+      if (response) {
+        const url = URL.createObjectURL(response);
+
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = 'file';
+
+        a.click();
+        URL.revokeObjectURL(url);
+      }
     } catch (err) {
-      console.log(err);
-      alert('Delete failed');
+      if (err instanceof Error) {
+        setErrorMessage(err.message);
+      }
     }
+  };
+
+  /**
+   * Deletes selected file
+   * - Uses optimistic UI update for better UX
+   * - Rolls back if API fails
+   */
+  const handleDeleteFile = async () => {
+    if (deleteFileSelected?._id) {
+      const fieldId = deleteFileSelected._id;
+      const prevFiles = files;
+
+      // Optimistically remove file from UI
+      setFiles((prev) => prev.filter((f) => f._id !== fieldId));
+
+      try {
+        await FileService.deleteFile(projectId, fieldId);
+      } catch (err) {
+        // Rollback UI if delete fails
+        setFiles(prevFiles);
+        alert(`Delete failed ${err}`);
+      }
+    }
+
+    setIsDeleteOpen(false);
   };
 
   return (
     <section className={styles.fileSection}>
-      {uploadError && (
-        <div className={styles.validationErrro}>{uploadError}</div>
-      )}
-
-      <div
-        className={styles.dropZone}
-        onDragOver={(e) => e.preventDefault()}
-        onDrop={(e) => {
-          e.preventDefault();
-          handleFileSelection(e.dataTransfer.files);
-        }}
-        onClick={() => !isUploading && fileInputRef.current?.click()}>
-        {isUploading ? (
-          <div className={styles.uploadingState}>
-            <p>Uploading... {uploadProgress}%</p>
-            <div className={styles.progressTrack}>
-              <div
-                className={styles.progressBar}
-                style={{ width: `${uploadProgress}%` }}
-              />
+      <div>
+        <div
+          className={styles.dropZone}
+          onDragOver={(e) => e.preventDefault()}
+          onDrop={(e) => {
+            e.preventDefault();
+            handleFileSelection(e.dataTransfer.files);
+          }}
+          onClick={() => !isUploading && fileInputRef.current?.click()}
+        >
+          {isUploading ? (
+            <div>
+              <p>Uploading... {uploadProgress}%</p>
             </div>
-          </div>
-        ) : (
-          <p>
-            Drag & Drop files or <strong>Browse</strong>
-          </p>
-        )}
+          ) : (
+            <p>
+              Drag & Drop files or <strong>Browse</strong>
+            </p>
+          )}
+
+          {/* The Overlay Error */}
+          {uploadError && (
+            <div
+              className={styles.validationErrro}
+              onClick={(e) => {
+                e.stopPropagation();
+                setUploadError(null);
+              }}
+            >
+              {uploadError}
+              <span className={styles.dismissHint}>Click to dismiss</span>
+            </div>
+          )}
+        </div>
+
+        {/* Hidden file input */}
         <input
           type="file"
           multiple
@@ -123,53 +241,85 @@ export const FileSection: React.FC<FileSectionProps> = ({
         />
       </div>
 
+      {/* File List Section */}
       <div className={styles.card}>
         <div className={styles.sectionHeader}>
           <h3>Files ({files.length})</h3>
+
+          {/* Trigger ZIP creation with selected files */}
           <button
             onClick={() => {
               onStartZip(selectedFileIds);
               setSelectedFileIds([]);
             }}
             disabled={selectedFileIds.length === 0}
-            className={styles.zipBtn}>
+            className={styles.zipBtn}
+          >
             Create ZIP Job
           </button>
         </div>
+
+        {/* Files Table */}
         <div className={styles.mainTable}>
+          <span>{errorMessage}</span>
           <table className={styles.table}>
             <thead>
               <tr>
                 <th>Select</th>
                 <th className={styles.fileNames}>Name</th>
                 <th className={styles.sizeTd}>Size</th>
-                <th>Action</th>
+                <th>
+                  <div className={styles.centerCell}>Action</div>
+                </th>
               </tr>
             </thead>
+
             <tbody>
               {files.length > 0 ? (
                 files.map((f) => (
-                  <tr key={f.id} className={styles.tableRow}>
+                  <tr key={f._id} className={styles.tableRow}>
                     <td>
+                      {/* File selection checkbox */}
                       <input
                         type="checkbox"
-                        checked={selectedFileIds.includes(f.id)}
+                        checked={selectedFileIds.includes(f._id)}
                         onChange={() =>
                           setSelectedFileIds((prev) =>
-                            prev.includes(f.id)
-                              ? prev.filter((i) => i !== f.id)
-                              : [...prev, f.id],
+                            prev.includes(f._id)
+                              ? prev.filter((i) => i !== f._id)
+                              : [...prev, f._id],
                           )
                         }
                       />
                     </td>
-                    <td>{f.name}</td>
-                    <td>{formatBytes(f.size)}</td>
+
+                    {/* File name (truncated if long) */}
                     <td>
+                      {f.name.length > 30
+                        ? `${f.name.slice(0, 10)}.......${f.name.slice(-16)}`
+                        : f.name}
+                    </td>
+
+                    {/* File size */}
+                    <td>{formatBytes(f.size)}</td>
+
+                    {/* Actions */}
+                    <td className={styles.actions}>
                       <button
-                        onClick={() => handleDeleteFile(f.id)}
-                        className={styles.deleteBtn}>
-                        Delete
+                        onClick={() => handleDownloadFile(f._id)}
+                        className={styles.iconButton}
+                      >
+                        <img src={downloadBtn} alt="Downlaod file" />
+                      </button>
+
+                      <button
+                        onClick={() => {
+                          setDeleteFileSelected(f);
+                          setIsDeleteOpen(true);
+                        }}
+                        className={styles.iconButton}
+                      >
+                        <img src={deleteBtn} alt="Delete file" />
                       </button>
                     </td>
                   </tr>
@@ -186,20 +336,17 @@ export const FileSection: React.FC<FileSectionProps> = ({
         </div>
       </div>
 
-      {/* Instant Preview Modal */}
+      {/* Preview Modal before upload */}
       <Modal
         isOpen={isPreviewOpen}
         onClose={() => setIsPreviewOpen(false)}
-        title="Preview Selected Files">
+        title="Preview Selected Files"
+      >
         <div className={styles.previewGrid}>
           {previewUrls.map((url, idx) => (
             <div key={idx} className={styles.previewItem}>
               {pendingFiles[idx]?.type.startsWith('image/') ? (
-                <img
-                  src={url}
-                  alt="preview thumb"
-                  className={styles.previewImage}
-                />
+                <img src={url} alt="preview" className={styles.previewImage} />
               ) : (
                 <div className={styles.filePlaceholder}>
                   {pendingFiles[idx]?.name.split('.').pop()?.toUpperCase()}
@@ -211,14 +358,45 @@ export const FileSection: React.FC<FileSectionProps> = ({
         </div>
 
         <div className={styles.modalActions}>
-          <button
-            onClick={() => setIsPreviewOpen(false)}
-            className={styles.cancelBtn}>
+          <button onClick={() => setIsPreviewOpen(false)} className={styles.cancelBtn}>
             Cancel
           </button>
           <button onClick={uploadOnServer} className={styles.saveBtn}>
             Save & Upload
           </button>
+        </div>
+      </Modal>
+
+      {/* Delete confirmation modal */}
+      <Modal
+        isOpen={isDeleteOpen}
+        onClose={() => {
+          setIsDeleteOpen(false);
+          setDeleteFileSelected(undefined);
+        }}
+        title="Delete File confirm"
+      >
+        <div className={styles.form}>
+          <p>
+            <strong>{deleteFileSelected?.name}</strong>
+          </p>
+          <p>Are you sure you want to delete your File from list ?</p>
+
+          <div className={styles.modalActions}>
+            <button
+              onClick={() => {
+                setDeleteFileSelected(undefined);
+                setIsDeleteOpen(false);
+              }}
+              className={styles.zipBtn}
+            >
+              Cancel
+            </button>
+
+            <button onClick={() => handleDeleteFile()} className={styles.deleteBtn}>
+              Confirm Delete
+            </button>
+          </div>
         </div>
       </Modal>
     </section>

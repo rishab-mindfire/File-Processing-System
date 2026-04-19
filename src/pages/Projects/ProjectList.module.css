@@ -6,48 +6,126 @@
   font-size: 0.7rem;
 }
 
-/* table */
 .tableContainer {
-  width: 100%;
+  background: #ffffff;
+  border-radius: 12px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+  padding: 24px;
+  margin-top: 10px;
   overflow-x: auto;
 }
+
 .table {
   width: 100%;
   border-collapse: collapse;
-  background: white;
-  border-radius: 8px;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
-}
-
-.table th,
-.table td {
-  padding: 0.4rem;
   text-align: left;
-  border-bottom: 1px solid #eee;
 }
-.tableHeader {
-  font-weight: 600;
-  color: #436b62;
-}
-.noProjectFound {
-  min-height: 50vh;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  font-weight: 600;
-  color: #436b62;
-}
-.action {
-  width: 250px;
-}
-.actionsCell {
-  display: flex;
-  gap: 0.5rem;
-  justify-content: flex-start;
-}
-/* cancel */
 
-/*confirm delete */
+.tableHeader th {
+  padding-bottom: 16px;
+  border-bottom: 2px solid #e2e8f0;
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: #436b62;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+.table td {
+  padding: 2px;
+  border-bottom: 1px solid #f1f5f9;
+  font-size: 0.95rem;
+  color: #334155;
+  vertical-align: middle;
+}
+.projectName {
+  min-width: 200px;
+  font-weight: 600;
+  color: #1e293b;
+}
+.table tbody tr:hover {
+  cursor: pointer;
+  background-color: rgba(67, 107, 98, 0.04);
+}
+.actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  justify-content: flex-end;
+}
+.open {
+  background-color: #436b62;
+  color: white;
+  border: none;
+  padding: 4px 18px;
+  border-radius: 6px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+.open:hover {
+  cursor: pointer;
+  background-color: #35544d;
+  transform: translateY(-1px);
+}
+.iconButton {
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  padding: 6px;
+  display: flex;
+  align-items: center;
+  border-radius: 4px;
+}
+.iconButton:hover {
+  background-color: #fee2e2;
+}
+.iconButton > img {
+  height: 25px;
+}
+.actionsCell > div {
+  width: 100%;
+  text-align: right;
+}
+
+.pagination {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  margin-top: 30px;
+}
+
+.pageBtn {
+  background: white;
+  border: 1px solid #d1d5db;
+  padding: 8px 16px;
+  border-radius: 8px;
+  color: #436b62;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.pageBtn:hover:not(:disabled) {
+  background-color: #436b62;
+  color: white;
+  border-color: #436b62;
+}
+
+.pageBtn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.pageInfo {
+  font-size: 0.9rem;
+  color: #64748b;
+}
+
+.pageInfo strong {
+  color: #436b62;
+}
+
 .confirmDltBtn {
   padding: 8px;
   cursor: pointer;
@@ -59,99 +137,30 @@
   transition: all 0.8 ease;
   width: 120px;
 }
-/* delete btn */
-.btnDanger {
-  color: #d63031;
-  background: none;
-  cursor: pointer;
-  margin-left: 10px;
-  border: 1px solid;
-  padding: 3px;
-  padding-inline: 13px;
-  border-radius: 4px;
-}
-.btnDanger:hover {
-  transform: scale(1.1);
+.confirmDltBtn:hover {
+  transform: scale(1.05);
   box-shadow: 0.3px -0.3px 3px red;
 }
-.open {
-  padding: 3px;
-  padding-inline: 13px;
-  background-color: #0984e3;
-  border: none;
-  border-radius: 4px;
-  color: #ffffff;
-}
-.open:hover {
-  size: 1;
-  cursor: pointer;
-  transform: scale(1.1);
-}
-.open:active {
-  transform: scale(0.98);
+
+.noProjectFound {
+  min-height: 50vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-weight: 600;
+  color: #436b62;
 }
 
-/* model */
 .spinner {
   text-align: center;
   margin-top: 4rem;
   font-weight: bold;
 }
-
-.modalActions {
-  display: flex;
-  justify-content: flex-end;
-  gap: 10px;
-  margin-top: 1rem;
-}
-.form {
-  display: flex;
-  flex-direction: column;
-  gap: 1.5rem;
-  padding: 1rem;
-}
-.formGroup {
-  display: flex;
-  flex-direction: column;
-  gap: 0.1rem;
-}
-
-/* Label styling */
-.formGroup label {
-  font-weight: 600;
-  font-size: 1rem;
-  color: #333;
-}
-
-/* Input & Textarea Styling */
-.modelInputField,
-.modelAeraField {
-  padding: 8px;
-  border: 1px solid #ddd;
-  border-radius: 6px;
-  font-size: 0.9rem;
-  font-family: inherit;
-  outline: none;
-  transition: all 0.2s ease-in-out;
-  width: 100%;
-}
-
-.modelInputField:focus,
-.modelAeraField:focus {
-  border-color: #4a90e2;
-  box-shadow: 0 0 0 3px rgba(74, 144, 226, 0.1);
-}
-
-/* Textarea  */
-.modelAeraField {
-  resize: vertical;
-  min-height: 80px;
-}
 /* new project */
-.btnPrimary {
+.newProject {
   padding: 8px;
   cursor: pointer;
-  background-color: #4a90e2;
+  background-color: #436b62;
   color: white;
   border: none;
   border-radius: 6px;
@@ -159,59 +168,122 @@
   transition: all 0.8 ease;
   width: 100px;
 }
-.createProject {
-  padding: 8px;
-  cursor: pointer;
-  background-color: #4a90e2;
-  color: white;
-  border: none;
-  border-radius: 6px;
-  margin-bottom: 15px;
-  transition: all 0.8 ease;
-  width: 120px;
-}
-.btnPrimary:hover {
-  background-color: #1670d6;
+.newProject:hover {
+  background-color: #35544d;
   transform: scale(1.03);
 }
-.btnPrimary:active {
-  transform: scale(0.98);
+/* model */
+/* Layout & Spacing */
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.2rem;
+  padding: 0.5rem;
 }
-/* pagination buttons    ------------------------- */
-.pagination {
+
+.formGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.formGroup label {
+  font-weight: 600;
+  font-size: 0.9rem;
+  color: #436b62;
+}
+
+/* Input & Textarea Styling */
+.modelInputField,
+.modelAeraField {
+  padding: 10px 12px;
+  border: 1.5px solid #e2e8f0;
+  border-radius: 8px;
+  font-size: 0.95rem;
+  font-family: inherit;
+  outline: none;
+  transition: all 0.2s ease;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.modelInputField:focus,
+.modelAeraField:focus {
+  border-color: #436b62;
+  box-shadow: 0 0 0 3px rgba(67, 107, 98, 0.15);
+}
+
+.modelAeraField {
+  resize: vertical;
+  min-height: 100px;
+}
+
+/* Buttons */
+.cancelBtn,
+.createProject {
+  height: 30px;
+  padding-inline: 30px;
+  cursor: pointer;
+  background-color: #436b62;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-weight: 600;
+  transition: all 0.2s ease;
+}
+
+.cancelBtn,
+.createProject:hover {
+  background-color: #35544d;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(67, 107, 98, 0.2);
+}
+
+.cancelBtn:disabled {
+  background-color: #a3b5b1;
+  cursor: not-allowed;
+  transform: none;
+}
+
+/* Delete Styles */
+.confirmDltBtn {
+  height: 30px;
+  cursor: pointer;
+  background-color: #dc2626;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-weight: 600;
+  transition: all 0.2s ease;
+}
+.confirmDltBtn:hover {
+  background-color: #b91c1c;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(220, 38, 38, 0.2);
+}
+.modalActions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+  margin-top: 1rem;
+}
+
+/* Error Message */
+.errorMessage {
+  color: #dc2626;
+  font-size: 0.85rem;
+  margin-top: 4px;
+  font-weight: 500;
+  background-color: #fef2f2;
+  padding: 8px;
+  border-radius: 4px;
+}
+
+/* Helper to center the submit button in Create Modal */
+.center {
   display: flex;
   justify-content: center;
-  align-items: center;
-  gap: 20px;
-  padding: 1rem;
-  background-color: #fff;
-  border-top: 1px solid #eee;
-}
-
-.pageBtn {
-  background-color: #f8f9fa;
-  border: 1px solid #dee2e6;
-  color: #29443e;
-  padding: 6px 14px;
-  border-radius: 4px;
-  cursor: pointer;
-  font-weight: 500;
-  transition: all 0.2s;
-}
-
-.pageBtn:hover:not(:disabled) {
-  background-color: #e9ecef;
-  border-color: #29443e;
-}
-
-.pageBtn:disabled {
-  opacity: 0.5;
-  cursor: not-allowed;
-}
-
-.pageInfo {
-  font-size: 0.9rem;
-  color: #666;
+  width: 100%;
 }
 
 /*media query */
@@ -220,12 +292,26 @@
     display: none;
   }
 
-  .table tr {
+  .table,
+  .table tbody,
+  .table tr,
+  .table td {
     display: block;
-    margin-bottom: 1rem;
-    border: 1px solid #eee;
-    border-radius: 8px;
+    width: 100%;
+  }
+
+  .table {
+    margin-top: 20px;
+    border: none;
+  }
+
+  .table tr {
+    margin-bottom: 1.5rem;
+    border: 1px solid #e2e8f0;
+    border-radius: 12px;
     padding: 0.5rem;
+    background: #fff;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
   }
 
   .table td {
@@ -233,39 +319,39 @@
     justify-content: space-between;
     align-items: center;
     text-align: right;
-    border-bottom: 1px solid #f1f1f1;
-    padding: 0.75rem 0.5rem;
+    padding: 0.8rem 1rem;
+    border-bottom: 1px solid #f1f5f9;
   }
 
   .table td:last-child {
     border-bottom: none;
     justify-content: center;
-    background: #fafafa;
+    background: #f8fafc;
     margin-top: 0.5rem;
-    border-radius: 4px;
+    border-radius: 8px;
+    padding: 1rem;
   }
+
+  /* The Label (Name, Files, headers) */
   .table td::before {
     content: attr(data-label);
-    font-weight: bold;
+    font-weight: 700;
     text-transform: uppercase;
-    font-size: 0.75rem;
-    color: #888;
-    float: left;
+    font-size: 0.7rem;
+    color: #436b62;
+    flex-shrink: 0;
+    margin-right: 1rem;
+    text-align: left;
   }
-  .table td:last-child::before {
-    content: none;
-  }
-}
 
-/* ProjectDetails.module.css */
-.uploadError {
-  background-color: #fee2e2;
-  border: 1px solid #ef4444;
-  color: #b91c1c;
-  padding: 1rem;
-  border-radius: 8px;
-  margin-bottom: 1rem;
-  animation: shake 0.5s ease-in-out;
+  .table td:last-child::before {
+    display: none;
+  }
+
+  .actions {
+    justify-content: center;
+    width: 100%;
+  }
 }
 
 @keyframes shake {

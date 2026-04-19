@@ -1,18 +1,56 @@
 import type { LoginState } from '../models/Types';
+import { api } from './apiInterceptor';
+import axios from 'axios';
 
+const TOKEN_KEY = 'File-System';
+
+/**
+ * loginApi
+ *
+ * Authenticates user and stores JWT token in localStorage
+ *
+ * @param credentials - user email and password
+ * @returns token string
+ */
 export const loginApi = async (
-  credentials: Pick<LoginState, 'email' | 'password'>,
+  credentials: Pick<LoginState, 'userEmail' | 'userPassword'>,
 ): Promise<string> => {
-  return new Promise((resolve, reject) => {
-    setTimeout(() => {
-      if (
-        credentials.email === 'user@gmail.com' &&
-        credentials.password === '12345'
-      ) {
-        resolve('file-processing-system@jwttoken');
-      } else {
-        reject(new Error('Invalid credentials'));
-      }
-    }, 1000);
-  });
+  try {
+    const response = await api.post('/user/login', credentials);
+
+    // Axios normalizes headers to lowercase
+    const authHeader = response.headers?.authorization;
+
+    if (!authHeader) {
+      throw new Error('Authorization header missing');
+    }
+
+    // Expected format: "Bearer <token>"
+    const parts = authHeader.split(' ');
+    if (parts.length !== 2 || parts[0] !== 'Bearer') {
+      throw new Error('Invalid authorization header format');
+    }
+    const token = parts[1];
+
+    if (!token) {
+      throw new Error('Token not found');
+    }
+
+    // Store token
+    localStorage.setItem(TOKEN_KEY, token);
+    return token;
+  } catch (err: unknown) {
+    // Normalize error
+    if (axios.isAxiosError(err)) {
+      const message = err.response?.data?.message || err.response?.data?.error || err.message;
+
+      throw new Error(message);
+    }
+
+    if (err instanceof Error) {
+      throw new Error(err.message);
+    }
+
+    throw new Error('Login failed');
+  }
 };

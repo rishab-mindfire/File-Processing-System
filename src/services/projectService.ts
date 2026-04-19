@@ -1,45 +1,50 @@
-import { delay } from '../hooks/customeHooks';
-import type { Project } from '../models/Types';
+import { getErrorMessage } from '../hooks/customeHooks';
+import type { CreateNewProject, Project } from '../models/Types';
+import { api } from './apiInterceptor';
 
-// ProjectList dummy list
-export const MOCK_PROJECTS: Project[] = [
-  {
-    id: '1',
-    name: 'Project 1',
-    description: 'Main production website assets files.',
-    filesCount: 5,
-    jobsCount: 1,
-    createdAt: new Date().toISOString().split('T')[0],
-  },
-  {
-    id: '2',
-    name: 'Project 2',
-    description: 'Backend documentation and files.',
-    filesCount: 2,
-    jobsCount: 0,
-    createdAt: new Date().toISOString().split('T')[0],
-  },
-];
-
+/**
+ * projectService
+ *
+ * Handles all project-related API operations
+ */
 export const projectService = {
-  // Project list :
+  // Fetch all projects
   async getAllProjects(): Promise<Project[]> {
-    // API can Be called here
-    await delay(2000);
-    // throw new Error('Failed to fetch projects network err');
-    return [...MOCK_PROJECTS];
+    try {
+      const response = await api.get<Project[]>('/projects');
+      return response.data;
+    } catch (error: unknown) {
+      throw new Error(getErrorMessage(error));
+    }
   },
-  // create project :
-  async createProject(name: string, description: string): Promise<Project> {
-    await delay(1000);
-    // API will be called here
-    return {
-      id: Math.random().toString(36),
-      name,
-      description,
-      filesCount: 0,
-      jobsCount: 0,
-      createdAt: new Date().toISOString(),
-    };
+
+  // Create a new project
+  async createProject(payload: CreateNewProject): Promise<Project> {
+    try {
+      const response = await api.post<Project>('/projects', payload);
+      return response.data;
+    } catch (error: unknown) {
+      throw new Error(getErrorMessage(error));
+    }
+  },
+
+  // Get project by ID
+  async getProjectById(id: string): Promise<Project> {
+    try {
+      const response = await api.get<Project>(`/projects/${id}`);
+      return response.data;
+    } catch (error: unknown) {
+      throw new Error(getErrorMessage(error));
+    }
+  },
+
+  // Delete project by ID
+  async deleteProject(id: string): Promise<string> {
+    try {
+      const response = await api.delete(`/projects/${id}`);
+      return response.data?.message || 'Project deleted successfully';
+    } catch (error: unknown) {
+      throw new Error(getErrorMessage(error));
+    }
   },
 };

@@ -3,6 +3,11 @@
   max-width: 1200px;
   margin: 0 auto;
 }
+.noProjectsData {
+  margin-top: 16px;
+  display: flex;
+  justify-content: center;
+}
 .noProjects {
   display: flex;
   justify-content: center;
@@ -30,12 +35,15 @@
   border-radius: 4px;
   cursor: pointer;
   white-space: nowrap;
+  color: #323f3c;
+  font-size: large;
 }
 .backBtn:hover {
-  transform: scale(1.1);
+  transform: scale(1.05);
   background-color: #cfcfcf;
 }
 .dropZone {
+  position: relative;
   border: 2px dashed #436b62;
   background: #74afa270;
   color: #436b62;
@@ -45,10 +53,35 @@
   cursor: pointer;
   margin-bottom: 2rem;
   transition: background 0.2s;
+  overflow: hidden;
 }
-.dropZone:hover {
-  background: #74afa23d;
+
+.validationErrro {
+  /* Absolute Positioning to cover the dropzone */
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 10;
+  color: rgb(236, 38, 38);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 3rem;
+  font-weight: 600;
+  backdrop-filter: blur(1px);
 }
+
+.dismissHint {
+  margin-top: 10px;
+  font-size: 0.75rem;
+  font-weight: 400;
+  opacity: 0.8;
+  text-decoration: underline;
+}
+
 .hiddenInput {
   display: none;
 }
@@ -96,16 +129,7 @@
 .table tbody tr td {
   padding-top: 12px;
 }
-.fileNames {
-  min-width: 180px;
-}
 
-.validationErrro {
-  display: flex;
-  justify-content: center;
-  color: #b91c1c;
-  margin-bottom: 5px;
-}
 /* files  lists*/
 .deleteBtn {
   color: #d63031;
@@ -116,22 +140,15 @@
   padding-inline: 13px;
   border-radius: 4px;
 }
-.deleteBtn,
-.zipBtn:hover {
-  cursor: pointer;
+.centerCell {
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
-.zipBtn {
-  padding: 3px;
-  padding-inline: 13px;
-  background-color: #0984e3;
-  border: none;
-  border-radius: 4px;
-  color: #ffffff;
-}
-.zipBtn:disabled {
-  background: #a29bfe;
-  opacity: 0.7;
-  cursor: not-allowed;
+.actions {
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
 }
 .empty {
   margin-top: 55px;
@@ -167,7 +184,6 @@
   font-size: 0.9rem;
   font-weight: 500;
 }
-
 .progressTrack {
   margin-top: 10px;
   background: #b8bcbf;
@@ -181,13 +197,53 @@
   height: 100%;
   transition: width 0.3s ease;
 }
+.PENDING {
+  color: #92400e;
+}
+.PROCESSING {
+  color: #1e40af;
+}
+.COMPLETED {
+  color: green;
+}
+
+/* FAILED */
+.FAILED {
+  background: #fee2e2;
+  color: #991b1b;
+}
 .download {
   padding: 3px;
   padding-inline: 13px;
-  background-color: #436b62;
+  background: linear-gradient(90deg, #436b62, #1f423b);
   border: none;
   border-radius: 4px;
   color: #ffffff;
+}
+.download:hover {
+  background-color: #436b62;
+  cursor: pointer;
+  scale: 1.05;
+}
+.deleteSection {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+}
+.iconButton {
+  background: transparent;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+}
+.iconButton:hover {
+  transform: scale(1.1);
+  transition: 0.2s ease;
+}
+.iconButton > img {
+  height: 25px;
 }
 /*  model preview */
 .modalActions {
@@ -260,7 +316,6 @@
   border-radius: 4px;
   cursor: pointer;
 }
-
 .saveBtn {
   background: #007bff;
   color: white;
@@ -268,6 +323,34 @@
   padding: 8px 16px;
   border-radius: 4px;
   cursor: pointer;
+}
+
+/* zip */
+
+.zipBtn:hover {
+  cursor: pointer;
+  scale: 1.05;
+}
+
+.zipBtn {
+  padding: 3px;
+  padding-inline: 13px;
+  background-color: #0984e3;
+  border: none;
+  border-radius: 4px;
+  color: #ffffff;
+}
+.zipBtn:disabled {
+  background: #a29bfe;
+  opacity: 0.7;
+  cursor: not-allowed;
+}
+.buttom {
+  display: flex;
+  justify-content: space-between;
+}
+.size {
+  font-weight: bold;
 }
 /* --- media QUERIES --- */
 
@@ -299,5 +382,11 @@
 
   .statusLabel {
     align-self: flex-start;
+  }
+  .actions {
+    gap: 10px;
+  }
+  .fileNames {
+    min-width: 300px;
   }
 }

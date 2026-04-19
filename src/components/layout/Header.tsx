@@ -3,6 +3,7 @@ import styles from './Header.module.css';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../hooks/useAuth';
 import logoutImage from '../../assets/logout.png';
+import folderImage from '../../assets/document-management.png';
 
 const Header: React.FC = () => {
   const [isOpen, setIsOpen] = useState<boolean>(false);
@@ -25,7 +26,7 @@ const Header: React.FC = () => {
 
   // log-out
   const handleLogout = () => {
-    localStorage.removeItem('file-processing-system');
+    localStorage.removeItem('File-System');
     logout();
     navigate('/login');
   };
@@ -33,7 +34,8 @@ const Header: React.FC = () => {
   return (
     <header className={styles.navbar}>
       <div className={styles.logo} role="heading">
-        File Processing System
+        <span>File Processing System</span>
+        <img src={folderImage} alt="logo image" onClick={() => navigate('/projects')} />
       </div>
 
       {/* Hamburger Toggle */}
@@ -42,7 +44,8 @@ const Header: React.FC = () => {
         onClick={toggleMenu}
         aria-label="Toggle navigation menu"
         aria-expanded={isOpen}
-        aria-controls="main-navigation">
+        aria-controls="main-navigation"
+      >
         <div className={styles.line} aria-hidden="true"></div>
         <div className={styles.line} aria-hidden="true"></div>
         <div className={styles.line} aria-hidden="true"></div>
@@ -52,7 +55,8 @@ const Header: React.FC = () => {
       <nav
         id="main-navigation"
         className={`${styles.navContainer} ${isOpen ? styles.navActive : ''}`}
-        aria-label="Primary Navigation">
+        aria-label="Primary Navigation"
+      >
         <ul className={styles.navLinks}>
           <li className={styles.mobileLogout}>
             <button className={styles.btnLogout} onClick={handleLogout}>

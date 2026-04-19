@@ -9,19 +9,19 @@ import type { Project } from '../../models/Types';
 
 const MOCK_PROJECTS: Project[] = [
   {
-    id: '1',
-    name: 'Project 1',
-    description: 'Main production website assets files.',
-    filesCount: 5,
-    jobsCount: 1,
+    _id: '1',
+    projectName: 'Project 1',
+    projectDescription: 'Main production website assets files.',
+    totalFiles: 5,
+    totalZips: 1,
     createdAt: new Date().toISOString().split('T')[0],
   },
   {
-    id: '2',
-    name: 'Project 2',
-    description: 'Backend documentation and files.',
-    filesCount: 2,
-    jobsCount: 0,
+    _id: '2',
+    projectName: 'Project 2',
+    projectDescription: 'Backend documentation and files.',
+    totalFiles: 2,
+    totalZips: 0,
     createdAt: new Date().toISOString().split('T')[0],
   },
 ];
@@ -114,9 +114,7 @@ describe('ProjectList Component', () => {
     await user.click(deleteButtons[0]);
 
     // Check if Modal is open
-    expect(
-      screen.getByText(/are you sure you want to delete/i),
-    ).toBeInTheDocument();
+    expect(screen.getByText(/are you sure you want to delete/i)).toBeInTheDocument();
 
     // Confirm Delete
     await user.click(screen.getByRole('button', { name: /confirm delete/i }));
@@ -128,9 +126,7 @@ describe('ProjectList Component', () => {
   });
   //api call fails
   it('should show error message if API fails', async () => {
-    vi.mocked(projectService.getAllProjects).mockRejectedValue(
-      new Error('API Error'),
-    );
+    vi.mocked(projectService.getAllProjects).mockRejectedValue(new Error('API Error'));
 
     render(
       <MemoryRouter>

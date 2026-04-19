@@ -1,199 +1,128 @@
-# Project-Centric File Processing System (Frontend)
+File Management & ZIP Job System
 
-##  Overview
+A modern React + TypeScript application for managing projects, uploading files, and generating downloadable ZIP archives asynchronously.
 
-This is a **React + TypeScript frontend application** for a **Project-Centric File Processing System**.
+ Features
+ Project Management
+Create, view, and delete projects
+Paginated project listing
+Project metadata (files count, jobs count, created date)
+ File Management
+Upload multiple files
+Drag & drop support
+File preview before upload
+File validation (size, type restrictions)
+Download & delete files
+ ZIP Job System
+Select files and create ZIP jobs
+Real-time job progress tracking (polling)
+Download completed ZIP files
+Delete ZIP jobs
+ Authentication
+Login with token-based authentication
+Protected routes
+Persistent session via localStorage
+ Tech Stack
+Frontend: React + TypeScript
+State Management: useReducer + Context API
+Routing: React Router
+HTTP Client: Axios
+Styling: CSS Modules
+Testing: Vitest + React Testing Library
+ Folder Structure
+src/
+│
+├── components/        # Reusable UI components (Modal, Layout, Loader)
+├── pages/             # Page-level components
+│   ├── login/
+│   ├── Projects/
+│   ├── ProjectDetails/
+│
+├── services/          # API service layer
+├── hooks/             # Custom hooks (pagination, auth)
+├── reducers/          # State reducers
+├── context/           # Auth context provider
+├── models/            # TypeScript types
+├── auth/              # Protected routes
+├── assets/            # Images/icons
+ Authentication Flow
+User logs in via /login
+Token is received from API
+Token stored in localStorage
+Axios interceptor attaches token to every request
+Protected routes check authentication state
+ Installation & Setup
+# Clone repo
+git clone <your-repo-url>
 
-The application allows users to:
-
-* Authenticate securely
-* Manage projects
-* Upload and manage files per project
-* Track background processing jobs
-
-It integrates with backend APIs to provide a seamless and responsive user experience.
-
----
-
-## Tech Stack
-
-* **React** (with Hooks)
-* **TypeScript**
-* **React Router**
-* **CSS Custom Styles** 
-
----
-
-## Folder Structure
-
-```
-/src
-  /components     # Reusable UI components
-  /pages          # Route-level pages
-  /hooks          # Custom React hooks
-  /services       # API service layer
-  /context        # Global state (Auth, etc.)
-  /styles         # Styling files
-```
-
----
-
-##  Authentication Module
-
-###  Login Page
-
-**Route:** `/login`
-
-#### Fields:
-
-* Email
-* Password
-
-#### Features:
-
-* API-based authentication
-* Token storage (localStorage / context)
-* Protected routes after login
-
----
-
-## Project Management
-
-### Project List Page
-
-**Route:** `/projects`
-
-#### Features:
-
-* Fetch and display all projects
-* Create new project
-* Navigate to project-specific files
-* Delete or manage projects
-
----
-
-## File Management (Project-Scoped)
-
-### Upload Files
-
-#### Features:
-
-* Upload multiple files
-* Progress tracking
-* Error handling & retry logic
-* File list per project
-
-#### Flow:
-
-1. Select project
-2. Upload files
-3. Files processed in backend
-4. Status updated via jobs
-
----
-
-## Job Management
-
-#### Features:
-
-* Track background jobs
-* View job status (Pending / Processing / Completed / Failed)
-* Real-time or polling updates
-
----
-
-## API Integration
-
-All API calls are managed via the `/services` layer.
-
-Example structure:
-
-```
-services/
-  authService.ts
-  projectService.ts
-  fileService.ts
-  jobService.ts
-```
-
----
-
-## 🧠 State Management
-
-Global state handled using **Context API**:
-
-* `AuthContext` → Authentication state
-
----
-
-## Protected Routes
-
-* Implemented using a custom `ProtectedRoute` component
-* Redirects unauthenticated users to `/login`
-
----
-
-## Getting Started
-
-### 1. Clone the repository
-
-```bash
-git clone https://github.com/your-username/your-repo.git
-cd your-repo
-```
-
----
-
-### 2. Install dependencies
-
-```bash
+# Install dependencies
 npm install
-```
 
----
-
-### 3. Run the app
-
-```bash
+# Run development server
 npm run dev
-```
+ Environment Variables
 
----
+Create a .env file:
 
-### 4. Build for production
+VITE_BASE_URL=http://localhost:5000/api
+ API Integration
 
-```bash
-npm run build
-```
+All API calls are centralized using Axios:
 
----
+projectService → project 
+FileService → file upload/download/delete
+ZipService → zip job creation & tracking
+loginApi → authentication
+ ZIP Job Flow
+User selects files
+Clicks Create ZIP Job
+Backend returns jobId
+Frontend polls job status every 3s
+On completion:
+Progress = 100%
+File becomes downloadable
+ Testing Setup
 
-## Key Features Summary
+Global test setup:
 
-* Authentication with protected routes
-* Project-based architecture
-* File uploads with progress tracking
-* Background job tracking
-* Clean modular folder structure
-* Scalable and maintainable codebase
+afterEach(() => {
+  cleanup();
+});
 
----
+Run tests:
 
-## Future Improvements
+npm run test
+ Important Design Decisions
+1. Polling instead of WebSockets
+Simpler implementation
+Works reliably for async jobs
+2. Reducer-based state
+Predictable state updates
+Better than multiple useState for complex flows
+3. Service layer abstraction
+Keeps components clean
+Centralized error handling
+ Known Limitations
+No refresh token mechanism
+No real-time updates (polling used)
+No file type filtering UI (basic validation only)
+Modal lacks focus trapping (basic accessibility)
+ Future Improvements
+Add WebSocket support for real-time job updates
+Implement refresh token authentication
+Add file type filtering & sorting
+Improve modal accessibility (focus trap)
+Add drag-select & bulk actions
+Add retry for failed jobs
+ Developer Notes
+Avoid using any → use unknown + type guards
+Always handle API errors via helper (getErrorMessage)
+Clean up side effects (useEffect)
+Keep services pure (no UI logic)
+ Scripts
+npm run dev       # Start dev server
+npm run build     # Build project
+npm run preview   # Preview build
+npm run test      # Run tests
 
-* Real-time updates using WebSockets
-* Role-based access control
-* Drag & drop file upload
-* Pagination for projects
 
----
-
-## Author
-
-**Rishab Raj Verma**
-
----
-
-## License
-
-This project is for assignment/demo purposes.

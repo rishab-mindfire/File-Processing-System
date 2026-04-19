@@ -11,11 +11,29 @@
   top: 0;
   z-index: 1000;
 }
-
+/* logo */
 .logo {
-  font-size: 1.1rem;
-  font-weight: 800;
-  color: #436b62;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-family: 'Inter', system-ui, sans-serif;
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: #1a1f2c;
+  cursor: default;
+}
+.logo img {
+  width: 46px;
+  height: auto;
+  object-fit: contain;
+  order: -1;
+}
+.logo img:hover {
+  cursor: pointer;
+  opacity: 0.85;
+}
+.logo span {
+  letter-spacing: -0.01em;
 }
 
 /* --- Navigation & Sidebar --- */
@@ -76,7 +94,7 @@
 }
 .btnLogout img {
   margin-top: 5px;
-  height: 30px;
+  height: 27px;
   width: 30px;
 }
 
