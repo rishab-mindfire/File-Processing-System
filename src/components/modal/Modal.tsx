@@ -67,7 +67,7 @@ const Modal: React.FC<ModalProps> = ({ isOpen, onClose, title, children }) => {
       aria-modal="true"
       aria-labelledby="modal-title"
     >
-      <div className={styles.modalContent} onClick={(e) => e.stopPropagation()}>
+      <div className={styles.modalContent} onClick={(e) => e.stopPropagation()} tabIndex={-1}>
         <div className={styles.modalHeader}>
           <h3 id="modal-title">{title}</h3>
 
