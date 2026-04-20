@@ -9,8 +9,8 @@ Thank you for your interest in contributing! This project uses a **React (TypeSc
 ### 1. Clone the Repository
 
 ```bash
-git clone <your-repo-url>
-cd <project-folder>
+git clone https://github.com/rishab-mindfire/File-Processing-System
+cd File-Processing-System
 ```
 
 ---
@@ -178,4 +178,4 @@ Good contributions are not just about code, but also clarity and consistency.
 
 ---
 
-Happy coding 
+
