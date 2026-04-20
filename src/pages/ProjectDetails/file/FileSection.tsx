@@ -229,7 +229,7 @@ export const FileSection: React.FC<FileSectionProps> = ({ projectId, onStartZip 
                 setUploadError(null);
               }}
             >
-              {uploadError}
+              {uploadError.slice(0, 40)}
               <span className={styles.dismissHint}>Click to dismiss</span>
             </div>
           )}
@@ -387,12 +387,11 @@ export const FileSection: React.FC<FileSectionProps> = ({ projectId, onStartZip 
         }}
         title="Delete File confirm"
       >
-        <div className={styles.form}>
+        <div className={styles.modalBody}>
+          <p>Are you sure you want to delete your File from list ?</p>
           <p>
             <strong>{deleteFileSelected?.name}</strong>
           </p>
-          <p>Are you sure you want to delete your File from list ?</p>
-
           <div className={styles.modalActions}>
             <button
               onClick={() => {
