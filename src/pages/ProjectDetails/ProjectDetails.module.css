@@ -324,7 +324,9 @@
   border-radius: 4px;
   cursor: pointer;
 }
-
+.modalBody {
+  padding-inline: 1rem;
+}
 /* zip */
 
 .zipBtn:hover {
