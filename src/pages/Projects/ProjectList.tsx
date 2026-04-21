@@ -254,7 +254,6 @@ export default function ProjectList() {
         <form onSubmit={handleCreateProject} className={styles.form}>
           <div className={styles.formGroup}>
             <label htmlFor="projectName">Project Name</label>
-
             <input
               id="projectName"
               className={styles.modelInputField}
@@ -264,7 +263,11 @@ export default function ProjectList() {
               required
             />
 
-            {projectState.error && <div className={styles.errorMessage}>{projectState.error}</div>}
+            {projectState.error && (
+              <div className={styles.errorMessage} role="alert">
+                {projectState.error}
+              </div>
+            )}
           </div>
 
           <div className={styles.formGroup}>
@@ -308,7 +311,11 @@ export default function ProjectList() {
             Are you sure you want to delete <strong>{projectToDelete?.projectName}</strong>?
           </p>
 
-          {projectState.error && <div className={styles.errorMessage}>{projectState.error}</div>}
+          {projectState.error && (
+            <div className={styles.errorMessage} role="alert">
+              {projectState.error}
+            </div>
+          )}
 
           <div className={styles.modalActions}>
             <button onClick={() => setProjectToDelete(null)} className={styles.cancelBtn}>

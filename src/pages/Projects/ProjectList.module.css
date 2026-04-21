@@ -288,6 +288,9 @@
 
 /*media query */
 @media (max-width: 768px) {
+  .tableContainer {
+    padding: 0.5rem;
+  }
   .table thead {
     display: none;
   }
@@ -349,8 +352,11 @@
   }
 
   .actions {
-    justify-content: center;
-    width: 100%;
+    gap: 50px;
+  }
+  .open {
+    min-width: 110px;
+    font-size: larger;
   }
 }
 

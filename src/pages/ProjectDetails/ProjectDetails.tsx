@@ -64,7 +64,7 @@ export default function ProjectDetails() {
   // Loading State
   if (loading) {
     return (
-      <div className={styles.spinner}>
+      <div className={styles.spinner} role="status" aria-live="polite">
         <Loader />
       </div>
     );
@@ -73,11 +73,15 @@ export default function ProjectDetails() {
   // Not Found State of project
   if (!project || err) {
     return (
-      <div className={styles.container}>
+      <div className={styles.container} role="alert">
         <div className={styles.noProjects}>Project not found.</div>
 
         <div className={styles.noProjectsData}>
-          <button onClick={() => navigate('/projects')} className={styles.backBtn}>
+          <button
+            onClick={() => navigate('/projects')}
+            className={styles.backBtn}
+            aria-label="Return to the projects list"
+          >
             Back to Projects
           </button>
         </div>
@@ -89,7 +93,11 @@ export default function ProjectDetails() {
     <div className={styles.container}>
       {/* Header Section */}
       <header className={styles.header}>
-        <button onClick={() => navigate('/projects')} className={styles.backBtn}>
+        <button
+          onClick={() => navigate('/projects')}
+          className={styles.backBtn}
+          aria-label="Back to Projects List"
+        >
           &larr; Back
         </button>
 
@@ -100,17 +108,21 @@ export default function ProjectDetails() {
       </header>
 
       {/* Main Content Grid */}
-      <div className={styles.grid}>
+      <main className={styles.grid} role="main">
         {/* File Upload & Selection Section */}
-        <FileSection projectId={projectId!} onStartZip={(ids) => setJobTrigger(ids)} />
+        <section aria-label="File Management">
+          <FileSection projectId={projectId!} onStartZip={(ids) => setJobTrigger(ids)} />
+        </section>
 
         {/* ZIP Job Tracking Section */}
-        <ZipSection
-          projectId={projectId!}
-          newJobSignal={jobTrigger}
-          onSignalProcessed={() => setJobTrigger(null)} // reset trigger after handling
-        />
-      </div>
+        <section aria-label="ZIP Export Jobs">
+          <ZipSection
+            projectId={projectId!}
+            newJobSignal={jobTrigger}
+            onSignalProcessed={() => setJobTrigger(null)} // reset trigger after handling
+          />
+        </section>
+      </main>
     </div>
   );
 }

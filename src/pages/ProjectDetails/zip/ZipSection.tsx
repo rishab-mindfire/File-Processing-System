@@ -214,18 +214,20 @@ export const ZipSection: React.FC<ZipSectionProps> = ({
   };
 
   return (
-    <section className={styles.card}>
+    <section className={styles.card} aria-labelledby="jobs-heading">
       <div className={styles.sectionHeader}>
-        <h3>Job Progress</h3>
+        <h3 id="jobs-heading">Job Progress</h3>
       </div>
 
       {jobs.length === 0 ? (
-        <p className={styles.empty}>No active jobs.</p>
+        <p className={styles.empty} role="alert">
+          No active jobs.
+        </p>
       ) : (
         <div className={styles.jobList}>
-          <span>{errorMessage}</span>
+          <span role="alert">{errorMessage}</span>
           {jobs.map((job) => (
-            <div key={job.jobId} className={styles.jobItem}>
+            <div key={job.jobId} className={styles.jobItem} role="region" aria-label="Job details">
               <div className={styles.jobInfo}>
                 <span className={styles.fileName}>{job.fileName}</span>
 
@@ -233,13 +235,21 @@ export const ZipSection: React.FC<ZipSectionProps> = ({
                 <span
                   className={`${styles.statusLabel} ${styles[job.status]}`}
                   data-status={job.status}
+                  aria-live="polite"
                 >
                   {job.status}
                 </span>
               </div>
 
               {/* Progress bar */}
-              <div className={styles.progressTrack}>
+              <div
+                className={styles.progressTrack}
+                role="progressbar"
+                aria-valuemin={0}
+                aria-valuemax={100}
+                aria-valuenow={job.progress}
+                aria-label={`Zipping progress for ${job.fileName}`}
+              >
                 <div className={styles.progressBar} style={{ width: `${job.progress}%` }} />
               </div>
 
@@ -249,6 +259,7 @@ export const ZipSection: React.FC<ZipSectionProps> = ({
                   <button
                     onClick={() => triggerDownload(job.jobId, job.fileName)}
                     className={styles.iconButton}
+                    aria-label={`Download ${job.fileName}`}
                   >
                     <span className={styles.download}>Downlaod</span>
                   </button>
@@ -275,7 +286,11 @@ export const ZipSection: React.FC<ZipSectionProps> = ({
               </div>
 
               {/* Error state */}
-              {job.status === 'FAILED' && <span className={styles.error}>Failed</span>}
+              {job.status === 'FAILED' && (
+                <span className={styles.error} role="alert">
+                  Failed
+                </span>
+              )}
             </div>
           ))}
         </div>

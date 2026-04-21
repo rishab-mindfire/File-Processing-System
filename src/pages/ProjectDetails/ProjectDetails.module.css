@@ -29,9 +29,11 @@
   color: #323f3c;
 }
 .backBtn {
+  height: 30px;
+  width: 180px;
+  text-align: center;
   background: #eee;
   border: none;
-  padding: 8px 15px;
   border-radius: 4px;
   cursor: pointer;
   white-space: nowrap;
@@ -364,16 +366,17 @@
 
 @media (max-width: 600px) {
   .container {
-    padding: 1rem;
+    padding: 0.2rem;
   }
   .projectInfo {
     margin-left: 0rem;
+    padding: 0.2rem;
   }
   .header h1 {
     font-size: 1.2rem;
   }
-
   .dropZone {
+    margin-top: 9px;
     padding: 1.5rem;
   }
 

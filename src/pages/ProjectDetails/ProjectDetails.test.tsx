@@ -89,7 +89,7 @@ describe('ProjectDetails Component', () => {
     expect(mockNavigate).toHaveBeenCalledWith('/projects');
   });
 
-  // FILE → ZIP FLOW
+  // FILE to ZIP FLOW
   it('should update jobTrigger when FileSection signals a zip start', async () => {
     const user = userEvent.setup();
 
