@@ -48,7 +48,7 @@ export const FileSection: React.FC<FileSectionProps> = ({ projectId, onStartZip 
   // Hidden file input reference (for triggering click)
   const fileInputRef = useRef<HTMLInputElement>(null);
 
-  // Preview states (before upload)
+  // Preview states
   const [pendingFiles, setPendingFiles] = useState<File[]>([]);
   const [previewUrls, setPreviewUrls] = useState<string[]>([]);
   const [isPreviewOpen, setIsPreviewOpen] = useState(false);

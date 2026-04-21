@@ -33,7 +33,6 @@ describe('Login Form Integration', () => {
     // Click the button
     await user.click(submitButton);
 
-    // Use a regex that is flexible.
     // findByText
     const emailError = await screen.findByText(/email is required/i);
     const passwordError = await screen.findByText(/password is required/i);

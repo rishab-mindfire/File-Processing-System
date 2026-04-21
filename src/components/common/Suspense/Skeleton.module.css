@@ -1,0 +1,180 @@
+/* project suspense */
+.topHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 30px;
+  gap: 50rem;
+}
+.skeletonTitle {
+  height: 32px;
+}
+.skeletonButton {
+  height: 40px;
+  border-radius: 8px;
+}
+.skeleton {
+  background: #eee;
+  background: linear-gradient(110deg, #ececec 8%, #f5f5f5 18%, #ececec 33%);
+  background-size: 200% 100%;
+  animation: shimmer 1.5s linear infinite;
+  border-radius: 4px;
+  width: 100%;
+}
+.skeletonHeader {
+  display: flex;
+  gap: 15px;
+  padding: 12px 0;
+  border-bottom: 2px solid #f0f0f0;
+}
+.skeletonRow {
+  display: flex;
+  gap: 15px;
+  padding: 10px 0;
+  border-bottom: 1px solid #f9f9f9;
+}
+.cell {
+  height: 20px;
+  flex: 1;
+}
+.w75 {
+  width: 75%;
+}
+.w50 {
+  width: 50%;
+}
+@keyframes shimmer {
+  to {
+    background-position-x: -200%;
+  }
+}
+
+/*Project details */
+.detailsContainer {
+  padding: 20px;
+  max-width: 1200px;
+  padding-inline: 7rem;
+}
+
+/* Specific Element Sizes */
+.skeletonMainTitle {
+  height: 40px;
+  width: 300px;
+}
+
+.skeletonBtnSmall {
+  height: 35px;
+  width: 80px;
+}
+.skeletonBtnMedium {
+  height: 30px;
+  width: 100px;
+}
+
+.skeletonDropzone {
+  height: 160px;
+  width: 100%;
+  margin-bottom: 24px;
+  border-radius: 12px;
+}
+
+.cardSkeleton {
+  background: #fff;
+  border: 1px solid #eee;
+  padding: 20px;
+  border-radius: 12px;
+}
+
+.cardHeader {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 20px;
+}
+
+.skeletonRow {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  padding: 15px 0;
+  border-bottom: 1px solid #f5f5f5;
+}
+
+.jobCard {
+  border: 1px solid #f0f0f0;
+  padding: 15px;
+  border-radius: 8px;
+  margin-bottom: 15px;
+}
+
+.progressBar {
+  height: 10px;
+  width: 100%;
+  margin: 15px 0;
+  border-radius: 5px;
+}
+
+/* Helpers */
+.circle {
+  height: 20px;
+  width: 20px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+.cell {
+  height: 15px;
+  flex-grow: 1;
+}
+.cellSmall {
+  height: 15px;
+  width: 60px;
+}
+
+/* Animation  */
+.skeleton {
+  background: linear-gradient(110deg, #ececec 8%, #f5f5f5 18%, #ececec 33%);
+  background-size: 200% 100%;
+  animation: shimmer 1.5s linear infinite;
+  border-radius: 4px;
+}
+
+@keyframes shimmer {
+  to {
+    background-position-x: -200%;
+  }
+}
+
+.detailsGrid {
+  display: flex;
+  gap: 24px;
+  align-items: flex-start;
+  flex-direction: row;
+}
+
+.leftCol {
+  flex: 0 0 75%;
+}
+
+.rightCol {
+  flex: 0 0 35%;
+}
+@media (max-width: 1200px) {
+  .detailsGrid {
+    flex-direction: column;
+    gap: 20px;
+  }
+
+  .leftCol,
+  .rightCol {
+    flex: 0 0 100%;
+    width: 100%;
+  }
+
+  .skeletonMainTitle {
+    width: 200px;
+  }
+
+  .topHeader {
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+}

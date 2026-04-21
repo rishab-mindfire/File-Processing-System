@@ -29,61 +29,6 @@
   }
 }
 
-/* suspense */
-.wrapper {
-  padding: 16px;
-  display: flex;
-  gap: 12px;
-  align-items: flex-start;
-}
-
-.content {
-  flex: 1;
-}
-
-/* Base skeleton */
-.skeleton {
-  background: #e2e8f0;
-  position: relative;
-  overflow: hidden;
-}
-
-/* Text line */
-.skeletonLine {
-  height: 12px;
-  margin-bottom: 10px;
-  border-radius: 6px;
-  background: #e2e8f0;
-  position: relative;
-  overflow: hidden;
-}
-
-/* Avatar */
-.avatar {
-  width: 48px;
-  height: 48px;
-  border-radius: 50%;
-}
-
-/* Shimmer effect (shared) */
-.skeleton::after,
-.skeletonLine::after {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: -150px;
-  height: 100%;
-  width: 150px;
-  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.6), transparent);
-  animation: shimmer 1.2s infinite;
-}
-
-@keyframes shimmer {
-  100% {
-    transform: translateX(300%);
-  }
-}
-
 /* model button */
 .center {
   display: flex;
