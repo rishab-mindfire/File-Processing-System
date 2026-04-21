@@ -55,7 +55,7 @@ api.interceptors.response.use(
       localStorage.removeItem('File-System');
 
       // redirect to login
-      window.location.href = '/login';
+      // window.location.href = '/login';
     }
 
     return Promise.reject(error);

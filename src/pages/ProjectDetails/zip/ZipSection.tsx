@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import styles from '../ProjectDetails.module.css';
-import type { Job, ZipItem } from '../../../models/Types';
+import type { Job, ZipSectionProps } from '../../../models/Types';
 import { zipService } from '../../../services/zipService';
 import { formatBytes } from '../../../hooks/customeHooks';
 import deleteBtn from '../../../assets/delete.png';
@@ -26,11 +26,6 @@ import Modal from '../../../components/modal/Modal';
  * @param {() => void} props.onSignalProcessed - Callback after job trigger handled
  */
 
-interface ZipSectionProps {
-  newJobSignal: string[] | null;
-  onSignalProcessed: () => void;
-  projectId: string;
-}
 export const ZipSection: React.FC<ZipSectionProps> = ({
   projectId,
   newJobSignal,
@@ -53,18 +48,10 @@ export const ZipSection: React.FC<ZipSectionProps> = ({
   // Fetch completed ZIP history from server
   const fetchZipList = async () => {
     try {
-      const res = await zipService.getZipList(projectId);
-
-      const completedJobs: Job[] = res.map((zip: ZipItem) => ({
-        jobId: zip.jobId,
-        status: 'COMPLETED',
-        progress: 100,
-        fileName: zip.fileName,
-        completedAt: zip.completedAt,
-        size: zip.size,
-      }));
-
-      setJobs(completedJobs);
+      const completedJobs = await zipService.getZipList(projectId);
+      if (completedJobs && completedJobs.length > 0) {
+        setJobs(completedJobs);
+      }
     } catch (err) {
       if (err instanceof Error) {
         setErrorMessage(err.message);

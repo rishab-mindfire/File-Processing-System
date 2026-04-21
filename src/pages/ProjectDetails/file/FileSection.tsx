@@ -76,7 +76,7 @@ export const FileSection: React.FC<FileSectionProps> = ({ projectId, onStartZip 
 
     const fileArray = Array.from(selectedFiles);
 
-    // Block folders
+    // Block folders for selection
     const hasFolder = fileArray.some((file: WebkitFile) => file.webkitRelativePath);
     if (hasFolder) {
       setUploadError('Folder upload is not allowed.');

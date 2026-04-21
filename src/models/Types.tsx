@@ -156,6 +156,12 @@ export type JobAction =
   | { type: 'COMPLETE_JOB'; payload: string }
   | { type: 'FAIL_JOB'; payload: string };
 
+export interface ZipSectionProps {
+  newJobSignal: string[] | null;
+  onSignalProcessed: () => void;
+  projectId: string;
+}
+
 // CUSTOM TYPES
 // Extends File type to include folder upload path
 export interface WebkitFile extends File {
