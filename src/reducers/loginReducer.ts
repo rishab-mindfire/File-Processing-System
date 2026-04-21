@@ -4,8 +4,8 @@ import type { LoginAction, LoginState } from '../models/Types';
  * Initial state for login form
  */
 export const initialLoginState: LoginState = {
-  userEmail: 'user@gmail.com',
-  userPassword: '12345',
+  userEmail: '',
+  userPassword: '',
   loading: false,
   errors: {},
 };

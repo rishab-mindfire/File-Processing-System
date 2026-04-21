@@ -25,6 +25,13 @@ export interface Errors {
   general?: string;
 }
 
+//suspense
+export interface SuspenseProps {
+  lines?: number;
+  height?: string;
+  showAvatar?: boolean;
+}
+
 // Login form state.
 export interface LoginState {
   userEmail: string;

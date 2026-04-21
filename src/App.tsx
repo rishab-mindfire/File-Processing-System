@@ -5,15 +5,12 @@ import { useAuth } from './hooks/useAuth';
 import type { JSX } from 'react';
 import Loader from './components/common/Loader';
 
-// React.lazy component transform
+// React.lazy component
 const Login = lazy(() => import('./pages/login/LoginPage'));
 const PageNotFound = lazy(() => import('./pages/errorPage/PageNotFound'));
 const ProjectList = lazy(() => import('./pages/Projects/ProjectList'));
 const ProjectDetails = lazy(() => import('./pages/ProjectDetails/ProjectDetails'));
 const Layout = lazy(() => import('./components/layout/Layout'));
-
-// Loading component
-const PageLoader = () => <Loader />;
 
 const RootRedirect = (): JSX.Element => {
   const { state } = useAuth();
@@ -23,7 +20,7 @@ const RootRedirect = (): JSX.Element => {
 function App() {
   return (
     <BrowserRouter basename="/">
-      <Suspense fallback={<PageLoader />}>
+      <Suspense fallback={<Loader />}>
         <Routes>
           <Route path="/" element={<RootRedirect />} />
           <Route path="/login" element={<Login />} />

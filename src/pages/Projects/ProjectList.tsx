@@ -253,9 +253,10 @@ export default function ProjectList() {
       >
         <form onSubmit={handleCreateProject} className={styles.form}>
           <div className={styles.formGroup}>
-            <label>Project Name</label>
+            <label htmlFor="projectName">Project Name</label>
 
             <input
+              id="projectName"
               className={styles.modelInputField}
               type="text"
               value={formData.name}
@@ -267,9 +268,10 @@ export default function ProjectList() {
           </div>
 
           <div className={styles.formGroup}>
-            <label>Description</label>
+            <label htmlFor="projectDescription">Description</label>
 
             <textarea
+              id="projectDescription"
               className={styles.modelAeraField}
               value={formData.description}
               onChange={(e) =>
