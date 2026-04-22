@@ -338,7 +338,12 @@ export const FileSection: React.FC<FileSectionProps> = ({ projectId, onStartZip 
               ) : (
                 <tr>
                   <td colSpan={4}>
-                    <div className={styles.noFiles}> No Files !</div>
+                    <div className={styles.noFiles}>
+                      <span className={styles.primaryText}>No files found.</span>
+                      <span className={styles.secondaryText}>
+                        Please upload a document to continue.
+                      </span>
+                    </div>
                   </td>
                 </tr>
               )}

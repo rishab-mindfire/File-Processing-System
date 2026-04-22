@@ -1,10 +1,10 @@
 /* project suspense */
 .topHeader {
+  padding-top: 40px;
   display: flex;
   justify-content: space-between;
   align-items: center;
   margin-bottom: 30px;
-  gap: 50rem;
 }
 .skeletonTitle {
   height: 32px;
@@ -53,44 +53,40 @@
 .detailsContainer {
   padding: 20px;
   max-width: 1200px;
-  padding-inline: 7rem;
+  padding-inline: 5rem;
 }
 
 /* Specific Element Sizes */
 .skeletonMainTitle {
   height: 40px;
-  width: 300px;
+  width: 400px;
 }
 
 .skeletonBtnSmall {
   height: 35px;
-  width: 80px;
+  width: 110px;
 }
 .skeletonBtnMedium {
   height: 30px;
   width: 100px;
 }
-
 .skeletonDropzone {
-  height: 160px;
+  height: 120px;
   width: 100%;
   margin-bottom: 24px;
-  border-radius: 12px;
+  border-radius: 12px !important;
 }
-
 .cardSkeleton {
   background: #fff;
   border: 1px solid #eee;
   padding: 20px;
   border-radius: 12px;
 }
-
 .cardHeader {
   display: flex;
   justify-content: space-between;
   margin-bottom: 20px;
 }
-
 .skeletonRow {
   display: flex;
   align-items: center;
@@ -151,7 +147,7 @@
 }
 
 .leftCol {
-  flex: 0 0 75%;
+  flex: 0 0 73%;
 }
 
 .rightCol {

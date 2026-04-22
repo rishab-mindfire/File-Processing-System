@@ -158,16 +158,31 @@
   border-top: 1px solid #eee;
   display: flex;
   justify-content: center;
+  flex-direction: column;
   align-items: center;
   min-height: 110px;
+  font-size: 17px;
 }
 .noFiles {
   width: 100%;
   color: #323f3c;
   display: flex;
+  flex-direction: column;
   justify-content: center;
   align-items: center;
-  min-height: 100px;
+  min-height: 150px;
+  font-size: 17px;
+  text-align: center;
+  gap: 8px;
+}
+
+.primaryText {
+  font-weight: 600;
+}
+
+.secondaryText {
+  font-size: 14px;
+  color: #66706e;
 }
 .sizeTd {
   min-width: 100px;

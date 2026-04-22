@@ -140,7 +140,6 @@ export const ZipSection: React.FC<ZipSectionProps> = ({
    */
   useEffect(() => {
     const signalKey = newJobSignal?.join(',') ?? null;
-
     if (newJobSignal && newJobSignal.length > 0 && signalKey !== lastProcessedSignalRef.current) {
       lastProcessedSignalRef.current = signalKey;
       handleNewZipRequest(newJobSignal);
@@ -189,26 +188,26 @@ export const ZipSection: React.FC<ZipSectionProps> = ({
 
       try {
         await zipService.deleteZip(projectId, jobId);
-        await fetchZipList();
       } catch (err) {
         if (err instanceof Error) {
           setErrorMessage(err.message);
         }
       }
     }
-
+    await fetchZipList();
     setIsDeleteOpen(false);
   };
 
   return (
     <section className={styles.card} aria-labelledby="jobs-heading">
       <div className={styles.sectionHeader}>
-        <h3 id="jobs-heading">Job Progress</h3>
+        <h3 id="jobs-heading">Zip file Progress</h3>
       </div>
 
       {jobs.length === 0 ? (
         <p className={styles.empty} role="alert">
-          No active jobs.
+          <span className={styles.primaryText}>No Zip found.</span>
+          <span className={styles.secondaryText}>Please select files then create Zip.</span>
         </p>
       ) : (
         <div className={styles.jobList}>
