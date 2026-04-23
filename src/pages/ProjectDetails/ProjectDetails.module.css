@@ -344,13 +344,12 @@
 .modalBody {
   padding-inline: 1rem;
 }
-/* zip */
 
+/* zip */
 .zipBtn:hover {
   cursor: pointer;
   scale: 1.05;
 }
-
 .zipBtn {
   padding: 3px;
   padding-inline: 13px;
@@ -370,6 +369,24 @@
 }
 .size {
   font-weight: bold;
+}
+/* went wrong */
+.wentWrongMain{
+  height: 80vh;
+  justify-content: center;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.wentWrong {
+  color: #dc2626;
+  font-size: 0.85rem;
+  font-weight: 500;
+  background-color: #fef2f2;
+  padding: 8px;
+  border-radius: 4px;
+  display: flex;
+  justify-content: center;
 }
 /* --- media QUERIES --- */
 

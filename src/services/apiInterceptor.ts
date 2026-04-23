@@ -51,7 +51,7 @@ api.interceptors.response.use(
     const status = error?.response?.status;
 
     // Handle unauthorized (token expired / invalid)
-    if (status === 401) {
+    if (status === 401 || status === 405) {
       localStorage.removeItem('File-System');
 
       // redirect to login

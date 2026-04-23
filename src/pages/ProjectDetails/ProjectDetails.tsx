@@ -70,8 +70,19 @@ export default function ProjectDetails() {
     );
   }
 
+  // error state
+  if (err) {
+    return (
+      <div className={styles.wentWrongMain}>
+        <div className={styles.wentWrong} role="alert">
+          Something went wrong !
+        </div>
+      </div>
+    );
+  }
+
   // Not Found State of project
-  if (!project || err) {
+  if (!project) {
     return (
       <div className={styles.container} role="alert">
         <div className={styles.noProjects}>Project not found.</div>

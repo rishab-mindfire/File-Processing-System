@@ -51,6 +51,8 @@ export const ZipSection: React.FC<ZipSectionProps> = ({
       const completedJobs = await zipService.getZipList(projectId);
       if (completedJobs && completedJobs.length > 0) {
         setJobs(completedJobs);
+      } else {
+        setJobs([]);
       }
     } catch (err) {
       if (err instanceof Error) {
@@ -185,7 +187,6 @@ export const ZipSection: React.FC<ZipSectionProps> = ({
   const deleteJob = async () => {
     if (deleteFileSelected?.jobId) {
       const jobId = deleteFileSelected.jobId;
-
       try {
         await zipService.deleteZip(projectId, jobId);
       } catch (err) {
@@ -195,6 +196,7 @@ export const ZipSection: React.FC<ZipSectionProps> = ({
       }
     }
     await fetchZipList();
+    lastProcessedSignalRef.current = null;
     setIsDeleteOpen(false);
   };
 

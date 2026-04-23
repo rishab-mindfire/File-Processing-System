@@ -146,6 +146,15 @@ export default function ProjectList() {
       </div>
     );
   }
+  if (projectState.error) {
+    return (
+      <div className={styles.wentWrongMain}>
+        <div className={styles.wentWrong} role="alert">
+          Something went wrong !
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className={styles.container}>
