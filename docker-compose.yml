@@ -1,0 +1,46 @@
+services:
+  backend:
+    build: ../BackendService
+    container_name: backend
+    ports:
+      - "4001:4001"
+    env_file:
+      - ../BackendService/.env.dev
+    environment:
+      - NODE_ENV=dev
+      - DB_CONNECTION_STRING=mongodb://mongo:27017/fileSystem
+    depends_on:
+      - mongo
+    volumes:
+      - uploads_data:/backend-app/uploads 
+    networks:
+      - app-network
+
+  frontend:
+    build: .
+    container_name: frontend
+    ports:
+      - "3001:80"
+    depends_on:
+      - backend
+    environment:
+      - VITE_BASE_URL=http://backend:4001
+    networks:
+      - app-network
+
+  mongo:
+    image: mongo:6
+    container_name: mongo
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo_data:/data/db
+    networks:
+      - app-network
+
+networks:
+  app-network:
+
+volumes:
+  mongo_data:
+  uploads_data:
