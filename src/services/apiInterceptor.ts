@@ -43,19 +43,19 @@ api.interceptors.request.use(
  * Response Interceptor
  *
  * - Handles global API errors
- * - Example: auto logout on 401
+ * - Example: auto logout on 401 or 405 invalid/expired
  */
 api.interceptors.response.use(
   (response) => response,
   (error) => {
     const status = error?.response?.status;
 
-    // Handle unauthorized (token expired / invalid)
-    if (status === 401) {
+    // Handle unauthorized (token  invalid/expired)
+    if (status === 401 || status === 405) {
       localStorage.removeItem('File-System');
 
       // redirect to login
-      window.location.href = '/login';
+      // window.location.href = '/login';
     }
 
     return Promise.reject(error);

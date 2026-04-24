@@ -107,7 +107,8 @@ export default function Login() {
             id="email"
             type="email"
             placeholder="Email"
-            aria-describedby="email-error"
+            aria-describedby={formState.errors.userEmail ? 'email-error' : undefined}
+            aria-invalid={!!formState.errors.userEmail}
             value={formState.userEmail}
             className={`${styles.input} ${formState.errors.userEmail ? styles.inputError : ''}`}
             onChange={(e) =>
@@ -120,7 +121,7 @@ export default function Login() {
           />
 
           {formState.errors.userEmail && (
-            <span className={styles.fieldError} id="email-error">
+            <span className={styles.fieldError} id="email-error" role="alert">
               {formState.errors.userEmail}
             </span>
           )}
@@ -135,6 +136,8 @@ export default function Login() {
             type="password"
             placeholder="Password"
             value={formState.userPassword}
+            aria-describedby={formState.errors.userPassword ? 'password-error' : undefined}
+            aria-invalid={!!formState.errors.userPassword}
             className={`${styles.input} ${formState.errors.userPassword ? styles.inputError : ''}`}
             onChange={(e) =>
               dispatch({
@@ -146,7 +149,9 @@ export default function Login() {
           />
 
           {formState.errors.userPassword && (
-            <span className={styles.fieldError}>{formState.errors.userPassword}</span>
+            <span className={styles.fieldError} id="password-error" role="alert">
+              {formState.errors.userPassword}
+            </span>
           )}
         </div>
 

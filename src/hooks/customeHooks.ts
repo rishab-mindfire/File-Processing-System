@@ -53,7 +53,7 @@ export const validateFiles = (
   const errors: string[] = [];
 
   files.forEach((file) => {
-    // Some browsers include folder path when uploading directories
+    // browsers include folder path when uploading directories
     const path =
       'webkitRelativePath' in file && file.webkitRelativePath ? file.webkitRelativePath : file.name;
 

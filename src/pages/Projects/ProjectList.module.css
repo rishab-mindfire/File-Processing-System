@@ -278,7 +278,23 @@
   padding: 8px;
   border-radius: 4px;
 }
-
+.wentWrongMain{
+  height: 80vh;
+  justify-content: center;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.wentWrong {
+  color: #dc2626;
+  font-size: 0.85rem;
+  font-weight: 500;
+  background-color: #fef2f2;
+  padding: 8px;
+  border-radius: 4px;
+  display: flex;
+  justify-content: center;
+}
 /* Helper to center the submit button in Create Modal */
 .center {
   display: flex;
@@ -288,6 +304,9 @@
 
 /*media query */
 @media (max-width: 768px) {
+  .tableContainer {
+    padding: 0.5rem;
+  }
   .table thead {
     display: none;
   }
@@ -349,8 +368,11 @@
   }
 
   .actions {
-    justify-content: center;
-    width: 100%;
+    gap: 50px;
+  }
+  .open {
+    min-width: 110px;
+    font-size: larger;
   }
 }
 

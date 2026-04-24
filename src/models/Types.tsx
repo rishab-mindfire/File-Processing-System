@@ -25,6 +25,13 @@ export interface Errors {
   general?: string;
 }
 
+//suspense
+export interface SuspenseProps {
+  lines?: number;
+  height?: string;
+  showAvatar?: boolean;
+}
+
 // Login form state.
 export interface LoginState {
   userEmail: string;
@@ -148,6 +155,12 @@ export type JobAction =
   | { type: 'UPDATE_PROGRESS'; payload: { jobId: string; progress: number } }
   | { type: 'COMPLETE_JOB'; payload: string }
   | { type: 'FAIL_JOB'; payload: string };
+
+export interface ZipSectionProps {
+  newJobSignal: string[] | null;
+  onSignalProcessed: () => void;
+  projectId: string;
+}
 
 // CUSTOM TYPES
 // Extends File type to include folder upload path

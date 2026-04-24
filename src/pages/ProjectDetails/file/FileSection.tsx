@@ -48,7 +48,7 @@ export const FileSection: React.FC<FileSectionProps> = ({ projectId, onStartZip 
   // Hidden file input reference (for triggering click)
   const fileInputRef = useRef<HTMLInputElement>(null);
 
-  // Preview states (before upload)
+  // Preview states
   const [pendingFiles, setPendingFiles] = useState<File[]>([]);
   const [previewUrls, setPreviewUrls] = useState<string[]>([]);
   const [isPreviewOpen, setIsPreviewOpen] = useState(false);
@@ -76,7 +76,7 @@ export const FileSection: React.FC<FileSectionProps> = ({ projectId, onStartZip 
 
     const fileArray = Array.from(selectedFiles);
 
-    // Block folders
+    // Block folders for selection
     const hasFolder = fileArray.some((file: WebkitFile) => file.webkitRelativePath);
     if (hasFolder) {
       setUploadError('Folder upload is not allowed.');
@@ -338,7 +338,12 @@ export const FileSection: React.FC<FileSectionProps> = ({ projectId, onStartZip 
               ) : (
                 <tr>
                   <td colSpan={4}>
-                    <div className={styles.noFiles}> No Files !</div>
+                    <div className={styles.noFiles}>
+                      <span className={styles.primaryText}>No files found.</span>
+                      <span className={styles.secondaryText}>
+                        Please upload a document to continue.
+                      </span>
+                    </div>
                   </td>
                 </tr>
               )}

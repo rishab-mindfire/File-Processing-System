@@ -3,17 +3,15 @@ import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import ProtectedRoute from './auth/ProtectedRoute';
 import { useAuth } from './hooks/useAuth';
 import type { JSX } from 'react';
-import Loader from './components/common/Loader';
+import ProjectListSkeleton from './components/common/Suspense/ProjectListSkeleton';
+import ProjectDetailsSkeleton from './components/common/Suspense/ProjectDetailsSkeleton';
 
-// React.lazy component transform
+// React.lazy component
 const Login = lazy(() => import('./pages/login/LoginPage'));
 const PageNotFound = lazy(() => import('./pages/errorPage/PageNotFound'));
 const ProjectList = lazy(() => import('./pages/Projects/ProjectList'));
 const ProjectDetails = lazy(() => import('./pages/ProjectDetails/ProjectDetails'));
 const Layout = lazy(() => import('./components/layout/Layout'));
-
-// Loading component
-const PageLoader = () => <Loader />;
 
 const RootRedirect = (): JSX.Element => {
   const { state } = useAuth();
@@ -23,36 +21,38 @@ const RootRedirect = (): JSX.Element => {
 function App() {
   return (
     <BrowserRouter basename="/">
-      <Suspense fallback={<PageLoader />}>
-        <Routes>
-          <Route path="/" element={<RootRedirect />} />
-          <Route path="/login" element={<Login />} />
+      <Routes>
+        <Route path="/" element={<RootRedirect />} />
+        <Route path="/login" element={<Login />} />
 
-          <Route
-            path="/projects"
-            element={
-              <ProtectedRoute>
-                <Layout>
+        <Route
+          path="/projects"
+          element={
+            <ProtectedRoute>
+              <Layout>
+                <Suspense fallback={<ProjectListSkeleton />}>
                   <ProjectList />
-                </Layout>
-              </ProtectedRoute>
-            }
-          />
+                </Suspense>
+              </Layout>
+            </ProtectedRoute>
+          }
+        />
 
-          <Route
-            path="/projects/:projectId"
-            element={
-              <ProtectedRoute>
-                <Layout>
+        <Route
+          path="/projects/:projectId"
+          element={
+            <ProtectedRoute>
+              <Layout>
+                <Suspense fallback={<ProjectDetailsSkeleton />}>
                   <ProjectDetails />
-                </Layout>
-              </ProtectedRoute>
-            }
-          />
+                </Suspense>
+              </Layout>
+            </ProtectedRoute>
+          }
+        />
 
-          <Route path="*" element={<PageNotFound />} />
-        </Routes>
-      </Suspense>
+        <Route path="*" element={<PageNotFound />} />
+      </Routes>
     </BrowserRouter>
   );
 }

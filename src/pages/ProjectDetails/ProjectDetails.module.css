@@ -29,9 +29,11 @@
   color: #323f3c;
 }
 .backBtn {
+  height: 30px;
+  width: 180px;
+  text-align: center;
   background: #eee;
   border: none;
-  padding: 8px 15px;
   border-radius: 4px;
   cursor: pointer;
   white-space: nowrap;
@@ -156,16 +158,31 @@
   border-top: 1px solid #eee;
   display: flex;
   justify-content: center;
+  flex-direction: column;
   align-items: center;
   min-height: 110px;
+  font-size: 17px;
 }
 .noFiles {
   width: 100%;
   color: #323f3c;
   display: flex;
+  flex-direction: column;
   justify-content: center;
   align-items: center;
-  min-height: 100px;
+  min-height: 150px;
+  font-size: 17px;
+  text-align: center;
+  gap: 8px;
+}
+
+.primaryText {
+  font-weight: 600;
+}
+
+.secondaryText {
+  font-size: 14px;
+  color: #66706e;
 }
 .sizeTd {
   min-width: 100px;
@@ -327,13 +344,12 @@
 .modalBody {
   padding-inline: 1rem;
 }
-/* zip */
 
+/* zip */
 .zipBtn:hover {
   cursor: pointer;
   scale: 1.05;
 }
-
 .zipBtn {
   padding: 3px;
   padding-inline: 13px;
@@ -354,6 +370,24 @@
 .size {
   font-weight: bold;
 }
+/* went wrong */
+.wentWrongMain{
+  height: 80vh;
+  justify-content: center;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.wentWrong {
+  color: #dc2626;
+  font-size: 0.85rem;
+  font-weight: 500;
+  background-color: #fef2f2;
+  padding: 8px;
+  border-radius: 4px;
+  display: flex;
+  justify-content: center;
+}
 /* --- media QUERIES --- */
 
 @media (max-width: 992px) {
@@ -364,16 +398,17 @@
 
 @media (max-width: 600px) {
   .container {
-    padding: 1rem;
+    padding: 0.2rem;
   }
   .projectInfo {
     margin-left: 0rem;
+    padding: 0.2rem;
   }
   .header h1 {
     font-size: 1.2rem;
   }
-
   .dropZone {
+    margin-top: 9px;
     padding: 1.5rem;
   }
 

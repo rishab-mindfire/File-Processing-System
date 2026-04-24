@@ -1,5 +1,5 @@
 import { getErrorMessage } from '../hooks/customeHooks';
-import type { ZipItem, ZipJobResponse, ZipStatusResponse } from '../models/Types';
+import type { Job, ZipItem, ZipJobResponse, ZipStatusResponse } from '../models/Types';
 import { api } from './apiInterceptor';
 
 /**
@@ -40,10 +40,20 @@ export const zipService = {
   /**
    * Get completed ZIP history
    */
-  async getZipList(projectId: string): Promise<ZipItem[]> {
+  async getZipList(projectId: string): Promise<Job[] | undefined> {
     try {
       const res = await api.get<ZipItem[]>(`/projects/${projectId}/zip`);
-      return res.data;
+      if (res.status === 200) {
+        const completedJobs: Job[] = res.data.map((zip: ZipItem) => ({
+          jobId: zip.jobId,
+          status: 'COMPLETED',
+          progress: 100,
+          fileName: zip.fileName,
+          completedAt: zip.completedAt,
+          size: zip.size,
+        }));
+        return completedJobs;
+      }
     } catch (err: unknown) {
       throw new Error(getErrorMessage(err));
     }

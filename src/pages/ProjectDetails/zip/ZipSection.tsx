@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import styles from '../ProjectDetails.module.css';
-import type { Job, ZipItem } from '../../../models/Types';
+import type { Job, ZipSectionProps } from '../../../models/Types';
 import { zipService } from '../../../services/zipService';
 import { formatBytes } from '../../../hooks/customeHooks';
 import deleteBtn from '../../../assets/delete.png';
@@ -26,11 +26,6 @@ import Modal from '../../../components/modal/Modal';
  * @param {() => void} props.onSignalProcessed - Callback after job trigger handled
  */
 
-interface ZipSectionProps {
-  newJobSignal: string[] | null;
-  onSignalProcessed: () => void;
-  projectId: string;
-}
 export const ZipSection: React.FC<ZipSectionProps> = ({
   projectId,
   newJobSignal,
@@ -53,18 +48,12 @@ export const ZipSection: React.FC<ZipSectionProps> = ({
   // Fetch completed ZIP history from server
   const fetchZipList = async () => {
     try {
-      const res = await zipService.getZipList(projectId);
-
-      const completedJobs: Job[] = res.map((zip: ZipItem) => ({
-        jobId: zip.jobId,
-        status: 'COMPLETED',
-        progress: 100,
-        fileName: zip.fileName,
-        completedAt: zip.completedAt,
-        size: zip.size,
-      }));
-
-      setJobs(completedJobs);
+      const completedJobs = await zipService.getZipList(projectId);
+      if (completedJobs && completedJobs.length > 0) {
+        setJobs(completedJobs);
+      } else {
+        setJobs([]);
+      }
     } catch (err) {
       if (err instanceof Error) {
         setErrorMessage(err.message);
@@ -153,7 +142,6 @@ export const ZipSection: React.FC<ZipSectionProps> = ({
    */
   useEffect(() => {
     const signalKey = newJobSignal?.join(',') ?? null;
-
     if (newJobSignal && newJobSignal.length > 0 && signalKey !== lastProcessedSignalRef.current) {
       lastProcessedSignalRef.current = signalKey;
       handleNewZipRequest(newJobSignal);
@@ -199,33 +187,35 @@ export const ZipSection: React.FC<ZipSectionProps> = ({
   const deleteJob = async () => {
     if (deleteFileSelected?.jobId) {
       const jobId = deleteFileSelected.jobId;
-
       try {
         await zipService.deleteZip(projectId, jobId);
-        await fetchZipList();
       } catch (err) {
         if (err instanceof Error) {
           setErrorMessage(err.message);
         }
       }
     }
-
+    await fetchZipList();
+    lastProcessedSignalRef.current = null;
     setIsDeleteOpen(false);
   };
 
   return (
-    <section className={styles.card}>
+    <section className={styles.card} aria-labelledby="jobs-heading">
       <div className={styles.sectionHeader}>
-        <h3>Job Progress</h3>
+        <h3 id="jobs-heading">Zip file Progress</h3>
       </div>
 
       {jobs.length === 0 ? (
-        <p className={styles.empty}>No active jobs.</p>
+        <p className={styles.empty} role="alert">
+          <span className={styles.primaryText}>No Zip found.</span>
+          <span className={styles.secondaryText}>Please select files then create Zip.</span>
+        </p>
       ) : (
         <div className={styles.jobList}>
-          <span>{errorMessage}</span>
+          <span role="alert">{errorMessage}</span>
           {jobs.map((job) => (
-            <div key={job.jobId} className={styles.jobItem}>
+            <div key={job.jobId} className={styles.jobItem} role="region" aria-label="Job details">
               <div className={styles.jobInfo}>
                 <span className={styles.fileName}>{job.fileName}</span>
 
@@ -233,13 +223,21 @@ export const ZipSection: React.FC<ZipSectionProps> = ({
                 <span
                   className={`${styles.statusLabel} ${styles[job.status]}`}
                   data-status={job.status}
+                  aria-live="polite"
                 >
                   {job.status}
                 </span>
               </div>
 
               {/* Progress bar */}
-              <div className={styles.progressTrack}>
+              <div
+                className={styles.progressTrack}
+                role="progressbar"
+                aria-valuemin={0}
+                aria-valuemax={100}
+                aria-valuenow={job.progress}
+                aria-label={`Zipping progress for ${job.fileName}`}
+              >
                 <div className={styles.progressBar} style={{ width: `${job.progress}%` }} />
               </div>
 
@@ -249,6 +247,7 @@ export const ZipSection: React.FC<ZipSectionProps> = ({
                   <button
                     onClick={() => triggerDownload(job.jobId, job.fileName)}
                     className={styles.iconButton}
+                    aria-label={`Download ${job.fileName}`}
                   >
                     <span className={styles.download}>Downlaod</span>
                   </button>
@@ -275,7 +274,11 @@ export const ZipSection: React.FC<ZipSectionProps> = ({
               </div>
 
               {/* Error state */}
-              {job.status === 'FAILED' && <span className={styles.error}>Failed</span>}
+              {job.status === 'FAILED' && (
+                <span className={styles.error} role="alert">
+                  Failed
+                </span>
+              )}
             </div>
           ))}
         </div>

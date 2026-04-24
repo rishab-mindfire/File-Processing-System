@@ -19,13 +19,8 @@ import styles from './PageNotFound.module.css';
 const PageNotFound = () => {
   return (
     <div className={styles.container}>
-      {/* Error code */}
       <h1 className={styles.errorCode}>404</h1>
-
-      {/* Message */}
       <h2 className={styles.message}>Oops! Page Not Found</h2>
-
-      {/* Navigation back to main page */}
       <Link to="/projects" className={styles.backLink}>
         Back to projects
       </Link>
