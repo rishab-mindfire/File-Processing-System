@@ -1,17 +1,20 @@
 /* project suspense */
 .topHeader {
-  padding-top: 40px;
+  padding-top: 10px;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 30px;
+  margin-bottom: 10px;
 }
 .skeletonTitle {
   height: 32px;
+  width: 100px !important;
 }
 .skeletonButton {
   height: 40px;
   border-radius: 8px;
+  width: 100px !important;
+
 }
 .skeleton {
   background: #eee;

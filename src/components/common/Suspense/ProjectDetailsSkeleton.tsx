@@ -3,6 +3,7 @@ import styles from './Skeleton.module.css';
 const ProjectDetailsSkeleton = () => {
   return (
     <div className={styles.detailsContainer}>
+      {/* header part */}
       <div className={styles.topHeader}>
         <div className={`${styles.skeleton} ${styles.skeletonBtnSmall}`}></div>
         <div className={`${styles.skeleton} ${styles.skeletonMainTitle}`}></div>
@@ -12,7 +13,7 @@ const ProjectDetailsSkeleton = () => {
       <div className={styles.detailsGrid}>
         <div className={styles.leftCol}>
           <div className={`${styles.skeleton} ${styles.skeletonDropzone}`}></div>
-
+          {/* file upload table part */}
           <div className={styles.cardSkeleton}>
             <div className={styles.cardHeader}>
               <div className={`${styles.skeleton} ${styles.skeletonTitleSmall}`}></div>
@@ -29,7 +30,7 @@ const ProjectDetailsSkeleton = () => {
           </div>
         </div>
 
-        {/* RIGHT COLUMN - 25% */}
+        {/*job upload part */}
         <div className={styles.rightCol}>
           <div className={styles.cardSkeleton}>
             <div

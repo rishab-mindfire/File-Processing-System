@@ -27,7 +27,7 @@ vi.mock('../../services/projectService', () => ({
   },
 }));
 
-// ---------------- MOCK CHILD COMPONENTS ----------------
+// ---------------- MOCK CHILD COMPONENTS (file) ----------------
 vi.mock('./file/FileSection', () => ({
   FileSection: ({ onStartZip }: { onStartZip: (ids: string[]) => void }) => (
     <button onClick={() => onStartZip(['file-1'])}>Mock Start Zip</button>
@@ -66,12 +66,12 @@ describe('ProjectDetails Component', () => {
   });
 
   // NOT FOUND CASE
-  it('should show Project not found when API fails', async () => {
+  it('should show Something went wrong ! when API fails', async () => {
     vi.mocked(projectService.getProjectById).mockRejectedValue(new Error('Not found'));
 
     renderWithRouter('999');
 
-    expect(await screen.findByText(/project not found/i)).toBeInTheDocument();
+    expect(await screen.findByText(/Something went wrong !/i)).toBeInTheDocument();
   });
 
   // BACK BUTTON

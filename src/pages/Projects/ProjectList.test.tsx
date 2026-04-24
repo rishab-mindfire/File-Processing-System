@@ -100,8 +100,8 @@ describe('ProjectList Component', () => {
       </MemoryRouter>,
     );
 
-    //  findByText if project not found on error of fails API
-    const errorMsg = await screen.findByText(/No projects found./i);
+    //  findByText if Something went wrong ! on error of fails API
+    const errorMsg = await screen.findByText(/Something went wrong !/i);
     expect(errorMsg).toBeInTheDocument();
   });
 });
