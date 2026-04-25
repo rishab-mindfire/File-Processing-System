@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import type { FileItem, FileSectionProps, WebkitFile } from '../../../models/Types';
 import { FileService } from '../../../services/fileService';
-import { formatBytes, validateFiles } from '../../../hooks/customeHooks';
+import { formatBytes, validateFiles } from '../../../hooks/customHooks';
 import styles from '../ProjectDetails.module.css';
 import Modal from '../../../components/modal/Modal';
 import deleteBtn from '../../../assets/delete.png';

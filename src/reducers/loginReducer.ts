@@ -1,9 +1,9 @@
-import type { LoginAction, LoginState } from '../models/Types';
+import type { LoginAction, LoginType } from '../models/Types';
 
 /**
  * Initial state for login form
  */
-export const initialLoginState: LoginState = {
+export const initialLoginState: LoginType = {
   userEmail: '',
   userPassword: '',
   loading: false,
@@ -23,7 +23,7 @@ export const initialLoginState: LoginState = {
  * @param action - Action describing state change
  */
 
-export function loginReducer(state: LoginState, action: LoginAction): LoginState {
+export function loginReducer(state: LoginType, action: LoginAction): LoginType {
   switch (action.type) {
     case 'SET_FIELD':
       return {

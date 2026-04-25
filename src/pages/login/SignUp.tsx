@@ -1,47 +1,17 @@
-import { useReducer } from 'react';
+import { useReducer, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { AxiosError } from 'axios';
-import { useAuth } from '../../hooks/useAuth';
 import styles from './Login.module.css';
 import type { Errors } from '../../models/Types';
 import { initialLoginState, loginReducer } from '../../reducers/loginReducer';
-import { loginApi } from '../../services/loginService';
+import { signupApi } from '../../services/loginService';
 import folderImage from '../../assets/document-management.png';
 
-/**
- * Login Component
- *
- * Handles user authentication by:
- * - Managing form state via reducer
- * - Performing client-side validation
- * - Calling login API
- * - Storing auth token via context
- *
- * Features:
- * - Field-level validation
- * - API error handling
- * - Loading state handling
- *
- * @component
- *
- * @returns {JSX.Element} Login form UI
- *
- * @example
- * <Login />
- */
-export default function Login() {
+export default function Signup() {
   const [formState, dispatch] = useReducer(loginReducer, initialLoginState);
-  const { login } = useAuth();
+  const [message, setMessage] = useState('');
   const navigate = useNavigate();
 
-  /**
-   * Handles login form submission.
-   *
-   * - Validates input fields
-   * - Calls login API
-   * - Stores token on success
-   * - Displays error messages on failure
-   */
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
@@ -66,15 +36,23 @@ export default function Login() {
     dispatch({ type: 'SET_LOADING', payload: true });
 
     try {
-      const token = await loginApi({
+      await signupApi({
         userEmail: formState.userEmail,
         userPassword: formState.userPassword,
+        role: 'admin',
+        userName: 'User-name',
       });
 
-      login(token);
-      navigate('/projects');
+      formState.errors.general = '';
+      setMessage('Sign up successfully');
+
+      // redirect to login after signup
+      setTimeout(() => {
+        navigate('/');
+        setMessage('');
+      }, 2000);
     } catch (error: unknown) {
-      let message = 'Login failed';
+      let message = 'Signup failed';
 
       if (error instanceof AxiosError) {
         message = error.response?.data?.details || error.response?.data?.message || error.message;
@@ -96,7 +74,7 @@ export default function Login() {
       <form onSubmit={handleSubmit} className={styles.loginForm}>
         <div className={styles.logoSection}>
           <img src={folderImage} alt="Application logo" className={styles.logoImage} />
-          <h2 className={styles.title}>Login</h2>
+          <h2 className={styles.title}>Signup</h2>
         </div>
 
         {/* EMAIL */}
@@ -107,9 +85,8 @@ export default function Login() {
             id="email"
             type="email"
             placeholder="Email"
-            aria-describedby={formState.errors.userEmail ? 'email-error' : undefined}
-            aria-invalid={!!formState.errors.userEmail}
             value={formState.userEmail}
+            aria-invalid={!!formState.errors.userEmail}
             className={`${styles.input} ${formState.errors.userEmail ? styles.inputError : ''}`}
             onChange={(e) =>
               dispatch({
@@ -121,9 +98,7 @@ export default function Login() {
           />
 
           {formState.errors.userEmail && (
-            <span className={styles.fieldError} id="email-error" role="alert">
-              {formState.errors.userEmail}
-            </span>
+            <span className={styles.fieldError}>{formState.errors.userEmail}</span>
           )}
         </div>
 
@@ -136,7 +111,6 @@ export default function Login() {
             type="password"
             placeholder="Password"
             value={formState.userPassword}
-            aria-describedby={formState.errors.userPassword ? 'password-error' : undefined}
             aria-invalid={!!formState.errors.userPassword}
             className={`${styles.input} ${formState.errors.userPassword ? styles.inputError : ''}`}
             onChange={(e) =>
@@ -149,33 +123,23 @@ export default function Login() {
           />
 
           {formState.errors.userPassword && (
-            <span className={styles.fieldError} id="password-error" role="alert">
-              {formState.errors.userPassword}
-            </span>
+            <span className={styles.fieldError}>{formState.errors.userPassword}</span>
           )}
         </div>
 
+        {message && <p className={styles.success}>{message}</p>}
         {/* GENERAL ERROR */}
-        {formState.errors.general && (
-          <p className={styles.error} role="alert">
-            {formState.errors.general}
-          </p>
-        )}
+        {formState.errors.general && <p className={styles.error}>{formState.errors.general}</p>}
 
         {/* BUTTON */}
-        <button disabled={formState.loading} className={styles.button} role="button">
-          {formState.loading ? 'Logging in...' : 'Login'}
+        <button disabled={formState.loading} className={styles.button}>
+          {formState.loading ? 'Signing up...' : 'Signup'}
         </button>
         <div className={styles.redirect}>
           <p>
-            Don’t have an account?{' '}
-            <span
-              className={styles.link}
-              onClick={() => navigate('/signup')}
-              role="button"
-              tabIndex={0}
-            >
-              Sign up
+            Already have an account?{' '}
+            <span className={styles.link} onClick={() => navigate('/')} role="button" tabIndex={0}>
+              Login
             </span>
           </p>
         </div>

@@ -12,7 +12,7 @@ services:
     depends_on:
       - mongo
     volumes:
-      - uploads_data:/backend-app/uploads 
+      - uploads_data:/backend-app/uploads
     networks:
       - app-network
 

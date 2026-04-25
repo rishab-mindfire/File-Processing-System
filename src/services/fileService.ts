@@ -1,6 +1,6 @@
 import type { FileItem } from '../models/Types';
 import { api } from './apiInterceptor';
-import { getErrorMessage } from '../hooks/customeHooks';
+import { getErrorMessage } from '../hooks/customHooks';
 
 /**
  * FileService

@@ -1,4 +1,4 @@
-import { getErrorMessage } from '../hooks/customeHooks';
+import { getErrorMessage } from '../hooks/customHooks';
 import type { Job, ZipItem, ZipJobResponse, ZipStatusResponse } from '../models/Types';
 import { api } from './apiInterceptor';
 
