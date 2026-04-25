@@ -5,6 +5,7 @@ import { useAuth } from './hooks/useAuth';
 import type { JSX } from 'react';
 import ProjectListSkeleton from './components/common/Suspense/ProjectListSkeleton';
 import ProjectDetailsSkeleton from './components/common/Suspense/ProjectDetailsSkeleton';
+import Signup from './pages/login/SignUp';
 
 // React.lazy component
 const Login = lazy(() => import('./pages/login/LoginPage'));
@@ -24,6 +25,7 @@ function App() {
       <Routes>
         <Route path="/" element={<RootRedirect />} />
         <Route path="/login" element={<Login />} />
+        <Route path="/signup" element={<Signup />} />
 
         <Route
           path="/projects"

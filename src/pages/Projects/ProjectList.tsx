@@ -7,7 +7,7 @@ import styles from './ProjectList.module.css';
 import type { CreateNewProject, Project } from '../../models/Types';
 import Loader from '../../components/common/Loader';
 import { usePagination } from '../../hooks/usePagination';
-import { formatDate } from '../../hooks/customeHooks';
+import { formatDate } from '../../hooks/customHooks';
 import deleteBtn from '../../assets/delete.png';
 
 /**

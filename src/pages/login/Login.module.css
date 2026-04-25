@@ -143,6 +143,33 @@ label {
   cursor: not-allowed;
 }
 
+.success {
+  background-color:rgba(0, 128, 0, 0.082);
+  color: green;
+  padding: 10px;
+  border-radius: 6px;
+  border: 1px solid rgba(1, 85, 1, 0.425);
+  font-size: 0.85rem;
+  text-align: center;
+  margin-bottom: 16px;
+  animation: fadeIn 0.3s ease-in;
+}
+.redirect {
+  margin-top: 1rem;
+  text-align: center;
+  font-size: 0.9rem;
+}
+
+.link {
+  color: #007bff;
+  cursor: pointer;
+  font-weight: 500;
+}
+
+.link:hover {
+  text-decoration: underline;
+}
+
 /* error */
 .fieldError {
   color: #d63031;

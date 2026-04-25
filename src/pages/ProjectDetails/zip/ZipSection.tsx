@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef, useCallback } from 'react';
 import styles from '../ProjectDetails.module.css';
 import type { Job, ZipSectionProps } from '../../../models/Types';
 import { zipService } from '../../../services/zipService';
-import { formatBytes } from '../../../hooks/customeHooks';
+import { formatBytes } from '../../../hooks/customHooks';
 import deleteBtn from '../../../assets/delete.png';
 import Modal from '../../../components/modal/Modal';
 

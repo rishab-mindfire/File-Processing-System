@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { formatBytes, delay, validateFiles } from './customeHooks';
+import { formatBytes, delay, validateFiles } from './customHooks';
 import { renderHook, act } from '@testing-library/react';
 import { usePagination } from './usePagination';
 
