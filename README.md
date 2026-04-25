@@ -32,7 +32,7 @@ React and TypeScript application designed for managing projects, handling multi-
 
 | Category     | Technology                     |
 | ------------ | ------------------------------ |
-| **Frontend** | React 18 + TypeScript          |
+| **Frontend** | React 19 + TypeScript          |
 | **State**    | useReducer + Context API       |
 | **Routing**  | React Router                   |
 | **HTTP**     | Axios                          |
