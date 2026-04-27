@@ -210,7 +210,13 @@ export default function ProjectList() {
                         aria-label={`Delete project ${project.projectName}`}
                         title="Delete project"
                       >
-                        <img src={deleteBtn} alt="Delete project" aria-hidden="true" />
+                        <img
+                          src={deleteBtn}
+                          alt="Delete project"
+                          aria-hidden="true"
+                          width="37"
+                          height="715"
+                        />
                       </button>
                     </td>
                   </tr>

@@ -42,6 +42,9 @@
   font-weight: 600;
   color: #1e293b;
 }
+.deleteImg{
+  height: 12px;
+}
 .table tbody tr:hover {
   cursor: pointer;
   background-color: rgba(67, 107, 98, 0.04);
